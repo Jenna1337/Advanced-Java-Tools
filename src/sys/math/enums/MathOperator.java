@@ -1,4 +1,6 @@
-package sys.math;
+package sys.math.enums;
+
+import sys.math.numbertypes.SuperNumber;
 
 public enum MathOperator implements MathSymbol<Character>
 {
@@ -16,24 +18,27 @@ public enum MathOperator implements MathSymbol<Character>
 	Subtraction   ("subtract",  '-'     , 2, 2),
 	GammaFunction ("gamma",     '\u0393', 0, 1, 'R');
 	
-	
 	private final String fn;
 	private final char opc, numargs;
 	private final int prio;
 	private final char sarg;
 	private MathOperator(String funcname, char op, int priority, int args)
 	{
+		registerSymbol();
 		fn=funcname;
 		opc=op;
 		prio=priority;
 		numargs=(char)args;
 		sarg=0;
-		// TODO Auto-generated constructor stub
 	}
 	private MathOperator(String funcname, char op, int priority, int args, char sidearg)
 	{
-		this(funcname, op, priority, args);
-		// TODO Auto-generated constructor stub
+		registerSymbol();
+		fn=funcname;
+		opc=op;
+		prio=priority;
+		numargs=(char)args;
+		sarg=sidearg;
 	}
 	public Character[] getArgs()
 	{
@@ -45,33 +50,15 @@ public enum MathOperator implements MathSymbol<Character>
 			case 1:
 				return new Character[]{opc, numargs, sarg};
 		}
-		/*
-		 *<pre>
-			{
-				{
-					{pow,2},
-					{root2,1,'R'},//square root
-					{root3,1,'R'},//cube root
-					{root4,1,'R'}//4th root
-				},
-				{
-					{mul,2},
-					{div,2},
-					{mod,2},
-					{fact,1,'L'}
-				},
-				{
-					{add,2},
-					{sub,2}
-				}
-			};
-		 </pre>*/
-		// TODO Auto-generated method stub
 		return null;
 	}
 	public char getOpChar()
 	{
 		return opc;
+	}
+	public char getSideArg()
+	{
+		return sarg;
 	}
 	public static MathOperator forChar(char charAt)
 	{
@@ -79,5 +66,40 @@ public enum MathOperator implements MathSymbol<Character>
 			if(mop.opc == charAt)
 				return mop;
 		return null;
+	}
+	public SuperNumber invokeOn(SuperNumber n1, SuperNumber n2)
+	{
+		SuperNumber outval=null;
+		try
+		{
+			if(numargs == 2)
+				outval = (SuperNumber) n1.getClass().getMethod(fn, Number.class).invoke(n1, n2);
+			if(numargs == 1)
+			{
+				switch(sarg)
+				{
+					case 'L':
+						outval = (SuperNumber) n1.getClass().getMethod(fn).invoke(n1);
+						break;
+					case 'R':
+						outval = (SuperNumber) n2.getClass().getMethod(fn).invoke(n2);
+						break;
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		if(!(outval!=null))
+		{
+			throw new InternalError("Invalid values: "+n1+", "+n2);
+		}
+		
+		return outval;
+	}
+	public int getPriority()
+	{
+		return prio;
 	}
 }

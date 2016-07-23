@@ -398,4 +398,8 @@ public final class SuperNumber extends Number implements Comparable<Number>, Mat
 	{
 		return parse(BigDecimalMath.Gamma(this.toBigDecimal()));
 	}
+	public SuperNumber invert()
+	{
+		return new SuperNumber(1).divide(this);
+	}
 }

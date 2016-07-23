@@ -121,6 +121,13 @@ public interface MathFunctions extends Comparable<Number>
 	 */
 	public abstract SuperNumber gamma();
 	/**
+	 * Returns a SuperNumber whose value is {@code (1 / this)}.
+	 *
+	 * @return {@code 1 / this}
+	 * @see #divide()
+	 */
+	public SuperNumber invert();
+	/**
 	 * Returns a SuperNumber whose value is {@code (this!)}.
 	 *
 	 * @return {@code this!}

@@ -1,31 +1,32 @@
 package sys.math;
 
+import sys.math.enums.MathBrackets;
+import sys.math.enums.MathConstant;
+import sys.math.enums.MathOperator;
+import sys.math.enums.MathSymbols;
 import sys.math.numbertypes.SuperNumber;
 
 public class Math11
 {
-	//TODO change this class to use MathSymbols instead
-	/**@see #abspar(String, boolean)
-	 * @see #specialOp(String, char)*/
-	private static final Character[][] groups = {
-			{'(',')'},
-			{'[',']'},
-			{'{','}'},
-			{'|','|', 'a'}
-	};
+	/**
+	 * @see MathBrackets
+	 * @see MathSymbols
+	 */
+	private static final Character[][] groups = MathSymbols.getBracketsVars();
 	/**@see #SingleOp(SuperNumber, char, SuperNumber, boolean)*/
 	private static final char 
 	negative = '`', 
 	trueneg = '-';
-	/**@see #SingleOp(SuperNumber, char, SuperNumber, boolean)*/
+	/**
+	 * @see MathOperator
+	 * @see MathSymbols
+	 */
 	private static final Character[][][] opsWithVars = MathSymbols.getOperatorVars();
-	private static final Object[][] repl = {
-			//original, replacement, caseSensitive
-			{"E", "*10^", true},
-			{"e", SuperNumberConstants.E.toString(), true},
-			{"Pi", SuperNumberConstants.Pi.toString(), false},
-			{"\u03B3", SuperNumberConstants.EulerGamma, false}
-	};
+	/**
+	 * @see MathConstant
+	 * @see MathSymbols
+	 */
+	private static final Object[][] repl = MathSymbols.getConstantVars();
 	/**
 	 * Evaluates the mathematical expression and returns the result as a String.<br>
 	 * @param quest the String to be evaluated
@@ -47,11 +48,12 @@ public class Math11
 				quest = quest.replaceAll(a1.toLowerCase(), a2);
 			}
 		}
-		return evalExt3(quest.replace(" ",""), false).toString().replace(""+negative,""+trueneg);
+		return evalExt3(quest.replace(" ",""), true).toString().replace(""+negative,""+trueneg);
 	}
 	private static Object evalExt3(String q, boolean debug) 
 	{
-		if(debug) System.out.println(q);
+		if(debug)
+			System.out.println(q);
 		try
 		{
 			return new SuperNumber(q);
@@ -117,7 +119,7 @@ public class Math11
 	}
 	private static String abspar(String query, boolean debug)
 	{
-		while(containsAny2(query, groups, debug))
+		while(containsAny2(query, groups))
 		{
 			Character[] del = getFirst(query, groups, debug);
 			query = parenth(query, del, debug);
@@ -148,20 +150,6 @@ public class Math11
 			System.out.println(k);
 		return groups[k];
 	}
-	private static String specialOp(String query, char var)
-	{
-		switch(var)
-		{
-			case 'a':
-			{
-				SuperNumber outsd = new SuperNumber(query);
-				outsd=outsd.abs();
-				return outsd.toString();
-			}
-			default:
-				throw new InternalError("Invalid operator: "+var+"");
-		}
-	}
 	private static Character[] getProps(Character[][] varList, char op)
 	{
 		for(Character[] i : varList)
@@ -184,7 +172,8 @@ public class Math11
 	private static String parenth(String query, Character[] del, boolean debug)
 	{
 		char cL = del[0], cR = del[1];
-		if(debug) System.out.println(query+"$ "+cL+" ... "+cR);
+		if(debug)
+			System.out.println(query+"$ "+cL+" ... "+cR);
 		String sL=""+cL, sR=""+cR;
 		if((count(query,cL)!=count(query,cR)) || (query.indexOf(sL)>query.indexOf(sR)) || (query.lastIndexOf(sL)>query.lastIndexOf(sR)))
 		{
@@ -221,8 +210,9 @@ public class Math11
 			if(debug)
 				System.out.println(query+" "+pip);
 			String rep = evalExt3(pip,debug).toString();
-			if(del.length>=3)
-				rep = specialOp(rep, del[2]);
+			MathBrackets mbrkts = MathBrackets.forArgs(del);
+			if(mbrkts!=null)
+				rep = mbrkts.invokeOn(new SuperNumber(query)).toString();
 			if(debug)
 				System.out.println(rep);
 			query = query.replace(sL+pip+sR, rep);
@@ -232,7 +222,7 @@ public class Math11
 	private static int getOpsIndex(String query, Character[] ops)
 	{
 		for(int i=0;i<query.length();++i)
-			if(equalsAnyOp(query.charAt(i)+"",ops))
+			if(equalsAny(query.charAt(i), ops))
 				return i;
 		throw new InternalError("No valid operator was found in \""+query+"\"");
 	}
@@ -240,57 +230,13 @@ public class Math11
 	{
 		if(debug)
 			System.out.println("\nn1="+n1+", op="+op+", n2="+n2);
-		SuperNumber out = new SuperNumber(n1.toString());
-		SuperNumber out2 = new SuperNumber(n2.toString());
-		boolean isvar1 = true;
-		//TODO change to use MathSymbols
-		switch(op)
-		{
-			case mul: //multiply
-				out=out.multiply(out2);
-				break;
-			case div: //divide
-				out=out.divide(out2);
-				break;
-			case add: //add
-				out=out.add(out2);
-				break;
-			case sub: //subtract
-				out=out.subtract(out2);
-				break;
-			case fact: //factorial
-				out=out.factorial();
-				break;
-			case mod: //modular function 
-				out=out.mod(out2);
-				break;
-			case pow: //exponent power
-				out=out.pow(out2);
-				break;
-			case root2: //square root
-				out2=out2.root(2);
-				isvar1=false;
-				break;
-			case root3: //cube root
-				out2=out2.root(3);
-				isvar1=false;
-				break;
-			case root4: //4th root
-				out2=out2.root(4);
-				isvar1=false;
-				break;
-			case Gamma:
-				out2=out2.gamma();
-				isvar1=false;
-				break;
-			default: 
-				throw new InternalError("Invalid operator: "+op+"");
-		}
-		//System.out.println("out="+out+", out2="+out2+", res="+out.subtract(out2));
-		if(isvar1)
-			return out.toString().replace(negative,trueneg);
+		
+		MathOperator mop = MathOperator.forChar(op);
+		
+		if(mop!=null)
+			return mop.invokeOn(n1, n2).toString().replace(trueneg,negative);
 		else
-			return out2.toString().replace(negative,trueneg);
+			throw new InternalError("Invalid operator: "+op+"");
 	}
 	private static String[] getNumbers(String context, int index, Character[] props)
 	{
@@ -324,34 +270,25 @@ public class Math11
 		String[] array = {fn,sn};
 		return array;
 	}
-	private static boolean equalsAny(Object a, Object[] b)
+	private static boolean equalsAny(Character a, Character[] b)
 	{
 		for(Object i : b)
 			if(a.equals(i))
 				return true;
 		return false;
 	}
-	private static boolean containsAny(Object a, Object[] b)
+	private static boolean containsAny(String a, Character[] b)
 	{
-		for(Object i : b)
+		for(Character i : b)
 			if(a.toString().contains(i.toString()))
 				return true;
 		return false;
 	}
-	private static boolean containsAny2(Object a, Object[][] b, boolean debug)
+	private static boolean containsAny2(String a, Character[][] c)
 	{
-		for(Object[] i : b)
-			for(Object j : i)
-				if(a.toString().contains(j.toString()))
-					return true;
+		for(Character[] b : c)
+			containsAny(a, b);
 		return false;
-	}
-	private static boolean equalsAnyOp(Object a, Object[] b)
-	{
-		String[] b2=new String[b.length];
-		for(int i=0;i<b.length;++i)
-			b2[i] = b[i]+"";
-		return equalsAny(a+"",b2);
 	}
 	private static int count(String text, Character toFind)
 	{
