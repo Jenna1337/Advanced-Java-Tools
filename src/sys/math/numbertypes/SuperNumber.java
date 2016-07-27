@@ -16,7 +16,7 @@ public final class SuperNumber extends Number implements Comparable<Number>, Mat
 	ROUND_FLOOR = (java.math.BigDecimal.ROUND_FLOOR),
 	ROUND_HALF_UP = (java.math.BigDecimal.ROUND_HALF_UP),
 	ROUND_HALF_DOWN = (java.math.BigDecimal.ROUND_HALF_DOWN);
-	protected static final int SCALE = 100;//TODO make this work with 1000
+	protected static final int SCALE = 1000;//TODO make this work with 1000
 	protected static final int ROUNDING_MODE = ROUND_HALF_DOWN;
 	protected static final MathContext context = new MathContext(SCALE, RoundingMode.valueOf(ROUNDING_MODE));
 	public static final SuperNumber GoldenRatio = new SuperNumber(SuperNumberConstants.GoldenRatio),
@@ -155,7 +155,11 @@ public final class SuperNumber extends Number implements Comparable<Number>, Mat
 	{
 		if(E.equals(num))
 			return parse(num).exp();
-		return parse(BigDecimalMath.pow(this.toBigDecimal(), parse(num).toBigDecimal()));
+		try{
+			return powroot(num, true);
+		}catch(Exception e){
+			return parse(BigDecimalMath.pow(this.toBigDecimal(), parse(num).toBigDecimal()));
+		}
 		//return powroot(num, true);
 	}
 	public SuperNumber root(Number num)
@@ -191,7 +195,17 @@ public final class SuperNumber extends Number implements Comparable<Number>, Mat
 	}
 	private SuperNumber introot(int num)
 	{
-		return parse(nthRoot(num, new BigDecimal(this.toString())).stripTrailingZeros());
+		BigDecimal nval;
+		if(num < 0)
+		{
+			if(num%2==0 && this.lessThan(0))
+				throw new IllegalArgumentException(""+num);
+			else
+				nval = BigDecimal.ONE.divide(nthRoot(-num, new BigDecimal(this.toString())), SCALE, ROUNDING_MODE);
+		}
+		else
+			nval = nthRoot(num, new BigDecimal(this.toString()));
+		return parse(nval.stripTrailingZeros());
 	}
 	//   snippet from http://stackoverflow.com/questions/22695654/computing-the-nth-root-of-p-using-bigdecimals 
 	private static BigDecimal nthRoot(final int n, final BigDecimal a) {
@@ -205,7 +219,7 @@ public final class SuperNumber extends Number implements Comparable<Number>, Mat
 			else
 				throw new IllegalArgumentException("nth root can only be calculated for positive numbers");
 		}
-		if (n<=0)
+		if (n<=0 && n%2==0 && a.compareTo(BigDecimal.ZERO)<0)
 			throw new IllegalArgumentException("nth root can only be calculated for positive numbers");
 		if (a.equals(BigDecimal.ZERO))
 			return BigDecimal.ZERO;

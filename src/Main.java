@@ -19,7 +19,7 @@ public class Main
 	{
 		SuperNumber E = new SuperNumber(SuperNumber.E);
 		SuperNumber Pi = new SuperNumber(SuperNumber.Pi);
-		System.out.println(Math11.eval("e^(1/2)"));
+		System.out.println(Math11.eval("-3^(1/2)^(1/(-1))"));
 		//int i=0, n=2, k=n;
 		//while(n/2!=n)
 		//	System.out.println(++i+" "+(n/=2));

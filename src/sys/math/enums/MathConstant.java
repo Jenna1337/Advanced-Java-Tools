@@ -15,14 +15,17 @@ public enum MathConstant implements MathSymbol<Object>
 	E                ("E", "*10^", true),
 	EulerGamma       ("\u0393", SuperNumber.EulerGamma.toString(), true);
 	
-	
+	private final String orig, repl;
+	private final boolean csen;
 	private MathConstant(String original, String replacement, boolean caseSensitive)
 	{
-		// TODO Auto-generated constructor stub
+		registerSymbol();
+		orig=original;
+		repl=replacement;
+		csen=caseSensitive;
 	}
 	public Object[] getArgs()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return new Object[]{orig, repl, csen};
 	}
 }

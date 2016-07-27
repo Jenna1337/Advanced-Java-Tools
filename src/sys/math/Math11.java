@@ -28,6 +28,20 @@ public class Math11
 	 */
 	private static final Object[][] repl = MathSymbols.getConstantVars();
 	/**
+	 * @see MathOperator#MathOperator(String, String, int, int)
+	 * @see MathOperator#MathOperator(String, String, int, int, char)
+	 * @see sys.math.enums.SpecConstant
+	 * @see MathSymbols
+	 */
+	private static final Object[][] spec = MathSymbols.getSpecialCVars();
+	private static final Character[] nums={'.','0','1','2','3','4','5','6','7','8','9',negative};
+	public static final String NID = "\uE010";
+	
+	
+	private static final boolean DEBUG = true;
+	
+	
+	/**
 	 * Evaluates the mathematical expression and returns the result as a String.<br>
 	 * @param quest the String to be evaluated
 	 * @return The computed value.
@@ -48,24 +62,85 @@ public class Math11
 				quest = quest.replaceAll(a1.toLowerCase(), a2);
 			}
 		}
-		return evalExt3(quest.replace(" ",""), true).toString().replace(""+negative,""+trueneg);
+		if(DEBUG)
+			System.out.println(quest);
+		for(Object[] sp : spec)
+		{
+			String a1 = sp[0].toString();
+			String a2 = sp[1].toString();
+			String nv=a1;
+			if(a1.contains(NID))
+			{
+				String ap1 = a1.split(NID)[0];
+				String ap2 = a1.split(NID)[1];
+				String regx= ".*\\Q"+ap1+"\\E[\\d\\.\\-\\(\\)"+negative+"]+\\Q"+ap2+"\\E.*";
+				if(!quest.matches(regx))
+				{
+					nv = a1;
+				}
+				if(Boolean.FALSE.equals(sp[2]))
+					while(quest.matches(regx))
+					{
+						int index=quest.indexOf(ap1)+ap1.length();
+						nv="";
+						//TODO fix with parenthesis
+						for(int i=index;i<quest.indexOf(ap2,index);++i)
+						{
+							char c=quest.charAt(i);
+							if(c=='(' || c==')' || c=='-' || equalsAny(c,nums))
+								nv+=c;
+							else break;
+						}
+						String targ = ap1+nv+ap2;
+						String repl = a2+"("+nv+")";
+						quest = quest.replace(targ, repl);
+					}
+				else
+					while(quest.matches(regx))
+					{
+						int index=quest.indexOf(ap2);
+						nv="";
+						for(int i=index-1;i>=0;--i)
+						{
+							char c=quest.charAt(i);
+							if(equalsAny(c,nums))
+								nv=c+nv;
+							else break;
+						}
+						String targ = ap1+nv+ap2;
+						String repl = a2+"("+nv+")";
+						quest = quest.replace(targ, repl);
+					}
+			}
+			else
+				nv = a1;
+			quest = quest.replaceAll(a1.replace(NID, nv), a2);
+			if(sp[2].equals(Boolean.FALSE))
+			{
+				quest = quest.replaceAll(a1.toUpperCase(), a2);
+				quest = quest.replaceAll(a1.toLowerCase(), a2);
+			}
+		}
+		if(DEBUG)
+			System.out.println(quest);
+		return evalExt3(quest.replace(" ","")).toString().replace(""+negative,""+trueneg);
 	}
-	private static Object evalExt3(String q, boolean debug) 
+	private static Object evalExt3(String q) 
 	{
-		if(debug)
+		if(DEBUG)
 			System.out.println(q);
 		try
 		{
-			return new SuperNumber(q);
+			return new SuperNumber(q).toString().replace(trueneg, negative);
 		}
 		catch(Exception e)
 		{
 			try
 			{
 				String query=q.replace(" ","");
-				query = abspar(query, debug);
+				query = abspar(query);
 				String toAdd = "";
-				if(debug)
+				if(DEBUG)
 					System.out.println(query);
 				MathOperator mop = MathOperator.forChar(query.charAt(0));
 				if(mop!=null)
@@ -103,10 +178,10 @@ public class Math11
 						if((vars==2) || ((vars==1)&&(props[2].equals('R'))))
 							d2 = new SuperNumber(n2.replace(negative,trueneg));
 						
-						if(debug)
-							System.out.println(query+" "+(n1+op+n2).replace("null","")+" "+SingleOp(d1,op,d2, debug));
+						if(DEBUG)
+							System.out.println(query+" "+(n1+op+n2).replace("null","")+" "+SingleOp(d1,op,d2));
 						
-						query = query.replace((""+n1+op+n2).replace("null",""), ""+SingleOp(d1,op,d2, debug));
+						query = query.replace((""+n1+op+n2).replace("null",""), ""+SingleOp(d1,op,d2));
 					}
 				}
 				return query;
@@ -117,18 +192,18 @@ public class Math11
 			}
 		}
 	}
-	private static String abspar(String query, boolean debug)
+	private static String abspar(String query)
 	{
 		while(containsAny2(query, groups))
 		{
-			Character[] del = getFirst(query, groups, debug);
-			query = parenth(query, del, debug);
-			if(debug)
+			Character[] del = getFirst(query, groups);
+			query = parenth(query, del);
+			if(DEBUG)
 				System.out.println(query);
 		}
 		return query;
 	}
-	private static Character[] getFirst(String query, Character[][] groups, boolean debug)
+	private static Character[] getFirst(String query, Character[][] groups)
 	{
 		
 		int k = Integer.MAX_VALUE;
@@ -146,7 +221,7 @@ public class Math11
 				throw new ArithmeticException("Mismatched dilimiters for String \""+query+"\"");
 			}
 		}
-		if(debug)
+		if(DEBUG)
 			System.out.println(k);
 		return groups[k];
 	}
@@ -169,10 +244,10 @@ public class Math11
 		}
 		return ops;
 	}
-	private static String parenth(String query, Character[] del, boolean debug)
+	private static String parenth(String query, Character[] del)
 	{
 		char cL = del[0], cR = del[1];
-		if(debug)
+		if(DEBUG)
 			System.out.println(query+"$ "+cL+" ... "+cR);
 		String sL=""+cL, sR=""+cR;
 		if((count(query,cL)!=count(query,cR)) || (query.indexOf(sL)>query.indexOf(sR)) || (query.lastIndexOf(sL)>query.lastIndexOf(sR)))
@@ -207,13 +282,13 @@ public class Math11
 			}
 			for(int k=left+1;k<right;++k)
 				pip+=query.charAt(k);
-			if(debug)
+			if(DEBUG)
 				System.out.println(query+" "+pip);
-			String rep = evalExt3(pip,debug).toString();
+			String rep = evalExt3(pip).toString();
 			MathBrackets mbrkts = MathBrackets.forArgs(del);
 			if(mbrkts!=null)
-				rep = mbrkts.invokeOn(new SuperNumber(query)).toString();
-			if(debug)
+				rep = mbrkts.invokeOn(new SuperNumber(rep.replace(negative, trueneg))).toString().replace(trueneg, negative);
+			if(DEBUG)
 				System.out.println(rep);
 			query = query.replace(sL+pip+sR, rep);
 		}
@@ -226,9 +301,9 @@ public class Math11
 				return i;
 		throw new InternalError("No valid operator was found in \""+query+"\"");
 	}
-	private static String SingleOp(SuperNumber n1, char op, SuperNumber n2, boolean debug)
+	private static String SingleOp(SuperNumber n1, char op, SuperNumber n2)
 	{
-		if(debug)
+		if(DEBUG)
 			System.out.println("\nn1="+n1+", op="+op+", n2="+n2);
 		
 		MathOperator mop = MathOperator.forChar(op);
@@ -242,7 +317,6 @@ public class Math11
 	{
 		String fn=null, sn=null;
 		Character c='0';
-		Character[] nums={'.','0','1','2','3','4','5','6','7','8','9',trueneg};
 		int vars = props[1];
 		if((vars==2) || ((vars==1)&&(props[2].equals('L'))))
 		{
@@ -287,7 +361,8 @@ public class Math11
 	private static boolean containsAny2(String a, Character[][] c)
 	{
 		for(Character[] b : c)
-			containsAny(a, b);
+			if(containsAny(a, b))
+				return true;
 		return false;
 	}
 	private static int count(String text, Character toFind)

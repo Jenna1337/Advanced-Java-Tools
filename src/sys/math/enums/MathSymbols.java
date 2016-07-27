@@ -1,26 +1,37 @@
 package sys.math.enums;
 
+import utils.ArrayUtils;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public final class MathSymbols
 {
-	private MathSymbols(){}
+	private static MathOperator[] operators = new MathOperator[0];
+	private static MathConstant[] constants = new MathConstant[0];
+	private static MathBrackets[] bracketss = new MathBrackets[0];
+	private static SpecConstant[] specconst = new SpecConstant[0];
 	
-	private static MathOperator[] operators = {};
-	private static MathConstant[] constants = {};
-	private static MathBrackets[] bracketss = {};
+	@SuppressWarnings("unused")
+	private static final MathSymbols msymbs = new MathSymbols();
+	private MathSymbols()
+	{
+		//Initialize the values in the classes
+		MathOperator.values();
+		MathConstant.values();
+		MathBrackets.values();
+	}
 	
 	static <T> void registerMathSymbol(MathSymbol<T> symbol)
 	{
 		@SuppressWarnings("rawtypes")
 		Class<? extends MathSymbol> K = symbol.getClass();
+		if(K.equals(SpecConstant.class))
+			specconst = ArrayUtils.append(specconst, (SpecConstant)symbol);
 		if(K.equals(MathOperator.class))
-			operators = append(operators, (MathOperator)symbol);
+			operators = ArrayUtils.append(operators, (MathOperator)symbol);
 		if(K.equals(MathConstant.class))
-			constants = append(constants, (MathConstant)symbol);
+			constants = ArrayUtils.append(constants, (MathConstant)symbol);
 		if(K.equals(MathBrackets.class))
-			bracketss = append(bracketss, (MathBrackets)symbol);
+			bracketss = ArrayUtils.append(bracketss, (MathBrackets)symbol);
 	}
 	public static Character[][] getBracketsVars()
 	{
@@ -53,11 +64,13 @@ public final class MathSymbols
 			objs[i] = vals[i].getArgs();
 		return objs;
 	}
-	static <T> T[] append(T[] arr, T val)
+	public static Object[][] getSpecialCVars()
 	{
-		ArrayList<T> lst = new ArrayList<T>(Arrays.asList(arr));
-		lst.add(val);
-		return lst.toArray(arr);
+		SpecConstant[] spec = specconst;
+		Object[][] objs = new Object[spec.length][3];
+		for(int i=0; i<spec.length; ++i)
+			objs[i] = spec[i].getArgs();
+		return objs;
 	}
 }
 interface MathSymbol<T>

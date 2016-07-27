@@ -1,5 +1,6 @@
 package sys.math.enums;
 
+import sys.math.Math11;
 import sys.math.numbertypes.SuperNumber;
 
 public enum MathOperator implements MathSymbol<Character>
@@ -8,8 +9,7 @@ public enum MathOperator implements MathSymbol<Character>
 	SquareRoot    ("sqrt",      '\u221A', 0, 1, 'R'),
 	CubeRoot      ("cbrt",      '\u221B', 0, 1, 'R'),
 	FourthRoot    ("qrrt",      '\u221C', 0, 1, 'R'),
-	//TODO add nth root - But there is no root character?
-	//NRoot         ("root",      '\u0000', 0, 2),
+	NRoot         ("root",      "^(1/"+Math11.NID+")", 0, 2, false),
 	Multiplication("multiply",  '*'     , 1, 2),
 	Division      ("divide",    '/'     , 1, 2),
 	Modulous      ("remainder", '%'     , 1, 2),
@@ -22,6 +22,7 @@ public enum MathOperator implements MathSymbol<Character>
 	private final char opc, numargs;
 	private final int prio;
 	private final char sarg;
+	
 	private MathOperator(String funcname, char op, int priority, int args)
 	{
 		registerSymbol();
@@ -39,6 +40,16 @@ public enum MathOperator implements MathSymbol<Character>
 		prio=priority;
 		numargs=(char)args;
 		sarg=sidearg;
+	}
+	private MathOperator(String funcname, String op, int priority, int args, boolean sidearg)
+	{
+		registerSymbol();
+		fn=funcname;
+		opc=SpecConstant.privuse++;
+		new SpecConstant(op, ""+opc, sidearg);
+		prio=priority;
+		numargs=(char)args;
+		sarg=0;
 	}
 	public Character[] getArgs()
 	{
@@ -90,6 +101,7 @@ public enum MathOperator implements MathSymbol<Character>
 		catch(Exception e)
 		{
 			e.printStackTrace();
+			throw new InternalError("Invalid values for "+this.toString()+": "+n1+", "+n2);
 		}
 		if(!(outval!=null))
 		{

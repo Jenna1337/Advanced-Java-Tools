@@ -230,7 +230,7 @@ public class BigDecimalMath {
 			MathContext locmc = new MathContext(c.precision());
 			c = c.divide(nth, locmc);
 			s = s.subtract(c);
-			if (c.divide(s, locmc).compareTo(eps) < 0) {
+			if (c.divide(s, locmc).compareTo(eps) < 0 || s.scale()>x.scale()) {
 				break;
 			}
 		}
@@ -631,7 +631,8 @@ public class BigDecimalMath {
 	 * The estimation of the relative error in the result is |log(x)*err(y)|+|y*err(x)/x|
 	 */
 	static public BigDecimal pow(final BigDecimal x, final BigDecimal y) {
-		if (x.compareTo(BigDecimal.ZERO) < 0) {
+		if (x.compareTo(BigDecimal.ZERO) < 0  && 
+				x.remainder(new BigDecimal("2")).compareTo(BigDecimal.ZERO)==0) {
 			throw new ArithmeticException("Cannot power negative " + x.toString());
 		} else if (x.compareTo(BigDecimal.ZERO) == 0) {
 			return BigDecimal.ZERO;
