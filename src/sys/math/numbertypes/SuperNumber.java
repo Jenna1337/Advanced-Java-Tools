@@ -9,7 +9,7 @@ import sys.math.bigdecimal.BigDecimalMath;
 import sys.math.interfaces.MathFunctions;
 import sys.math.interfaces.TrigFunctions;
 
-public final class SuperNumber extends Number implements Comparable<Number>, MathFunctions, TrigFunctions
+public final class SuperNumber extends Number implements MathFunctions<SuperNumber>, TrigFunctions<SuperNumber>
 {
 	public final static int 
 	ROUND_CEILING = (java.math.BigDecimal.ROUND_CEILING),
@@ -83,26 +83,6 @@ public final class SuperNumber extends Number implements Comparable<Number>, Mat
 	public int signum()
 	{
 		return this.equals(0)?0:(this.greaterThan(0)?1:-1);
-	}
-	public boolean equals(Number n)
-	{
-		return this.compareTo(n)==0;
-	}
-	public boolean greaterThan(Number n)
-	{
-		return this.compareTo(parse(n))>0;
-	}
-	public boolean lessThan(Number n)
-	{
-		return this.compareTo(parse(n))<0;
-	}
-	public boolean greaterThanEquals(Number n)
-	{
-		return this.compareTo(parse(n))>=0;
-	}
-	public boolean lessThanEquals(Number n)
-	{
-		return this.compareTo(parse(n))<=0;
 	}
 	public SuperNumber max(Number n)
 	{
@@ -231,18 +211,6 @@ public final class SuperNumber extends Number implements Comparable<Number>, Mat
 			x = BigDecimal.valueOf(n - 1.0).multiply(x).add(a.divide(x.pow(n - 1), SCALE, ROUNDING_MODE)).divide(new BigDecimal(n), SCALE, ROUNDING_MODE);
 		}
 		return x;
-	}
-	public SuperNumber sqrt()//square root
-	{
-		return root(2);
-	}
-	public SuperNumber cbrt()//cube root
-	{
-		return root(3);
-	}
-	public SuperNumber qrrt()//4th root
-	{
-		return root(4);
 	}
 	
 	public String toString()

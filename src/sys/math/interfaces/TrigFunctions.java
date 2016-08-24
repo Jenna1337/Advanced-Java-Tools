@@ -1,136 +1,134 @@
 package sys.math.interfaces;
 
-import sys.math.numbertypes.SuperNumber;
-
-public interface TrigFunctions
+public interface TrigFunctions<T>
 {
 	//trigonomics
 	/**
 	 * The sine function.
 	 * @return The sine of the radians represented by this value.
 	 */
-	public abstract SuperNumber sin();
+	public abstract T sin();
 	/**
 	 * The cosine function.
 	 * @return The cosine of the radians represented by this value.
 	 */
-	public abstract SuperNumber cos();
+	public abstract T cos();
 	/**
 	 * The tangent function.
 	 * @return The tangent of the radians represented by this value.
 	 */
-	public abstract SuperNumber tan();
+	public abstract T tan();
 	/**
 	 * The cosecant function.
 	 * @return The cosecant of the radians represented by this value.
 	 */
-	public abstract SuperNumber csc();
+	public abstract T csc();
 	/**
 	 * The secant function.
 	 * @return The secant of the radians represented by this value.
 	 */
-	public abstract SuperNumber sec();
+	public abstract T sec();
 	/**
 	 * The cotangent function.
 	 * @return The cotangent of the radians represented by this value.
 	 */
-	public abstract SuperNumber cot();
+	public abstract T cot();
 	
 	//hyperbolics
 	/**
 	 * The hyperbolic sine function.
 	 * @return The hyperbolic sine of the radians represented by this value.
 	 */
-	public abstract SuperNumber sinh();
+	public abstract T sinh();
 	/**
 	 * The hyperbolic cosine function.
 	 * @return The hyperbolic cosine of the radians represented by this value.
 	 */
-	public abstract SuperNumber cosh();
+	public abstract T cosh();
 	/**
 	 * The hyperbolic tangent function.
 	 * @return The hyperbolic tangent of the radians represented by this value.
 	 */
-	public abstract SuperNumber tanh();
+	public abstract T tanh();
 	/**
 	 * The hyperbolic cosecant function.
 	 * @return The hyperbolic cosecant of the radians represented by this value.
 	 */
-	public abstract SuperNumber csch();
+	public abstract T csch();
 	/**
 	 * The hyperbolic secant function.
 	 * @return The hyperbolic secant of the radians represented by this value.
 	 */
-	public abstract SuperNumber sech();
+	public abstract T sech();
 	/**
 	 * The hyperbolic cotangent function.
 	 * @return The hyperbolic cotangent of the radians represented by this value.
 	 */
-	public abstract SuperNumber coth();
+	public abstract T coth();
 	
 	//inverses
 	/**
 	 * The inverse sine function.
 	 * @return The inverse sine of the radians represented by this value.
 	 */
-	public abstract SuperNumber arcsin();
+	public abstract T arcsin();
 	/**
 	 * The inverse cosine function.
 	 * @return The inverse cosine of the radians represented by this value.
 	 */
-	public abstract SuperNumber arccos();
+	public abstract T arccos();
 	/**
 	 * The inverse tangent function.
 	 * @return The inverse tangent of the radians represented by this value.
 	 */
-	public abstract SuperNumber arctan();
+	public abstract T arctan();
 	/**
 	 * The inverse cosecant function.
 	 * @return The inverse cosecant of the radians represented by this value.
 	 */
-	public abstract SuperNumber arccsc();
+	public abstract T arccsc();
 	/**
 	 * The inverse secant function.
 	 * @return The inverse secant of the radians represented by this value.
 	 */
-	public abstract SuperNumber arcsec();
+	public abstract T arcsec();
 	/**
 	 * The inverse cotangent function.
 	 * @return The inverse cotangent of the radians represented by this value.
 	 */
-	public abstract SuperNumber arccot();
+	public abstract T arccot();
 	
 	//inverse hyperbolics
 	/**
 	 * The inverse hyperbolic sine function.
 	 * @return The inverse hyperbolic sine of the radians represented by this value.
 	 */
-	public abstract SuperNumber arcsinh();
+	public abstract T arcsinh();
 	/**
 	 * The inverse hyperbolic cosine function.
 	 * @return The inverse hyperbolic cosine of the radians represented by this value.
 	 */
-	public abstract SuperNumber arccosh();
+	public abstract T arccosh();
 	/**
 	 * The inverse hyperbolic tangent function.
 	 * @return The inverse hyperbolic tangent of the radians represented by this value.
 	 */
-	public abstract SuperNumber arctanh();
+	public abstract T arctanh();
 	/**
 	 * The inverse hyperbolic cosecant function.
 	 * @return The inverse hyperbolic cosecant of the radians represented by this value.
 	 */
-	public abstract SuperNumber arccsch();
+	public abstract T arccsch();
 	/**
 	 * The inverse hyperbolic secant function.
 	 * @return The inverse hyperbolic secant of the radians represented by this value.
 	 */
-	public abstract SuperNumber arcsech();
+	public abstract T arcsech();
 	/**
 	 * The inverse hyperbolic cotangent function.
 	 * @return The inverse hyperbolic cotangent of the radians represented by this value.
 	 */
-	public abstract SuperNumber arccoth();
+	public abstract T arccoth();
 	
 	//alternate inverses
 	/**
@@ -138,37 +136,37 @@ public interface TrigFunctions
 	 * @return The inverse sine of the radians represented by this value.
 	 * @see #arcsin()
 	 */
-	public default SuperNumber asin(){return arcsin();}
+	public default T asin(){return arcsin();}
 	/**
 	 * The inverse cosine function.
 	 * @return The inverse cosine of the radians represented by this value.
 	 * @see #arccos()
 	 */
-	public default SuperNumber acos(){return arccos();}
+	public default T acos(){return arccos();}
 	/**
 	 * The inverse tangent function.
 	 * @return The inverse tangent of the radians represented by this value.
 	 * @see #arctan()
 	 */
-	public default SuperNumber atan(){return arctan();}
+	public default T atan(){return arctan();}
 	/**
 	 * The inverse cosecant function.
 	 * @return The inverse cosecant of the radians represented by this value.
 	 * @see #arccsc()
 	 */
-	public default SuperNumber acsc(){return arccsc();}
+	public default T acsc(){return arccsc();}
 	/**
 	 * The inverse secant function.
 	 * @return The inverse secant of the radians represented by this value.
 	 * @see #arcsec()
 	 */
-	public default SuperNumber asec(){return arcsec();}
+	public default T asec(){return arcsec();}
 	/**
 	 * The inverse cotangent function.
 	 * @return The inverse cotangent of the radians represented by this value.
 	 * @see #arccot()
 	 */
-	public default SuperNumber acot(){return arccot();}
+	public default T acot(){return arccot();}
 	
 	//alternate inverse hyperbolics
 	/**
@@ -176,36 +174,36 @@ public interface TrigFunctions
 	 * @return The inverse hyperbolic sine of the radians represented by this value.
 	 * @see #arcsinh()
 	 */
-	public default SuperNumber asinh(){return arcsinh();}
+	public default T asinh(){return arcsinh();}
 	/**
 	 * The inverse hyperbolic cosine function.
 	 * @return The inverse hyperbolic cosine of the radians represented by this value.
 	 * @see #arccosh()
 	 */
-	public default SuperNumber acosh(){return arccosh();}
+	public default T acosh(){return arccosh();}
 	/**
 	 * The inverse hyperbolic tangent function.
 	 * @return The inverse hyperbolic tangent of the radians represented by this value.
 	 * @see #arctanh()
 	 */
-	public default SuperNumber atanh(){return arctanh();}
+	public default T atanh(){return arctanh();}
 	/**
 	 * The inverse hyperbolic cosecant function.
 	 * @return The inverse hyperbolic cosecant of the radians represented by this value.
 	 * @see #arccsch()
 	 */
-	public default SuperNumber acsch(){return arccsch();}
+	public default T acsch(){return arccsch();}
 	/**
 	 * The inverse hyperbolic secant function.
 	 * @return The inverse hyperbolic secant of the radians represented by this value.
 	 * @see #arcsech()
 	 */
-	public default SuperNumber asech(){return arcsech();}
+	public default T asech(){return arcsech();}
 	/**
 	 * The inverse hyperbolic cotangent function.
 	 * @return The inverse hyperbolic cotangent of the radians represented by this value.
 	 * @see #arccoth()
 	 */
-	public default SuperNumber acoth(){return arccoth();}
+	public default T acoth(){return arccoth();}
 }
 
