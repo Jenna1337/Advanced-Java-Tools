@@ -9,7 +9,7 @@ import sys.math.bigdecimal.BigDecimalMath;
 import sys.math.interfaces.MathFunctions;
 import sys.math.interfaces.TrigFunctions;
 
-public final class SuperNumber extends Number implements MathFunctions<SuperNumber>, TrigFunctions<SuperNumber>
+public class SuperNumber extends Number implements MathFunctions<SuperNumber>, TrigFunctions<SuperNumber>
 {
 	public final static int 
 	ROUND_CEILING = (java.math.BigDecimal.ROUND_CEILING),
