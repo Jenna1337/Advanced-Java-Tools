@@ -16,8 +16,9 @@ public enum MathOperator implements MathSymbol<Character>
 	Factorial     ("factorial", '!'     , 1, 1, 'L'),
 	Addition      ("add",       '+'     , 2, 2),
 	Subtraction   ("subtract",  '-'     , 2, 2),
-	GammaFunction ("gamma",     '\u0393', 0, 1, 'R');
-	
+	GammaFunction ("gamma",     '\u0393', 0, 1, 'R'),
+	FractionPart  ("frac",      "frac("+Math11.NID+")", 0, 2, false),
+	;
 	private final String fn;
 	private final char opc, numargs;
 	private final int prio;

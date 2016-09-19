@@ -91,5 +91,33 @@ public interface SimpleMathFunctions<T extends Number> extends NumberBase
 	 * @return -1, 0 or 1 if the value of this number is negative, zero or positive.
 	 * @see #compareTo(Number)
 	 */
-	public abstract int signum();
+	public default int signum()
+	{
+		if(this.compareTo(0)>0)
+			return 1;
+		if(this.compareTo(0)==0)
+			return 0;
+		if(this.compareTo(0)<0)
+			return -1;
+		throw new IllegalArgumentException("The value of "+this.toString()+" is invalid.");
+	}
+	
+	
+	// Aliases
+	
+	/**
+	 * Returns the signum function of this number.
+	 *
+	 * @return -1, 0 or 1 if the value of this number is negative, zero or positive.
+	 * @see #compareTo(Number)
+	 */
+	public default int sign(){return signum();}
+	/**
+	 * Returns the signum function of this number.
+	 *
+	 * @return -1, 0 or 1 if the value of this number is negative, zero or positive.
+	 * @see #compareTo(Number)
+	 */
+	public default int sgn(){return signum();}
+
 }

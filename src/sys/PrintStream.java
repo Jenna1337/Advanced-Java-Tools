@@ -32,6 +32,7 @@ public class PrintStream extends java.io.PrintStream
 		SystemLog(new byte[]{(byte)b});
 		super.write(b);
 	}
+	@Deprecated
 	private void SystemLog(byte[] ba)
 	{
 		if(!System.logging)
@@ -56,14 +57,11 @@ public class PrintStream extends java.io.PrintStream
 					case '\'': o+="\\\'"; break;
 					case '\\': o+="\\\\"; break;
 					
-					
-					//TODO
 					default:
 						String ucp = ""+cur;
 						while(ucp.length()<4)
 							ucp="0"+ucp;
 						o+="\\u"+ucp;
-						
 				}
 				
 			}

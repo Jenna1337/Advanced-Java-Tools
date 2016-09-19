@@ -122,4 +122,30 @@ public interface MathFunctions<T extends Number> extends SimpleMathFunctions<T>
 	 * @see #round()
 	 */
 	public abstract T round(MathContext mc);
+	/**
+	 * Returns the fractional part of the number.
+	 * @return the fractional part.
+	 * @see #ceil()
+	 * @see #floor()
+	 */
+	public default T frac()
+	{
+		return this.subtract(trunc());
+	}
+	/**
+	 * Truncates the number to the specified decimal place.
+	 * @return the number, truncated to the specified decimal place.
+	 * @see #frac()
+	 */
+	public abstract T trunc(Number d);
+	/**
+	 * Truncates the number.
+	 * @return the number, truncated.
+	 * @see #trunc(int)
+	 * @see #frac()
+	 */
+	public default T trunc()
+	{
+		return trunc(0);
+	}
 }

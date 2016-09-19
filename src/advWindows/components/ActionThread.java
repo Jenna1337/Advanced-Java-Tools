@@ -16,7 +16,6 @@ public class ActionThread extends AbstractAction implements KeyListener
 		this.source = source;
 		this.thread = thread;
 	}
-	@Override
 	public void actionPerformed(ActionEvent arg0)
 	{
 		if(this.source.equals(arg0.getSource()))
@@ -31,16 +30,6 @@ public class ActionThread extends AbstractAction implements KeyListener
 			this.thread.run();
 		}
 	}
-	@Override
-	public void keyReleased(KeyEvent e)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void keyTyped(KeyEvent e)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+	public void keyReleased(KeyEvent e){}
+	public void keyTyped(KeyEvent e){}
 }

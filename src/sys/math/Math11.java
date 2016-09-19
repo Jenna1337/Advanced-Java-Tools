@@ -38,7 +38,7 @@ public class Math11
 	public static final String NID = "\uE010";
 	
 	
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 	
 	
 	/**
@@ -82,15 +82,14 @@ public class Math11
 					while(quest.matches(regx))
 					{
 						int index=quest.indexOf(ap1)+ap1.length();
-						nv="";
-						//TODO fix with parenthesis
-						for(int i=index;i<quest.indexOf(ap2,index);++i)
+						nv=quest.substring(index, quest.indexOf(ap2,index)+ap2.length());/*"";
+						for(int i=index;i<quest.indexOf(ap2,index)+ap2.length();++i)
 						{
 							char c=quest.charAt(i);
 							if(c=='(' || c==')' || c=='-' || equalsAny(c,nums))
 								nv+=c;
 							else break;
-						}
+						}*/
 						String targ = ap1+nv+ap2;
 						String repl = a2+"("+nv+")";
 						quest = quest.replace(targ, repl);

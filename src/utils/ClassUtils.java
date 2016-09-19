@@ -61,7 +61,6 @@ public class ClassUtils
 			System.out.println(Arrays.toString(types));
 			for(int i=0;i<pars.length;++i)
 			{
-				//TODO
 				try{
 					pars[i]=types[i].newInstance();
 				}catch(InstantiationException ie){
