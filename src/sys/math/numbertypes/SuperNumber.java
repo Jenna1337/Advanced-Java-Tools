@@ -384,4 +384,12 @@ public class SuperNumber extends Number implements MathFunctions<SuperNumber>, T
 	{
 		return new SuperNumber(1).divide(this);
 	}
+	public SuperNumber trunc(Number p)
+	{
+		SuperNumber scale = new SuperNumber(10).pow(p);
+		String nv = this.multiply(scale).toString();
+		if(nv.contains("."))
+			nv = nv.split("\\.")[0];
+		return parse(nv).divide(scale);
+	}
 }

@@ -82,7 +82,7 @@ public class Math11
 					while(quest.matches(regx))
 					{
 						int index=quest.indexOf(ap1)+ap1.length();
-						nv=quest.substring(index, quest.indexOf(ap2,index)+ap2.length());/*"";
+						nv=quest.substring(index, quest.indexOf(ap2,index));/*"";
 						for(int i=index;i<quest.indexOf(ap2,index)+ap2.length();++i)
 						{
 							char c=quest.charAt(i);
@@ -113,7 +113,6 @@ public class Math11
 			}
 			else
 				nv = a1;
-			quest = quest.replaceAll(a1.replace(NID, nv), a2);
 			if(sp[2].equals(Boolean.FALSE))
 			{
 				quest = quest.replaceAll(a1.toUpperCase(), a2);

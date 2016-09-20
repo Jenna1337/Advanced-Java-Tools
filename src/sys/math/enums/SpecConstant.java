@@ -28,10 +28,10 @@ public class SpecConstant implements MathSymbol<Object>
 	private final boolean sd;
 	SpecConstant(String original, String replacement, boolean left)
 	{
-		registerSymbol();
 		orig=original;
 		repl=replacement;
 		sd = left;
+		registerSymbol();
 	}
 	public Object[] getArgs()
 	{
