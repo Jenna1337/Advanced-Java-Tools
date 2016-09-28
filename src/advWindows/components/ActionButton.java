@@ -1,28 +1,28 @@
 package advWindows.components;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
 
+import java.io.File;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 @SuppressWarnings("serial")
-public class ActionButton extends JButton implements ActionListener
+public abstract class ActionButton extends JButton
 {
-	public ActionButton(String label, Thread thread)
+	private final ActionThread action = new ActionThread(this, new Thread(){
+		public void run(){
+			onClick();
+		}
+	});
+	public ActionButton(String label)
 	{
 		super();
-		this.addActionListener(this);
-		
-		this.setAction(new ActionThread(this, thread));
+		this.setAction(action);
 		this.setText(label);
 		this.setToolTipText(label);
-		this.addActionListener(this);
 	}
-	public ActionButton(String label, Thread thread, int width, int height)
+	public ActionButton(String label, int width, int height)
 	{
-		this(label, thread);
+		this(label);
 		this.setSize(width, height);
 	}
 	public void setIcon(String filename)
@@ -33,5 +33,5 @@ public class ActionButton extends JButton implements ActionListener
 		}
 		catch(Exception e){}
 	}
-	public void actionPerformed(ActionEvent arg0){}
+	public abstract void onClick();
 }
