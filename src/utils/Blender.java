@@ -1,4 +1,4 @@
-package advWindows;
+package utils;
 
 import java.awt.Color;
 import java.util.ArrayList;
