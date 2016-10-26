@@ -2,6 +2,7 @@ package advWindows.components;
 
 import java.io.File;
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -13,9 +14,14 @@ public abstract class ActionButton extends JButton
 			onClick();
 		}
 	});
-	public ActionButton(String label)
+	public ActionButton()
 	{
 		super();
+		this.setAction(action);
+	}
+	public ActionButton(String label)
+	{
+		this();
 		this.setAction(action);
 		this.setText(label);
 		this.setToolTipText(label);
@@ -23,6 +29,17 @@ public abstract class ActionButton extends JButton
 	public ActionButton(String label, int width, int height)
 	{
 		this(label);
+		this.setSize(width, height);
+	}
+	public ActionButton(Icon ico)
+	{
+		this();
+		this.setAction(action);
+		this.setIcon(ico);
+	}
+	public ActionButton(Icon ico, int width, int height)
+	{
+		this(ico);
 		this.setSize(width, height);
 	}
 	public void setIcon(String filename)
