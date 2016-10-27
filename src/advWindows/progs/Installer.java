@@ -34,6 +34,22 @@ public class Installer extends JFrame implements ActionListener
 		{
 			this.add(new Label("Please select installation directory."));
 			selector = new FileSelector(defDir, JFileChooser.DIRECTORIES_ONLY);
+			selector.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					if(e.getSource().equals(selector))
+					{
+						File selection = selector.getSelectedFile();
+						if(selection.exists() && selection.canWrite())
+							;
+						
+						if(!selection.exists())
+							;
+					}
+					System.out.println(e);
+				}
+			});
 			this.add(selector);
 			// TODO Auto-generated constructor stub
 		}
@@ -51,7 +67,8 @@ public class Installer extends JFrame implements ActionListener
 	{
 		public PanelDispPro(String scname)
 		{
-			this.add(new Label("Installing \""+scname+"\"... Please wait..."));
+			this.add(new Label(
+					"Installing \"" + scname + "\"... Please wait..."));
 			JProgressBar p = new JProgressBar(0, 100);
 			p.setStringPainted(true);
 			this.add(p);
@@ -113,10 +130,11 @@ public class Installer extends JFrame implements ActionListener
 	
 	/**
 	 * 
-	 * @param title  the title of the window.
-	 * @param res    the {@link InputStream} of the file to install.
+	 * @param title the title of the window.
+	 * @param res the {@link InputStream} of the file to install.
 	 * @param defDir the default installation directory.
-	 * @param exec   the name of the file in {@code res} that the shortcut will link to.
+	 * @param exec the name of the file in {@code res} that the shortcut will
+	 *            link to.
 	 * @param scname the name of the shortcut to be created.
 	 */
 	public Installer(String title, InputStream res, File defDir, String exec,
