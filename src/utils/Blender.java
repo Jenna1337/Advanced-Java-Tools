@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 public class Blender
 {
+	private Blender(){}
 	public static Color blend(final boolean bitmask, Color... colors)
 	{
 		ArrayList<Integer> colorlist=new ArrayList<Integer>();

@@ -24,7 +24,7 @@ public class StringTools
 	 * @param codepoint the Unicode code point to be converted
 	 * @return the string representation of the specified Unicode code point
 	 */
-	public String Unicode(int codepoint)
+	public static String Unicode(int codepoint)
 	{
 		char[] cs = Character.toChars(codepoint);
 		String s="";

@@ -10,6 +10,7 @@ import sys.math.numbertypes.SuperNumber;
 
 public class ClassUtils
 {
+	private ClassUtils(){}
 	@SuppressWarnings("unchecked")
 	public static <T> T[] getFieldsOfType(Class<?> clazz, Class<T> type)
 	{

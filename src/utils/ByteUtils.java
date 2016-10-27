@@ -5,6 +5,7 @@ import sys.System;
 /**Contains several useful methods for converting bytes to other data types**/
 public class ByteUtils
 {
+	private ByteUtils(){}
 	/*Taken from 
 	 * https://www.daniweb.com/programming/software-development/code/216874/primitive-types-as-byte-arrays
 	 */
