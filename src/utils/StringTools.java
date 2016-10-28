@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.ArrayList;
+
 public class StringTools
 {
 	private StringTools(){}
@@ -26,10 +28,18 @@ public class StringTools
 	 */
 	public static String Unicode(int codepoint)
 	{
-		char[] cs = Character.toChars(codepoint);
-		String s="";
-		for(char c : cs)
-			s+=c;
-		return s;
+		return new String(Character.toChars(codepoint));
+	}
+	public static ArrayList<String> split(String string, String delim)
+	{
+		ArrayList<String> splts = new ArrayList<String>();
+		int floc;
+		while((floc=string.indexOf(delim))>=0)
+		{
+			string = string.substring(floc);
+			int eloc = string.indexOf(delim, delim.length());
+			splts.add(string.substring(0, eloc>=0?eloc:string.length()));
+		}
+		return splts;
 	}
 }
