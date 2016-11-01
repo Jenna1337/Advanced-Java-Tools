@@ -1,10 +1,18 @@
 import java.io.File;
+import java.nio.file.AccessDeniedException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import javax.swing.JFrame;
 import sys.System;
 import sys.math.Math11;
 import sys.math.numbertypes.SuperNumber;
 import utils.ClassUtils;
 import utils.DLLUtils;
+import utils.FileUtils;
 
 
 
@@ -19,9 +27,31 @@ public class Main
 {
 	public static void main(String[] args) throws Exception
 	{
-		File dll = new File("C:/Windows/System32/imageres.dll");
-		
-		DLLUtils.copyPNGsFromDLL(dll, "imageres/", false);
+		ArrayList<AccessDeniedException> failed = new ArrayList<AccessDeniedException>();
+		ArrayList<File> dlls = new ArrayList<File>();
+		//dlls.add(new File("C:/Windows/CCM/RCConfigRes.dll"));
+		//dlls.addAll(java.util.Arrays.asList(FileUtils.getAllSubfiles(new File("C:/Program Files"), "res.dll")));
+		//dlls.addAll(java.util.Arrays.asList(FileUtils.getAllSubfiles(new File("C:/Program Files (x86)"), "res.dll")));
+		//dlls.addAll(java.util.Arrays.asList(FileUtils.getAllSubfiles(new File("C:/Windows"), "res.dll")));
+		dlls.add(new File("C:/Program Files (x86)/Steam/steamapps/common/Risk of Rain/data.win"));
+		for(File dll : dlls)
+		{
+			System.out.println(dll.getAbsolutePath());
+			String copyto = "dll/"+dll.getAbsolutePath().substring(3).replaceAll("\\\\", "_");
+			try
+			{
+				File topath = new File(copyto);
+				DLLUtils.copyPNGsFromDLL(dll, copyto, false);
+				if(topath.isDirectory() && topath.list().length<=0)
+					topath.delete();
+			}
+			catch(AccessDeniedException e)
+			{
+				failed.add(e);
+			}
+		}
+		for(AccessDeniedException reason : failed)
+			System.out.println(reason);
 		
 		System.exit(0);
 		SuperNumber E = new SuperNumber(SuperNumber.E);

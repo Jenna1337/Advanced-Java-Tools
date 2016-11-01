@@ -42,4 +42,15 @@ public class StringTools
 		}
 		return splts;
 	}
+	public static boolean endsWithIgnoreCase(String string, String suffix)
+	{
+		try
+		{
+			return string.substring(string.length()-suffix.length()).equalsIgnoreCase(suffix);
+		}
+		catch(StringIndexOutOfBoundsException e)
+		{
+			return false;
+		}
+	}
 }
