@@ -2,9 +2,9 @@ package utils;
 
 import java.util.ArrayList;
 
-public class StringTools
+public class StringUtils
 {
-	private StringTools(){}
+	private StringUtils(){}
 	
 	/**
 	 * Capitalizes the first {@code Character} in the {@code String}.
@@ -26,9 +26,9 @@ public class StringTools
 	 * @param codepoint the Unicode code point to be converted
 	 * @return the string representation of the specified Unicode code point
 	 */
-	public static String Unicode(int codepoint)
+	public static String Unicode(int codePoint)
 	{
-		return new String(Character.toChars(codepoint));
+		return new String(Character.toChars(codePoint));
 	}
 	public static ArrayList<String> split(String string, String delim)
 	{

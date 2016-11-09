@@ -1,7 +1,7 @@
 package sys.math;
 
 import java.math.BigInteger;
-import utils.StringTools;
+import utils.StringUtils;
 
 public class NumberBuilder2
 {
@@ -196,7 +196,7 @@ public class NumberBuilder2
 		ostr=ostr.toLowerCase().replaceAll("unmillia", "millia");
 		if(!ostr.toLowerCase().endsWith("dec"))
 			ostr+="t";
-		return StringTools.titleCase(ostr+"illion");
+		return StringUtils.titleCase(ostr+"illion");
 	}
 	public static String getName(java.math.BigDecimal val)
 	{
@@ -217,7 +217,7 @@ public class NumberBuilder2
 			String zres = getName(new BigInteger(zval)).replaceAll(" ", "-").trim()+"th";
 			if(!dval.equals(ONE))
 				zres+="s";
-			return StringTools.titleCase(getName(ival)+" and "+getName(dval)+" "+zres);
+			return StringUtils.titleCase(getName(ival)+" and "+getName(dval)+" "+zres);
 			
 		}
 	}
@@ -269,7 +269,7 @@ public class NumberBuilder2
 				}
 			}
 		}
-		return StringTools.titleCase(ostr.trim());
+		return StringUtils.titleCase(ostr.trim());
 	}
 	public static String getName(Number val)
 	{

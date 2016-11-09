@@ -29,7 +29,7 @@ public class FileUtils
 			{
 				List<File> subfiles = java.util.Arrays.asList(getAllSubfiles(subpath, endswith));
 				for(File subfile : subfiles)
-					if(StringTools.endsWithIgnoreCase(subfile.getName(), endswith))
+					if(StringUtils.endsWithIgnoreCase(subfile.getName(), endswith))
 						files.add(subfile);
 			}
 			return files.toArray(new File[files.size()]);
