@@ -40,7 +40,7 @@ public class NumberBuilder2
 		Eighteen,
 		Nineteen;
 		
-		public String toString(boolean b)
+		public String toString()
 		{
 			return this.equals(Zero) ? "" : this.name();
 		}
@@ -69,6 +69,7 @@ public class NumberBuilder2
 		Millia;
 	}
 	private static enum MilFirst{
+		@SuppressWarnings("hiding")
 		ZERO,
 		Mi,
 		Bi,
@@ -85,6 +86,7 @@ public class NumberBuilder2
 		}
 	}
 	private static enum MilOnes{
+		@SuppressWarnings("hiding")
 		ZERO,
 		Un,
 		Duo,
@@ -101,6 +103,7 @@ public class NumberBuilder2
 		}
 	}
 	private static enum MilTens{
+		@SuppressWarnings("hiding")
 		ZERO,
 		Dec,
 		Vigin,
@@ -117,6 +120,7 @@ public class NumberBuilder2
 		}
 	}
 	private static enum MilHundreds{
+		@SuppressWarnings("hiding")
 		ZERO,
 		Cen,
 		Duocen,
@@ -151,10 +155,10 @@ public class NumberBuilder2
 			
 		}
 		try{
-			out+=Ones.values()[ten*10+one].toString(!out.isEmpty());
+			out+=Ones.values()[ten*10+one].toString();
 		}
 		catch(ArrayIndexOutOfBoundsException aioobe){
-			out+=Tens.values()[ten].toString()+" "+Ones.values()[one].toString(true);
+			out+=Tens.values()[ten].toString()+" "+Ones.values()[one].toString();
 		}
 		return out.trim();
 	}
@@ -203,23 +207,20 @@ public class NumberBuilder2
 		String pln=val.toPlainString();
 		if(!pln.contains("."))
 			return getName(new BigInteger(pln));
-		else
-		{
-			String[] vals = pln.split("\\.");
-			
-			BigInteger ival = new BigInteger(vals[0]);
-			BigInteger dval = new BigInteger(vals[1]);
-			String zval = "1"+vals[1].replaceAll("\\d", "0");
-			/*for(int i=0; i<vals[1].length(); ++i)
-				zval+="0";*/
-			if(zval.equals("1"))
-				return getName(ival);
-			String zres = getName(new BigInteger(zval)).replaceAll(" ", "-").trim()+"th";
-			if(!dval.equals(ONE))
-				zres+="s";
-			return StringUtils.titleCase(getName(ival)+" and "+getName(dval)+" "+zres);
-			
-		}
+		
+		String[] vals = pln.split("\\.");
+		
+		BigInteger ival = new BigInteger(vals[0]);
+		BigInteger dval = new BigInteger(vals[1]);
+		String zval = "1"+vals[1].replaceAll("\\d", "0");
+		/*for(int i=0; i<vals[1].length(); ++i)
+			zval+="0";*/
+		if(zval.equals("1"))
+			return getName(ival);
+		String zres = getName(new BigInteger(zval)).replaceAll(" ", "-").trim()+"th";
+		if(!dval.equals(ONE))
+			zres+="s";
+		return StringUtils.titleCase(getName(ival)+" and "+getName(dval)+" "+zres);
 	}
 	public static String getName(BigInteger val)
 	{

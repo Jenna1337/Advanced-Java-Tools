@@ -91,8 +91,8 @@ public class Math11
 							else break;
 						}*/
 						String targ = ap1+nv+ap2;
-						String repl = a2+"("+nv+")";
-						quest = quest.replace(targ, repl);
+						String replacement = a2+"("+nv+")";
+						quest = quest.replace(targ, replacement);
 					}
 				else
 					while(quest.matches(regx))
@@ -107,8 +107,8 @@ public class Math11
 							else break;
 						}
 						String targ = ap1+nv+ap2;
-						String repl = a2+"("+nv+")";
-						quest = quest.replace(targ, repl);
+						String replacement = a2+"("+nv+")";
+						quest = quest.replace(targ, replacement);
 					}
 			}
 			else
@@ -148,6 +148,8 @@ public class Math11
 						case Addition:
 						case Subtraction:
 							toAdd="0";
+							break;
+						//$CASES-OMITTED$
 						default:
 							break;
 					}
@@ -194,14 +196,14 @@ public class Math11
 	{
 		while(containsAny2(query, groups))
 		{
-			Character[] del = getFirst(query, groups);
+			Character[] del = getFirst(query);
 			query = parenth(query, del);
 			if(DEBUG)
 				System.out.println(query);
 		}
 		return query;
 	}
-	private static Character[] getFirst(String query, Character[][] groups)
+	private static Character[] getFirst(String query)
 	{
 		
 		int k = Integer.MAX_VALUE;
@@ -308,8 +310,7 @@ public class Math11
 		
 		if(mop!=null)
 			return mop.invokeOn(n1, n2).toString().replace(trueneg,negative);
-		else
-			throw new InternalError("Invalid operator: "+op+"");
+		throw new InternalError("Invalid operator: "+op+"");
 	}
 	private static String[] getNumbers(String context, int index, Character[] props)
 	{

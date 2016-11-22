@@ -24,8 +24,7 @@ public class Iterator2D<T> implements Iterable<T>
 				{
 					if(xindex<objs.length)
 						return (objs[xindex][yindex]!=null);
-					else
-						return (objs[0][yindex]!=null);
+					return (objs[0][yindex]!=null);
 				}
 				catch(IndexOutOfBoundsException ioobe)
 				{
@@ -38,8 +37,7 @@ public class Iterator2D<T> implements Iterable<T>
 				{
 					if(xindex<objs.length)
 						return objs[xindex++][yindex];
-					else
-						return objs[xindex=0][yindex++];
+					return objs[xindex=0][yindex++];
 				}
 				catch(IndexOutOfBoundsException ioobe)
 				{

@@ -14,7 +14,7 @@ public class DLLUtils
 			throws AccessDeniedException, IOException
 	{
 		new File(dir).mkdirs();
-		FileUtils.copyChunks(dll, dir, ".png", PNG_START, PNG_END, 0, 4, false);
+		FileUtils.copyChunks(dll, dir, ".png", PNG_START, PNG_END, 0, 4, overwrite);
 	}
 	public static void copyPNGsFromDLL(File dll, String dir) throws IOException
 	{

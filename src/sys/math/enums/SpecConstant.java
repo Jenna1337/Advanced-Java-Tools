@@ -10,6 +10,7 @@ public class SpecConstant implements MathSymbol<Object>
 		CubeRootSymbol   (Math11.NID+"^(1/3)", "\u221B", true),
 		FourthRootSymbol (Math11.NID+"^(1/4)", "\u221C", true);
 		
+		@SuppressWarnings("unused")
 		private SpecConstEnum(String original, String replacement, boolean isleft)
 		{
 			new SpecConstant(original, replacement, isleft);

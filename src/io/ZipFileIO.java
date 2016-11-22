@@ -21,7 +21,7 @@ public class ZipFileIO
 	public static void extractZipFile(final NamedFileInputStream stream,
 			String outdir, final PrintStream log)
 	{
-		extractZipFile(stream, stream.getFile().getName(), outdir, System.out);
+		extractZipFile(stream, stream.getFile().getName(), outdir, log);
 	}
 	public static void extractZipFile(final InputStream stream, String filename,
 			String outdir)
@@ -41,7 +41,7 @@ public class ZipFileIO
 	public static void extractZipFile(final NamedFileInputStream stream,
 			File outdir, final PrintStream log)
 	{
-		extractZipFile(stream, stream.getFile().getName(), outdir, System.out);
+		extractZipFile(stream, stream.getFile().getName(), outdir, log);
 	}
 	public static void extractZipFile(final InputStream stream, String filename,
 			File outdir)
@@ -62,19 +62,16 @@ public class ZipFileIO
 				log.println(filename + ": Extracting " + entryName);
 				String fpath = outdir.getAbsolutePath() + File.separator
 						+ entryName;
-				FileOutputStream outstream;
+				FileOutputStream outstream = null;
 				try
 				{
 					File f = new File(fpath);
-					//if(!f.exists())
-					{
-						f.getParentFile().mkdirs();
-						if(f.exists())
-							f.delete();
-						if(!f.createNewFile())
-							throw new IOException("Cannot create file " + fpath
-									+ " (Access is denied)");
-					}
+					f.getParentFile().mkdirs();
+					if(f.exists())
+						f.delete();
+					if(!f.createNewFile())
+						throw new IOException("Cannot create file " + fpath
+								+ " (Access is denied)");
 					outstream = new FileOutputStream(f);
 					int n = zinstream.read();
 					while(n != -1)
@@ -95,6 +92,8 @@ public class ZipFileIO
 				}
 				catch(IOException e)
 				{
+					if(outstream!=null)
+						outstream.close();
 					throw new Error("Failed to write data to "
 							+ fpath, e);
 				}

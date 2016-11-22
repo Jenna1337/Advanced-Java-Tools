@@ -7,11 +7,14 @@ public class Midi
 	short format, num_tracks, division;
 	MTrk[] tracks;
 	
+	/**
+	 * @param bytes The bytes of the midi file 
+	 */
 	public Midi(byte[] bytes) throws InvalidMidiException
 	{
 		try
 		{
-			
+			//TODO
 		}
 		catch(ArrayIndexOutOfBoundsException e)
 		{

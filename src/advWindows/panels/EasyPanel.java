@@ -130,7 +130,7 @@ public class EasyPanel implements AWTEventListenerInterface, Runnable
 		frame.addMouseWheelListener     (this);
 		
 		updateMenuBar();
-		center(frame);
+		center();
 		panel = new JPanel(null);
 		LayoutManager overlay = new OverlayLayout(panel);
 		pX = new JPanel();
@@ -175,7 +175,7 @@ public class EasyPanel implements AWTEventListenerInterface, Runnable
 		});
 	}
 	/**moves given jframe to center of screen*/
-	private void center(Window frame) {
+	private void center() {
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		Dimension screen = tk.getScreenSize();
 		
@@ -269,7 +269,7 @@ public class EasyPanel implements AWTEventListenerInterface, Runnable
 		for(int i=0; i<menubarmenus.size(); ++i)
 			bar.add(menubarmenus.get(i));
 		frame.setJMenuBar(bar);
-		frame.paintComponents(frame.getGraphics());;
+		frame.paintComponents(frame.getGraphics());
 	}
 	public void run()
 	{

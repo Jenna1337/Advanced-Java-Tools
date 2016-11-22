@@ -93,6 +93,7 @@ public enum MathOperator implements MathSymbol<Character>
 		sarg=sidearg;
 		registerSymbol();
 	}
+	@SuppressWarnings("unused")
 	private MathOperator(String funcname, int priority, int args, String op, boolean sidearg)
 	{
 		fn=funcname;
@@ -103,6 +104,7 @@ public enum MathOperator implements MathSymbol<Character>
 		sarg=0;
 		registerSymbol();
 	}
+	@SuppressWarnings("unused")
 	private MathOperator(String funcname, int priority, int args, String op, char sidearg)
 	{
 		fn=funcname;
@@ -122,8 +124,9 @@ public enum MathOperator implements MathSymbol<Character>
 				return new Character[]{opc, numargs};
 			case 1:
 				return new Character[]{opc, numargs, sarg};
+			default:
+				throw new InternalError(numargs+" is not a valid number of arguments!");
 		}
-		return null;
 	}
 	public char getOpChar()
 	{
@@ -157,6 +160,8 @@ public enum MathOperator implements MathSymbol<Character>
 					case 'R':
 						outval = (SuperNumber) n2.getClass().getMethod(fn).invoke(n2);
 						break;
+					default:
+						throw new IllegalArgumentException("\'"+sarg+"\' is not a valid side argument!");
 				}
 			}
 		}

@@ -180,8 +180,7 @@ public class SuperNumber extends Number implements MathFunctions<SuperNumber>, T
 		{
 			if(num%2==0 && this.lessThan(0))
 				throw new IllegalArgumentException(""+num);
-			else
-				nval = BigDecimal.ONE.divide(nthRoot(-num, new BigDecimal(this.toString())), SCALE, ROUNDING_MODE);
+			nval = BigDecimal.ONE.divide(nthRoot(-num, new BigDecimal(this.toString())), SCALE, ROUNDING_MODE);
 		}
 		else
 			nval = nthRoot(num, new BigDecimal(this.toString()));
@@ -196,8 +195,7 @@ public class SuperNumber extends Number implements MathFunctions<SuperNumber>, T
 		{
 			if(a.remainder(new BigDecimal("2")).compareTo(BigDecimal.ZERO)!=0)
 				return nthRoot(n, a.negate(), p).negate();
-			else
-				throw new IllegalArgumentException("nth root can only be calculated for positive numbers");
+			throw new IllegalArgumentException("nth root can only be calculated for positive numbers");
 		}
 		if (n<=0 && n%2==0 && a.compareTo(BigDecimal.ZERO)<0)
 			throw new IllegalArgumentException("nth root can only be calculated for positive numbers");

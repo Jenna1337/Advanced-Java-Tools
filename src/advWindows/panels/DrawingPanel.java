@@ -29,6 +29,7 @@ To ensure that the image is always displayed, a timer calls repaint at
 regular intervals.
  */
 
+@SuppressWarnings("hiding")
 public final class DrawingPanel extends FileFilter implements ActionListener, MouseMotionListener, Runnable, WindowListener
 {
 	// inner class to represent one frame of an animated GIF
@@ -561,7 +562,9 @@ public final class DrawingPanel extends FileFilter implements ActionListener, Mo
 		// gifenc.setUniformDelay(DELAY);
 		// encoder.setBackground(backgroundColor);
 		encoder.setLoopCount(0);
-		encoder.encode(new FileOutputStream(filename));
+		FileOutputStream fout = new FileOutputStream(filename);
+		encoder.encode(fout);
+		fout.close();
 	}
 	
 	// set the background color of the drawing panel
@@ -1807,7 +1810,7 @@ public final class DrawingPanel extends FileFilter implements ActionListener, Mo
 		 * @exception IOException
 		 *   If a write error is encountered.
 		 */
-		public void startEncoding(OutputStream out, Image image, int delay) throws IOException
+		public void startEncoding(OutputStream out, Image image) throws IOException
 		{
 			hasStarted = true;
 			boolean is_sequence = true;
@@ -1829,7 +1832,7 @@ public final class DrawingPanel extends FileFilter implements ActionListener, Mo
 				writeCommentExtension(out);
 		}
 		
-		public void continueEncoding(OutputStream out, Image image, int delay) throws IOException {
+		public void continueEncoding(OutputStream out, Image image) throws IOException {
 			// write out the control and rendering data for each frame
 			Gif89Frame gf = new DirectGif89Frame(image);
 			accommodateFrame(gf);
@@ -2154,7 +2157,7 @@ public final class DrawingPanel extends FileFilter implements ActionListener, Mo
 					(rec = hTable[itable]) != null && rec.rgb != rgb;
 					itable = ++itable % hTable.length
 					) 
-				;
+				{}
 			
 			if (rec != null)
 				return rec.ipalette;
@@ -2173,7 +2176,7 @@ public final class DrawingPanel extends FileFilter implements ActionListener, Mo
 					hTable[itable] != null;
 					itable = ++itable % hTable.length
 					) 
-				; 
+				{} 
 			
 			hTable[itable] = new ColorRecord(rgb, ipalette);   
 		}
@@ -2461,6 +2464,8 @@ public final class DrawingPanel extends FileFilter implements ActionListener, Mo
 							break;
 						case 3:
 							yCur += 2;
+							break;
+						default:
 							break;
 					}
 			}

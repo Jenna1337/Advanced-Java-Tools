@@ -57,7 +57,7 @@ public class EasyPanelTest
 				{
 					public void run()
 					{
-						p.frame.setResizable(true);;
+						p.frame.setResizable(true);
 						System.out.println("button2");
 					}
 				}

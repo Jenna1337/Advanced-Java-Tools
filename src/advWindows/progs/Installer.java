@@ -32,7 +32,7 @@ public class Installer extends JFrame implements ActionListener
 		
 		public PanelSeleDir(String scname, String defDir)
 		{
-			this.add(new Label("Please select installation directory."));
+			this.add(new Label("Select a folder to install "+scname+"."));
 			selector = new FileSelector(defDir, JFileChooser.DIRECTORIES_ONLY);
 			selector.addActionListener(new ActionListener()
 			{

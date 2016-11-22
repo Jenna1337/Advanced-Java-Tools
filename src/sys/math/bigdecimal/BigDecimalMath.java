@@ -116,13 +116,12 @@ public class BigDecimalMath {
 		/* look it up if possible */
 		if (mc.getPrecision() < PI.precision()) {
 			return PI.round(mc);
-		} else {
-			/* Broadhurst \protect\vrule width0pt\protect\href{http://arxiv.org/abs/math/9803067}{arXiv:math/9803067}
-			 */
-			int[] a = {1, 0, 0, -1, -1, -1, 0, 0};
-			BigDecimal S = broadhurstBBP(1, 1, a, mc);
-			return multiplyRound(S, 8);
 		}
+		/* Broadhurst \protect\vrule width0pt\protect\href{http://arxiv.org/abs/math/9803067}{arXiv:math/9803067}
+		 */
+		int[] a = {1, 0, 0, -1, -1, -1, 0, 0};
+		BigDecimal S = broadhurstBBP(1, 1, a, mc);
+		return multiplyRound(S, 8);
 	} /* BigDecimalMath.pi */
 	
 	
@@ -134,36 +133,35 @@ public class BigDecimalMath {
 		/* look it up if possible */
 		if (mc.getPrecision() < GAMMA.precision()) {
 			return GAMMA.round(mc);
-		} else {
-			double eps = prec2err(0.577, mc.getPrecision());
-			/* Euler-Stieltjes as shown in Dilcher, Aequat Math 48 (1) (1994) 55-85
-            14
-			 */
-			MathContext mcloc = new MathContext(2 + mc.getPrecision());
-			BigDecimal resul = BigDecimal.ONE;
-			resul = resul.add(log(2, mcloc));
-			resul = resul.subtract(log(3, mcloc));
-			/* how many terms: zeta-1 falls as 1/2^(2n+1), so the
-			 * terms drop faster than 1/2^(4n+2). Set 1/2^(4kmax+2) < eps.
-			 * Leading term zeta(3)/(4^1*3) is 0.017. Leading zeta(3) is 1.2. Log(2) is 0.7
-			 */
-			int kmax = (int) ((Math.log(eps / 0.7) - 2.) / 4.);
-			mcloc = new MathContext(1 + err2prec(1.2, eps / kmax));
-			for (int n = 1;; n++) {
-				/* zeta is close to 1. Division of zeta-1 through
-				 * 4^n*(2n+1) means divion through roughly 2^(2n+1)
-				 */
-				BigDecimal c = zeta(2 * n + 1, mcloc).subtract(BigDecimal.ONE);
-				BigInteger fourn = new BigInteger("" + (2 * n + 1));
-				fourn = fourn.shiftLeft(2 * n);
-				c = divideRound(c, fourn);
-				resul = resul.subtract(c);
-				if (c.doubleValue() < 0.1 * eps) {
-					break;
-				}
-			}
-			return resul.round(mc);
 		}
+		double eps = prec2err(0.577, mc.getPrecision());
+		/* Euler-Stieltjes as shown in Dilcher, Aequat Math 48 (1) (1994) 55-85
+		14
+		 */
+		MathContext mcloc = new MathContext(2 + mc.getPrecision());
+		BigDecimal resul = BigDecimal.ONE;
+		resul = resul.add(log(2, mcloc));
+		resul = resul.subtract(log(3, mcloc));
+		/* how many terms: zeta-1 falls as 1/2^(2n+1), so the
+		 * terms drop faster than 1/2^(4n+2). Set 1/2^(4kmax+2) < eps.
+		 * Leading term zeta(3)/(4^1*3) is 0.017. Leading zeta(3) is 1.2. Log(2) is 0.7
+		 */
+		int kmax = (int) ((Math.log(eps / 0.7) - 2.) / 4.);
+		mcloc = new MathContext(1 + err2prec(1.2, eps / kmax));
+		for (int n = 1;; n++) {
+			/* zeta is close to 1. Division of zeta-1 through
+			 * 4^n*(2n+1) means divion through roughly 2^(2n+1)
+			 */
+			BigDecimal c = zeta(2 * n + 1, mcloc).subtract(BigDecimal.ONE);
+			BigInteger fourn = new BigInteger("" + (2 * n + 1));
+			fourn = fourn.shiftLeft(2 * n);
+			c = divideRound(c, fourn);
+			resul = resul.subtract(c);
+			if (c.doubleValue() < 0.1 * eps) {
+				break;
+			}
+		}
+		return resul.round(mc);
 	} /* BigDecimalMath.gamma */
 	
 	
@@ -187,9 +185,8 @@ public class BigDecimalMath {
 	static public BigDecimal cbrt(final BigDecimal x) {
 		if (x.compareTo(BigDecimal.ZERO) < 0) {
 			return root(3, x.negate()).negate();
-		} else {
-			return root(3, x);
 		}
+		return root(3, x);
 	} /* BigDecimalMath.cbrt */
 	
 	
@@ -349,35 +346,34 @@ public class BigDecimalMath {
 				 */
 				MathContext mc = new MathContext(err2prec(xUlpDbl / 2.));
 				return resul.round(mc);
-			} else {
-				/* Compute exp(x) = (exp(0.1*x))^10. Division by 10 does not lead
-				 * to loss of accuracy.
-				 */
-				int exSc = (int) (1.0 - Math.log10(TAYLOR_NTERM * (TAYLOR_NTERM - 1.0) * (TAYLOR_NTERM - 2.0) * xUlpDbl
-						/ Math.pow(xDbl, TAYLOR_NTERM)) / (TAYLOR_NTERM - 1.0));
-				BigDecimal xby10 = x.scaleByPowerOfTen(-exSc);
-				BigDecimal expxby10 = exp(xby10);
-				/* Final powering by 10 means that the relative error of the result
-				 * is 10 times the relative error of the base (First order binomial expansion).
-				 * This looses one digit.
-				 */
-				MathContext mc = new MathContext(expxby10.precision() - exSc);
-				/* Rescaling the powers of 10 is done in chunks of a maximum of 8 to avoid an invalid operation
-                17
-				 * response by the BigDecimal.pow library or integer overflow.
-				 */
-				while (exSc > 0) {
-					int exsub = Math.min(8, exSc);
-					exSc -= exsub;
-					MathContext mctmp = new MathContext(expxby10.precision() - exsub + 2);
-					int pex = 1;
-					while (exsub-- > 0) {
-						pex *= 10;
-					}
-					expxby10 = expxby10.pow(pex, mctmp);
-				}
-				return expxby10.round(mc);
 			}
+			/* Compute exp(x) = (exp(0.1*x))^10. Division by 10 does not lead
+			 * to loss of accuracy.
+			 */
+			int exSc = (int) (1.0 - Math.log10(TAYLOR_NTERM * (TAYLOR_NTERM - 1.0) * (TAYLOR_NTERM - 2.0) * xUlpDbl
+					/ Math.pow(xDbl, TAYLOR_NTERM)) / (TAYLOR_NTERM - 1.0));
+			BigDecimal xby10 = x.scaleByPowerOfTen(-exSc);
+			BigDecimal expxby10 = exp(xby10);
+			/* Final powering by 10 means that the relative error of the result
+			 * is 10 times the relative error of the base (First order binomial expansion).
+			 * This looses one digit.
+			 */
+			MathContext mc = new MathContext(expxby10.precision() - exSc);
+			/* Rescaling the powers of 10 is done in chunks of a maximum of 8 to avoid an invalid operation
+			17
+			 * response by the BigDecimal.pow library or integer overflow.
+			 */
+			while (exSc > 0) {
+				int exsub = Math.min(8, exSc);
+				exSc -= exsub;
+				MathContext mctmp = new MathContext(expxby10.precision() - exsub + 2);
+				int pex = 1;
+				while (exsub-- > 0) {
+					pex *= 10;
+				}
+				expxby10 = expxby10.pow(pex, mctmp);
+			}
+			return expxby10.round(mc);
 		}
 	} /* BigDecimalMath.exp */
 	
@@ -390,13 +386,12 @@ public class BigDecimalMath {
 		/* look it up if possible */
 		if (mc.getPrecision() < E.precision()) {
 			return E.round(mc);
-		} else {
-			/* Instantiate a 1.0 with the requested pseudo-accuracy
-			 * and delegate the computation to the public method above.
-			 */
-			BigDecimal uni = scalePrec(BigDecimal.ONE, mc.getPrecision());
-			return exp(uni);
 		}
+		/* Instantiate a 1.0 with the requested pseudo-accuracy
+		 * and delegate the computation to the public method above.
+		 */
+		BigDecimal uni = scalePrec(BigDecimal.ONE, mc.getPrecision());
+		return exp(uni);
 	} /* BigDecimalMath.exp */
 	
 	
@@ -472,16 +467,15 @@ public class BigDecimalMath {
 		} else if (n == 2) {
 			if (mc.getPrecision() < LOG2.precision()) {
 				return LOG2.round(mc);
-			} else {
-				/* Broadhurst \protect\vrule width0pt\protect\href{http://arxiv.org/abs/math/9803067}{arXiv:math/9803067}
-				 * Error propagation: the error in log(2) is twice the error in S(2,-5,...).
-				 */
-				int[] a = {2, -5, -2, -7, -2, -5, 2, -3};
-				BigDecimal S = broadhurstBBP(2, 1, a, new MathContext(1 + mc.getPrecision()));
-				S = S.multiply(new BigDecimal(8));
-				S = sqrt(divideRound(S, 3));
-				return S.round(mc);
 			}
+			/* Broadhurst \protect\vrule width0pt\protect\href{http://arxiv.org/abs/math/9803067}{arXiv:math/9803067}
+			 * Error propagation: the error in log(2) is twice the error in S(2,-5,...).
+			 */
+			int[] a = {2, -5, -2, -7, -2, -5, 2, -3};
+			BigDecimal S = broadhurstBBP(2, 1, a, new MathContext(1 + mc.getPrecision()));
+			S = S.multiply(new BigDecimal(8));
+			S = sqrt(divideRound(S, 3));
+			return S.round(mc);
 		} else if (n == 3) {
 			/* summation of a series roughly proportional to (7/500)^k. Estimate count
 			 * of terms to estimate the precision (drop the favorable additional
@@ -700,40 +694,39 @@ public class BigDecimalMath {
 					/* x>pi/4: sin(x) = cos(pi/2-x)
 					 */
 					return cos(subtractRound(p.divide(new BigDecimal("2")), res));
-				} else {
-					/* Simple Taylor expansion, sum_{i=1..infinity} (-1)^(..)res^(2i+1)/(2i+1)! */
-					BigDecimal resul = res;
-					/* x^i */
-					BigDecimal xpowi = res;
-					/* 2i+1 factorial */
-					BigInteger ifac = BigInteger.ONE;
-					/* The error in the result is set by the error in x itself.
-					 */
-					double xUlpDbl = res.ulp().doubleValue();
-					/* The error in the result is set by the error in x itself.
-					 * We need at most k terms to squeeze x^(2k+1)/(2k+1)! below this value.
-					 * x^(2k+1) < x.ulp; (2k+1)*log10(x) < -x.precision; 2k*log10(x)< -x.precision;
-					 * 2k*(-log10(x)) > x.precision; 2k*log10(1/x) > x.precision
-					 */
-					int k = (int) (res.precision() / Math.log10(1.0 / res.doubleValue())) / 2;
-					MathContext mcTay = new MathContext(err2prec(res.doubleValue(), xUlpDbl / k));
-					for (int i = 1;; i++) {
-						/* TBD: at which precision will 2*i or 2*i+1 overflow?
-						 */
-						ifac = ifac.multiply(new BigInteger("" + (2 * i)));
-						ifac = ifac.multiply(new BigInteger("" + (2 * i + 1)));
-						xpowi = xpowi.multiply(res).multiply(res).negate();
-						BigDecimal corr = xpowi.divide(new BigDecimal(ifac), mcTay);
-						resul = resul.add(corr);
-						if (corr.abs().doubleValue() < 0.5 * xUlpDbl) {
-							break;
-						}
-					}
-					/* The error in the result is set by the error in x itself.
-					 */
-					mc = new MathContext(res.precision());
-					return resul.round(mc);
 				}
+				/* Simple Taylor expansion, sum_{i=1..infinity} (-1)^(..)res^(2i+1)/(2i+1)! */
+				BigDecimal resul = res;
+				/* x^i */
+				BigDecimal xpowi = res;
+				/* 2i+1 factorial */
+				BigInteger ifac = BigInteger.ONE;
+				/* The error in the result is set by the error in x itself.
+				 */
+				double xUlpDbl = res.ulp().doubleValue();
+				/* The error in the result is set by the error in x itself.
+				 * We need at most k terms to squeeze x^(2k+1)/(2k+1)! below this value.
+				 * x^(2k+1) < x.ulp; (2k+1)*log10(x) < -x.precision; 2k*log10(x)< -x.precision;
+				 * 2k*(-log10(x)) > x.precision; 2k*log10(1/x) > x.precision
+				 */
+				int k = (int) (res.precision() / Math.log10(1.0 / res.doubleValue())) / 2;
+				MathContext mcTay = new MathContext(err2prec(res.doubleValue(), xUlpDbl / k));
+				for (int i = 1;; i++) {
+					/* TBD: at which precision will 2*i or 2*i+1 overflow?
+					 */
+					ifac = ifac.multiply(new BigInteger("" + (2 * i)));
+					ifac = ifac.multiply(new BigInteger("" + (2 * i + 1)));
+					xpowi = xpowi.multiply(res).multiply(res).negate();
+					BigDecimal corr = xpowi.divide(new BigDecimal(ifac), mcTay);
+					resul = resul.add(corr);
+					if (corr.abs().doubleValue() < 0.5 * xUlpDbl) {
+						break;
+					}
+				}
+				/* The error in the result is set by the error in x itself.
+				 */
+				mc = new MathContext(res.precision());
+				return resul.round(mc);
 			}
 		} /* sin */
 	}
@@ -772,39 +765,38 @@ public class BigDecimalMath {
 					/* x>pi/4: cos(x) = sin(pi/2-x)
 					 */
 					return sin(subtractRound(p.divide(new BigDecimal("2")), res));
-				} else {
-					/* Simple Taylor expansion, sum_{i=0..infinity} (-1)^(..)res^(2i)/(2i)! */
-					BigDecimal resul = BigDecimal.ONE;
-					/* x^i */
-					BigDecimal xpowi = BigDecimal.ONE;
-					/* 2i factorial */
-					BigInteger ifac = BigInteger.ONE;
-					/* The absolute error in the result is the error in x^2/2 which is x times the error in x.
-					 */
-					double xUlpDbl = 0.5 * res.ulp().doubleValue() * res.doubleValue();
-					/* The error in the result is set by the error in x^2/2 itself, xUlpDbl.
-					 * We need at most k terms to push x^(2k+1)/(2k+1)! below this value.
-					 * x^(2k) < xUlpDbl; (2k)*log(x) < log(xUlpDbl);
-					 */
-					int k = (int) (Math.log(xUlpDbl) / Math.log(res.doubleValue())) / 2;
-					MathContext mcTay = new MathContext(err2prec(1., xUlpDbl / k));
-					for (int i = 1;; i++) {
-						/* TBD: at which precision will 2*i-1 or 2*i overflow?
-						 */
-						ifac = ifac.multiply(new BigInteger("" + (2 * i - 1)));
-						ifac = ifac.multiply(new BigInteger("" + (2 * i)));
-						xpowi = xpowi.multiply(res).multiply(res).negate();
-						BigDecimal corr = xpowi.divide(new BigDecimal(ifac), mcTay);
-						resul = resul.add(corr);
-						if (corr.abs().doubleValue() < 0.5 * xUlpDbl) {
-							break;
-						}
-					}
-					/* The error in the result is governed by the error in x itself.
-					 */
-					mc = new MathContext(err2prec(resul.doubleValue(), xUlpDbl));
-					return resul.round(mc);
 				}
+				/* Simple Taylor expansion, sum_{i=0..infinity} (-1)^(..)res^(2i)/(2i)! */
+				BigDecimal resul = BigDecimal.ONE;
+				/* x^i */
+				BigDecimal xpowi = BigDecimal.ONE;
+				/* 2i factorial */
+				BigInteger ifac = BigInteger.ONE;
+				/* The absolute error in the result is the error in x^2/2 which is x times the error in x.
+				 */
+				double xUlpDbl = 0.5 * res.ulp().doubleValue() * res.doubleValue();
+				/* The error in the result is set by the error in x^2/2 itself, xUlpDbl.
+				 * We need at most k terms to push x^(2k+1)/(2k+1)! below this value.
+				 * x^(2k) < xUlpDbl; (2k)*log(x) < log(xUlpDbl);
+				 */
+				int k = (int) (Math.log(xUlpDbl) / Math.log(res.doubleValue())) / 2;
+				MathContext mcTay = new MathContext(err2prec(1., xUlpDbl / k));
+				for (int i = 1;; i++) {
+					/* TBD: at which precision will 2*i-1 or 2*i overflow?
+					 */
+					ifac = ifac.multiply(new BigInteger("" + (2 * i - 1)));
+					ifac = ifac.multiply(new BigInteger("" + (2 * i)));
+					xpowi = xpowi.multiply(res).multiply(res).negate();
+					BigDecimal corr = xpowi.divide(new BigDecimal(ifac), mcTay);
+					resul = resul.add(corr);
+					if (corr.abs().doubleValue() < 0.5 * xUlpDbl) {
+						break;
+					}
+				}
+				/* The error in the result is governed by the error in x itself.
+				 */
+				mc = new MathContext(err2prec(resul.doubleValue(), xUlpDbl));
+				return resul.round(mc);
 			}
 		}
 	} /* BigDecimalMath.cos */
@@ -819,47 +811,45 @@ public class BigDecimalMath {
 			return BigDecimal.ZERO;
 		} else if (x.compareTo(BigDecimal.ZERO) < 0) {
 			return tan(x.negate()).negate();
-		} else {
-			/* reduce modulo pi
-			 */
-			BigDecimal res = modpi(x);
-			/* absolute error in the result is err(x)/cos^2(x) to lowest order
-			 */
-			final double xDbl = res.doubleValue();
-			final double xUlpDbl = x.ulp().doubleValue() / 2.;
-			final double eps = xUlpDbl / 2. / Math.pow(Math.cos(xDbl), 2.);
-			if (xDbl > 0.8) {
-				/* tan(x) = 1/cot(x) */
-				BigDecimal co = cot(x);
-				MathContext mc = new MathContext(err2prec(1. / co.doubleValue(), eps));
-				return BigDecimal.ONE.divide(co, mc);
-			} else {
-				final BigDecimal xhighpr = scalePrec(res, 2);
-				final BigDecimal xhighprSq = multiplyRound(xhighpr, xhighpr);
-				BigDecimal resul = xhighpr.plus();
-				/* x^(2i+1) */
-				BigDecimal xpowi = xhighpr;
-				Bernoulli b = new Bernoulli();
-				/* 2^(2i) */
-				BigInteger fourn = new BigInteger("4");
-				/* (2i)! */
-				BigInteger fac = new BigInteger("2");
-				for (int i = 2;; i++) {
-					Rational f = b.at(2 * i).abs();
-					fourn = fourn.shiftLeft(2);
-					fac = fac.multiply(new BigInteger("" + (2 * i))).multiply(new BigInteger("" + (2 * i - 1)));
-					f = f.multiply(fourn).multiply(fourn.subtract(BigInteger.ONE)).divide(fac);
-					xpowi = multiplyRound(xpowi, xhighprSq);
-					BigDecimal c = multiplyRound(xpowi, f);
-					resul = resul.add(c);
-					if (Math.abs(c.doubleValue()) < 0.1 * eps) {
-						break;
-					}
-				}
-				MathContext mc = new MathContext(err2prec(resul.doubleValue(), eps));
-				return resul.round(mc);
+		}
+		/* reduce modulo pi
+		 */
+		BigDecimal res = modpi(x);
+		/* absolute error in the result is err(x)/cos^2(x) to lowest order
+		 */
+		final double xDbl = res.doubleValue();
+		final double xUlpDbl = x.ulp().doubleValue() / 2.;
+		final double eps = xUlpDbl / 2. / Math.pow(Math.cos(xDbl), 2.);
+		if (xDbl > 0.8) {
+			/* tan(x) = 1/cot(x) */
+			BigDecimal co = cot(x);
+			MathContext mc = new MathContext(err2prec(1. / co.doubleValue(), eps));
+			return BigDecimal.ONE.divide(co, mc);
+		}
+		final BigDecimal xhighpr = scalePrec(res, 2);
+		final BigDecimal xhighprSq = multiplyRound(xhighpr, xhighpr);
+		BigDecimal resul = xhighpr.plus();
+		/* x^(2i+1) */
+		BigDecimal xpowi = xhighpr;
+		Bernoulli b = new Bernoulli();
+		/* 2^(2i) */
+		BigInteger fourn = new BigInteger("4");
+		/* (2i)! */
+		BigInteger fac = new BigInteger("2");
+		for (int i = 2;; i++) {
+			Rational f = b.at(2 * i).abs();
+			fourn = fourn.shiftLeft(2);
+			fac = fac.multiply(new BigInteger("" + (2 * i))).multiply(new BigInteger("" + (2 * i - 1)));
+			f = f.multiply(fourn).multiply(fourn.subtract(BigInteger.ONE)).divide(fac);
+			xpowi = multiplyRound(xpowi, xhighprSq);
+			BigDecimal c = multiplyRound(xpowi, f);
+			resul = resul.add(c);
+			if (Math.abs(c.doubleValue()) < 0.1 * eps) {
+				break;
 			}
 		}
+		MathContext mc = new MathContext(err2prec(resul.doubleValue(), eps));
+		return resul.round(mc);
 	} /* BigDecimalMath.tan */
 	
 	
@@ -1156,58 +1146,55 @@ public class BigDecimalMath {
 				return hypot(1, sinh(x));
 				
 				
-			} else {
-				BigDecimal xhighpr = scalePrec(x, 2);
-				/* Simple Taylor expansion, sum_{0=1..infinity} x^(2i)/(2i)! */
-				BigDecimal resul = BigDecimal.ONE;
-				/* x^i */
-				BigDecimal xpowi = BigDecimal.ONE;
-				/* 2i factorial */
-				BigInteger ifac = BigInteger.ONE;
-				/* The absolute error in the result is the error in x^2/2 which is x times the error in x.
-				 */
-				
-				
-				double xUlpDbl = 0.5 * x.ulp().doubleValue() * x.doubleValue();
-				/* The error in the result is set by the error in x^2/2 itself, xUlpDbl.
-				 * We need at most k terms to push x^(2k)/(2k)! below this value.
-				 * x^(2k) < xUlpDbl; (2k)*log(x) < log(xUlpDbl);
-				 */
-				
-				
-				int k = (int) (Math.log(xUlpDbl) / Math.log(x.doubleValue())) / 2;
-				/* The individual terms are all smaller than 1, so an estimate of 1.0 for
-				 * the absolute value will give a safe relative error estimate for the indivdual terms
-				 */
-				MathContext mcTay = new MathContext(err2prec(1., xUlpDbl / k));
-				
-				
-				
-				
-				for (int i = 1;; i++) {
-					/* TBD: at which precision will 2*i-1 or 2*i overflow?
-					 */
-					ifac = ifac.multiply(new BigInteger("" + (2 * i - 1)));
-					ifac = ifac.multiply(new BigInteger("" + (2 * i)));
-					xpowi = xpowi.multiply(xhighpr).multiply(xhighpr);
-					BigDecimal corr = xpowi.divide(new BigDecimal(ifac), mcTay);
-					resul = resul.add(corr);
-					
-					
-					if (corr.abs().doubleValue() < 0.5 * xUlpDbl) {
-						break;
-					}
-					
-					
-				} /* The error in the result is governed by the error in x itself.
-				 */
-				MathContext mc = new MathContext(err2prec(resul.doubleValue(), xUlpDbl));
-				
-				
-				return resul.round(mc);
-				
-				
 			}
+			BigDecimal xhighpr = scalePrec(x, 2);
+			/* Simple Taylor expansion, sum_{0=1..infinity} x^(2i)/(2i)! */
+			BigDecimal resul = BigDecimal.ONE;
+			/* x^i */
+			BigDecimal xpowi = BigDecimal.ONE;
+			/* 2i factorial */
+			BigInteger ifac = BigInteger.ONE;
+			/* The absolute error in the result is the error in x^2/2 which is x times the error in x.
+			 */
+			
+			
+			double xUlpDbl = 0.5 * x.ulp().doubleValue() * x.doubleValue();
+			/* The error in the result is set by the error in x^2/2 itself, xUlpDbl.
+			 * We need at most k terms to push x^(2k)/(2k)! below this value.
+			 * x^(2k) < xUlpDbl; (2k)*log(x) < log(xUlpDbl);
+			 */
+			
+			
+			int k = (int) (Math.log(xUlpDbl) / Math.log(x.doubleValue())) / 2;
+			/* The individual terms are all smaller than 1, so an estimate of 1.0 for
+			 * the absolute value will give a safe relative error estimate for the indivdual terms
+			 */
+			MathContext mcTay = new MathContext(err2prec(1., xUlpDbl / k));
+			
+			
+			
+			
+			for (int i = 1;; i++) {
+				/* TBD: at which precision will 2*i-1 or 2*i overflow?
+				 */
+				ifac = ifac.multiply(new BigInteger("" + (2 * i - 1)));
+				ifac = ifac.multiply(new BigInteger("" + (2 * i)));
+				xpowi = xpowi.multiply(xhighpr).multiply(xhighpr);
+				BigDecimal corr = xpowi.divide(new BigDecimal(ifac), mcTay);
+				resul = resul.add(corr);
+				
+				
+				if (corr.abs().doubleValue() < 0.5 * xUlpDbl) {
+					break;
+				}
+				
+				
+			} /* The error in the result is governed by the error in x itself.
+			 */
+			MathContext mc = new MathContext(err2prec(resul.doubleValue(), xUlpDbl));
+			
+			
+			return resul.round(mc);
 		}
 	} /* BigDecimalMath.cosh */
 	
@@ -1243,56 +1230,53 @@ public class BigDecimalMath {
 				return resul.round(mc);
 				
 				
-			} else {
-				BigDecimal xhighpr = scalePrec(x, 2);
-				/* Simple Taylor expansion, sum_{i=0..infinity} x^(2i+1)/(2i+1)! */
-				BigDecimal resul = xhighpr;
-				/* x^i */
-				BigDecimal xpowi = xhighpr;
-				/* 2i+1 factorial */
-				BigInteger ifac = BigInteger.ONE;
-				/* The error in the result is set by the error in x itself.
-				 */
-				
-				
-				double xUlpDbl = x.ulp().doubleValue();
-				/* The error in the result is set by the error in x itself.
-				 * We need at most k terms to squeeze x^(2k+1)/(2k+1)! below this value.
-				 * x^(2k+1) < x.ulp; (2k+1)*log10(x) < -x.precision; 2k*log10(x)< -x.precision;
-				 * 2k*(-log10(x)) > x.precision; 2k*log10(1/x) > x.precision
-				 */
-				
-				
-				int k = (int) (x.precision() / Math.log10(1.0 / xhighpr.doubleValue())) / 2;
-				MathContext mcTay = new MathContext(err2prec(x.doubleValue(), xUlpDbl / k));
-				
-				
-				
-				
-				for (int i = 1;; i++) {
-					/* TBD: at which precision will 2*i or 2*i+1 overflow?
-					 */
-					ifac = ifac.multiply(new BigInteger("" + (2 * i)));
-					ifac = ifac.multiply(new BigInteger("" + (2 * i + 1)));
-					xpowi = xpowi.multiply(xhighpr).multiply(xhighpr);
-					BigDecimal corr = xpowi.divide(new BigDecimal(ifac), mcTay);
-					resul = resul.add(corr);
-					
-					
-					if (corr.abs().doubleValue() < 0.5 * xUlpDbl) {
-						break;
-					}
-					
-					
-				} /* The error in the result is set by the error in x itself.
-				 */
-				MathContext mc = new MathContext(x.precision());
-				
-				
-				return resul.round(mc);
-				
-				
 			}
+			BigDecimal xhighpr = scalePrec(x, 2);
+			/* Simple Taylor expansion, sum_{i=0..infinity} x^(2i+1)/(2i+1)! */
+			BigDecimal resul = xhighpr;
+			/* x^i */
+			BigDecimal xpowi = xhighpr;
+			/* 2i+1 factorial */
+			BigInteger ifac = BigInteger.ONE;
+			/* The error in the result is set by the error in x itself.
+			 */
+			
+			
+			double xUlpDbl = x.ulp().doubleValue();
+			/* The error in the result is set by the error in x itself.
+			 * We need at most k terms to squeeze x^(2k+1)/(2k+1)! below this value.
+			 * x^(2k+1) < x.ulp; (2k+1)*log10(x) < -x.precision; 2k*log10(x)< -x.precision;
+			 * 2k*(-log10(x)) > x.precision; 2k*log10(1/x) > x.precision
+			 */
+			
+			
+			int k = (int) (x.precision() / Math.log10(1.0 / xhighpr.doubleValue())) / 2;
+			MathContext mcTay = new MathContext(err2prec(x.doubleValue(), xUlpDbl / k));
+			
+			
+			
+			
+			for (int i = 1;; i++) {
+				/* TBD: at which precision will 2*i or 2*i+1 overflow?
+				 */
+				ifac = ifac.multiply(new BigInteger("" + (2 * i)));
+				ifac = ifac.multiply(new BigInteger("" + (2 * i + 1)));
+				xpowi = xpowi.multiply(xhighpr).multiply(xhighpr);
+				BigDecimal corr = xpowi.divide(new BigDecimal(ifac), mcTay);
+				resul = resul.add(corr);
+				
+				
+				if (corr.abs().doubleValue() < 0.5 * xUlpDbl) {
+					break;
+				}
+				
+				
+			} /* The error in the result is set by the error in x itself.
+			 */
+			MathContext mc = new MathContext(x.precision());
+			
+			
+			return resul.round(mc);
 		}
 	} /* BigDecimalMath.sinh */
 	
@@ -1333,26 +1317,23 @@ public class BigDecimalMath {
 	static public BigDecimal asinh(final BigDecimal x) {
 		if (x.compareTo(BigDecimal.ZERO) == 0) {
 			return BigDecimal.ZERO;
-		} else {
-			BigDecimal xhighpr = scalePrec(x, 2);
-			/* arcsinh(x) = log(x+hypot(1,x))
-			 */
-			BigDecimal logx = log(hypot(1, xhighpr).add(xhighpr));
-			/* The absolute error in arcsinh x is err(x)/sqrt(1+x^2)
-			 */
-			
-			
-			double xDbl = x.doubleValue();
-			
-			
-			double eps = 0.5 * x.ulp().doubleValue() / Math.hypot(1., xDbl);
-			MathContext mc = new MathContext(err2prec(logx.doubleValue(), eps));
-			
-			
-			return logx.round(mc);
-			
-			
 		}
+		BigDecimal xhighpr = scalePrec(x, 2);
+		/* arcsinh(x) = log(x+hypot(1,x))
+		 */
+		BigDecimal logx = log(hypot(1, xhighpr).add(xhighpr));
+		/* The absolute error in arcsinh x is err(x)/sqrt(1+x^2)
+		 */
+		
+		
+		double xDbl = x.doubleValue();
+		
+		
+		double eps = 0.5 * x.ulp().doubleValue() / Math.hypot(1., xDbl);
+		MathContext mc = new MathContext(err2prec(logx.doubleValue(), eps));
+		
+		
+		return logx.round(mc);
 	} /* BigDecimalMath.asinh */
 	
 	
@@ -1907,18 +1888,15 @@ public class BigDecimalMath {
 		
 		if (n < zmin1.length) /* look it up if available */ {
 			return zmin1[n];
-		} else {
-			/* Result is roughly 2^(-n), desired accuracy 18 digits. If zeta(n) is computed, the equivalent accuracy
-			 * in relative units is higher, because zeta is around 1.
-			 */
-			double eps = 1.e-18 * Math.pow(2., (double) (-n));
-			MathContext mc = new MathContext(err2prec(eps));
-			
-			
-			return zeta(n, mc).subtract(BigDecimal.ONE).doubleValue();
-			
-			
 		}
+		/* Result is roughly 2^(-n), desired accuracy 18 digits. If zeta(n) is computed, the equivalent accuracy
+		 * in relative units is higher, because zeta is around 1.
+		 */
+		double eps = 1.e-18 * Math.pow(2., (double) (-n));
+		MathContext mc = new MathContext(err2prec(eps));
+		
+		
+		return zeta(n, mc).subtract(BigDecimal.ONE).doubleValue();
 	} /* zeta */
 	
 	
@@ -2061,19 +2039,16 @@ public class BigDecimalMath {
 	static public BigDecimal multiplyRound(final BigDecimal x, final Rational f) {
 		if (f.compareTo(BigInteger.ZERO) == 0) {
 			return BigDecimal.ZERO;
-		} else {
-			/* Convert the rational value with two digits of extra precision
-			 */
-			MathContext mc = new MathContext(2 + x.precision());
-			BigDecimal fbd = f.BigDecimalValue(mc);
-			/* and the precision of the product is then dominated by the precision in x
-			 */
-			
-			
-			return multiplyRound(x, fbd);
-			
-			
 		}
+		/* Convert the rational value with two digits of extra precision
+		 */
+		MathContext mc = new MathContext(2 + x.precision());
+		BigDecimal fbd = f.BigDecimalValue(mc);
+		/* and the precision of the product is then dominated by the precision in x
+		 */
+		
+		
+		return multiplyRound(x, fbd);
 	}
 	
 	/** Multiply and round.
@@ -2214,9 +2189,8 @@ public class BigDecimalMath {
 		
 		if (diffPr > 0) {
 			return scalePrec(x, diffPr);
-		} else {
-			return x;
 		}
+		return x;
 		
 		
 	} /* BigDecimalMath.scalePrec */
@@ -2537,9 +2511,8 @@ class Rational implements Cloneable {
 		BigInteger deno = b.pow(Math.abs(exponent));
 		if (exponent > 0) {
 			return (new Rational(num, deno));
-		} else {
-			return (new Rational(deno, num));
 		}
+		return (new Rational(deno, num));
 	} /* Rational.pow */
 	
 	
@@ -2734,9 +2707,8 @@ class Rational implements Cloneable {
 		 */
 		if (b.compareTo(BigInteger.ONE) == 0) {
 			return a;
-		} else {
-			return a.divide(b);
 		}
+		return a.divide(b);
 	} /* Rational.trunc */
 	
 	
@@ -2774,9 +2746,8 @@ class Rational implements Cloneable {
 	public String toString() {
 		if (b.compareTo(BigInteger.ONE) != 0) {
 			return (a.toString() + "/" + b.toString());
-		} else {
-			return a.toString();
 		}
+		return a.toString();
 	} /* Rational.toString */
 	
 	
@@ -2824,9 +2795,8 @@ class Rational implements Cloneable {
 			MathContext mc = new MathContext(digits, RoundingMode.DOWN);
 			BigDecimal f = (new BigDecimal(a)).divide(new BigDecimal(b), mc);
 			return (f.toString());
-		} else {
-			return a.toString();
 		}
+		return a.toString();
 	} /* Rational.toFString */
 	
 	
@@ -2837,9 +2807,8 @@ class Rational implements Cloneable {
 	public Rational max(final Rational val) {
 		if (compareTo(val) > 0) {
 			return this;
-		} else {
-			return val;
 		}
+		return val;
 	} /* Rational.max */
 	
 	
@@ -2850,9 +2819,8 @@ class Rational implements Cloneable {
 	public Rational min(final Rational val) {
 		if (compareTo(val) < 0) {
 			return this;
-		} else {
-			return val;
 		}
+		return val;
 	} /* Rational.min */
 	
 	

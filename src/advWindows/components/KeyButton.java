@@ -18,16 +18,12 @@ public class KeyButton extends JToggleButton implements KeyListener, MouseListen
 	public DrawingPanel panel;
 	public KeyButton(String label, int key)
 	{
-		init(label,key);
+		this.label = label;
+		this.key = key;
 		this.addKeyListener(this);
 		this.setFocusTraversalKeysEnabled(false);
 		this.setText("<html>"+this.label+"<br>"+KeyEvent.getKeyText(KeyEvent.getExtendedKeyCodeForChar(key))+"</html>");
 		this.addMouseListener(this);
-	}
-	public void init(String label, int key)
-	{
-		this.label = label;
-		this.key = key;
 	}
 	private String label;
 	private int key;

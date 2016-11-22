@@ -41,7 +41,7 @@ public class Paint extends Component implements MouseListener, MouseMotionListen
 				}
 				catch(IllegalArgumentException iae)
 				{
-					this.panel.clear();;
+					this.panel.clear();
 				}
 			}
 		}

@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import sys.math.Math11;
 
@@ -23,6 +23,7 @@ import sys.math.Math11;
  <dl><dt><span class="strong">Since:</span></dt>
   <dd>JDK1.0</dd></dl>
  **************************/
+@SuppressWarnings("hiding")
 public class System
 {
 	public static int binarySearch(Integer[] a, Integer key)
@@ -49,11 +50,11 @@ public class System
 	{
 		log = CreateLogPrintStream();
 		logging = true;
-		log("Starting");
+		//log("Starting");
 	}
 	public static void logExit(int status)
 	{
-		log("Exiting with exit code "+status);
+		//log("Exiting with exit code "+status);
 		log.close();
 		//System.wait(10.0);
 		System.exit(status);
@@ -69,11 +70,12 @@ public class System
 	}
 	private static java.io.PrintStream log;
 	/**Writes <code>text</code> to the log file.<br>
-	 * <b>The method <code>logStart()</code> must be run before this method is run!</b>**/
-	public static void log(String text)
+	 * <b>The method <code>logStart()</code> must be run before this method is run!</b>
+	 * @throws Exception **/
+	public static void log(String text) throws Exception
 	{
 		if(!logging)
-			new Exception("Log not started. ");
+			throw new Exception("Log not started. ");
 		log.println(getDateTime()+" "+text);
 	}
 	public static String getDateTime()

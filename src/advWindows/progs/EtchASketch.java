@@ -47,7 +47,7 @@ public class EtchASketch extends Component implements KeyListener
 				}
 				catch(IllegalArgumentException iae)
 				{
-					this.panel.clear();;
+					this.panel.clear();
 				}
 			}
 		}
@@ -103,6 +103,8 @@ public class EtchASketch extends Component implements KeyListener
 			case 4:
 				panel.clear();
 				break;
+			default:
+				break;
 		}
 		//draw(x,y);
 	}
@@ -130,7 +132,7 @@ class KeyGetter extends Component implements AutoCloseable, ActionListener
 	{
 		if(labels.length != vals.length)
 		{
-			new IllegalArgumentException();
+			throw new IllegalArgumentException();
 		}
 		this.vals = vals;
 		this.buttons = new KeyButton[this.vals.length];
@@ -163,7 +165,7 @@ class KeyGetter extends Component implements AutoCloseable, ActionListener
 			me.notify();
 		}
 	});
-	;
+	
 	public int[] getNewKeys()
 	{
 		try
@@ -176,8 +178,7 @@ class KeyGetter extends Component implements AutoCloseable, ActionListener
 					newvals[i] = buttons[i].getKey();
 				return newvals;
 			}
-			else
-				return vals;
+			return vals;
 		}
 		catch (InterruptedException e)
 		{
