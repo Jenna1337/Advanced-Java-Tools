@@ -30,7 +30,7 @@ regular intervals.
  */
 
 @SuppressWarnings("hiding")
-public final class DrawingPanel extends FileFilter implements ActionListener, MouseMotionListener, Runnable, WindowListener
+public class DrawingPanel extends FileFilter implements ActionListener, MouseMotionListener, Runnable, WindowListener
 {
 	// inner class to represent one frame of an animated GIF
 	private static class ImageFrame

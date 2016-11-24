@@ -50,10 +50,12 @@ public class FileSelector extends JPanel
 	 *            <li>JFileChooser.FILES_AND_DIRECTORIES</li>
 	 *            </ul>
 	 */
-	public FileSelector(String def, int mode)
+	public FileSelector(final File def, final int mode)
 	{
 		chooser.setFileSelectionMode(mode);
-		field = new JTextField(def);
+		field = new JTextField(def.getAbsolutePath());
+		chooser.setCurrentDirectory(def.getParentFile());
+		chooser.setSelectedFile(def);
 		button = new ActionButton(DefaultIcons.general_Open.getIcon16())
 		{
 			public void onClick()

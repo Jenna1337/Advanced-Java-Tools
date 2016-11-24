@@ -30,7 +30,7 @@ public class Installer extends JFrame implements ActionListener
 	{
 		private final FileSelector selector;
 		
-		public PanelSeleDir(String scname, String defDir)
+		public PanelSeleDir(String scname, final File defDir)
 		{
 			this.add(new Label("Select a folder to install "+scname+"."));
 			selector = new FileSelector(defDir, JFileChooser.DIRECTORIES_ONLY);
@@ -41,6 +41,7 @@ public class Installer extends JFrame implements ActionListener
 					if(e.getSource().equals(selector))
 					{
 						File selection = selector.getSelectedFile();
+						System.out.println(selection.getAbsolutePath()+"\n"+selection.exists()+"\n"+selection.canWrite());
 						if(selection.exists() && selection.canWrite())
 							;
 						
@@ -145,7 +146,7 @@ public class Installer extends JFrame implements ActionListener
 		// this.setTitle(title);
 		
 		pan_Welcome = new PanelWelcome(scname);
-		pan_SeleDir = new PanelSeleDir(scname, defDir.getAbsolutePath());
+		pan_SeleDir = new PanelSeleDir(scname, defDir);
 		pan_DispPro = new PanelDispPro(scname);
 		pan_FinDone = new PanelFinDone(scname);
 		
