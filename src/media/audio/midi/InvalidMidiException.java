@@ -1,4 +1,4 @@
-package audio.midi;
+package media.audio.midi;
 
 public class InvalidMidiException extends Exception
 {

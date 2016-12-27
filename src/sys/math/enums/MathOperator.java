@@ -93,7 +93,6 @@ public enum MathOperator implements MathSymbol<Character>
 		sarg=sidearg;
 		registerSymbol();
 	}
-	@SuppressWarnings("unused")
 	private MathOperator(String funcname, int priority, int args, String op, boolean sidearg)
 	{
 		fn=funcname;
@@ -104,7 +103,6 @@ public enum MathOperator implements MathSymbol<Character>
 		sarg=0;
 		registerSymbol();
 	}
-	@SuppressWarnings("unused")
 	private MathOperator(String funcname, int priority, int args, String op, char sidearg)
 	{
 		fn=funcname;

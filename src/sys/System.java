@@ -23,7 +23,6 @@ import sys.math.Math11;
  <dl><dt><span class="strong">Since:</span></dt>
   <dd>JDK1.0</dd></dl>
  **************************/
-@SuppressWarnings("hiding")
 public class System
 {
 	public static int binarySearch(Integer[] a, Integer key)
@@ -949,6 +948,7 @@ public static&nbsp;void&nbsp;runFinalizersOnExit(boolean&nbsp;value)</pre>
 <a href="../../java/lang/Runtime.html#gc()"><code>Runtime.gc()</code></a>, 
 <a href="../../java/lang/SecurityManager.html#checkExit(int)"><code>SecurityManager.checkExit(int)</code></a></dd></dl>
 	 */
+	@SuppressWarnings("deprecation")
 	@Deprecated
 	public static void runFinalizersOnExit(boolean value)
 	{

@@ -29,7 +29,6 @@ To ensure that the image is always displayed, a timer calls repaint at
 regular intervals.
  */
 
-@SuppressWarnings("hiding")
 public class DrawingPanel extends FileFilter implements ActionListener, MouseMotionListener, Runnable, WindowListener
 {
 	// inner class to represent one frame of an animated GIF

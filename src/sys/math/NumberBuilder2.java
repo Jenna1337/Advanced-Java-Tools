@@ -69,7 +69,6 @@ public class NumberBuilder2
 		Millia;
 	}
 	private static enum MilFirst{
-		@SuppressWarnings("hiding")
 		ZERO,
 		Mi,
 		Bi,
@@ -86,7 +85,6 @@ public class NumberBuilder2
 		}
 	}
 	private static enum MilOnes{
-		@SuppressWarnings("hiding")
 		ZERO,
 		Un,
 		Duo,
@@ -103,7 +101,6 @@ public class NumberBuilder2
 		}
 	}
 	private static enum MilTens{
-		@SuppressWarnings("hiding")
 		ZERO,
 		Dec,
 		Vigin,
@@ -120,7 +117,6 @@ public class NumberBuilder2
 		}
 	}
 	private static enum MilHundreds{
-		@SuppressWarnings("hiding")
 		ZERO,
 		Cen,
 		Duocen,
