@@ -18,15 +18,18 @@ import advWindows.panels.FileSelector;
 
 public class Installer extends JFrame implements ActionListener
 {
-	class PanelWelcome extends Panel
+	private volatile File selected_dir;
+	private volatile JProgressBar progress_bar;
+	private class PanelWelcome extends Panel
 	{
 		public PanelWelcome(String scname)
 		{
 			this.add(new Label("Welcome!"));
+			this.add(new Label("Click next to begin intalling "+scname+"."));
 			// TODO Auto-generated constructor stub
 		}
 	}
-	class PanelSeleDir extends Panel
+	private class PanelSeleDir extends Panel
 	{
 		private final FileSelector selector;
 		
@@ -40,13 +43,7 @@ public class Installer extends JFrame implements ActionListener
 				{
 					if(e.getSource().equals(selector))
 					{
-						File selection = selector.getSelectedFile();
-						System.out.println(selection.getAbsolutePath()+"\n"+selection.exists()+"\n"+selection.canWrite());
-						if(selection.exists() && selection.canWrite())
-							;
-						
-						if(!selection.exists())
-							;
+						selected_dir = selector.getSelectedFile();
 					}
 					System.out.println(e);
 				}
@@ -64,15 +61,15 @@ public class Installer extends JFrame implements ActionListener
 				btn_next.setEnabled(true);
 		}
 	}
-	class PanelDispPro extends Panel
+	private class PanelDispPro extends Panel
 	{
 		public PanelDispPro(String scname)
 		{
 			this.add(new Label(
 					"Installing \"" + scname + "\"... Please wait..."));
-			JProgressBar p = new JProgressBar(0, 100);
-			p.setStringPainted(true);
-			this.add(p);
+			progress_bar = new JProgressBar(0, 100);
+			progress_bar.setStringPainted(true);
+			this.add(progress_bar);
 			
 			// TODO Auto-generated constructor stub
 		}
@@ -82,27 +79,22 @@ public class Installer extends JFrame implements ActionListener
 			super.setVisible(b);
 			if(b)
 			{
-				btn_next.setEnabled(false);
-				pan_next.setVisible(false);
-				btn_inst.setEnabled(true);
-				pan_inst.setVisible(true);
+				btn_next.setLabel(lbl_Install);
 			}
 			else
 			{
-				btn_next.setEnabled(true);
-				pan_next.setVisible(true);
-				btn_inst.setEnabled(false);
-				pan_inst.setVisible(false);
+				btn_next.setLabel(lbl_Next);
 			}
 		}
 	}
-	class PanelFinDone extends Panel
+	private class PanelFinDone extends Panel
 	{
 		public PanelFinDone(String scname)
 		{
-			this.add(new Label("Finished installing."));
+			this.add(new Label("Finished installing "+scname+"."));
 			
-			// TODO Auto-generated constructor stub
+			// TODO ask to make shortcut
+			// TODO ask to launch program
 		}
 		@Override
 		public void setVisible(boolean b)
@@ -112,22 +104,21 @@ public class Installer extends JFrame implements ActionListener
 			{
 				btn_prev.setEnabled(false);
 				btn_prev.setVisible(false);
-				btn_next.setEnabled(false);
-				pan_next.setVisible(false);
-				btn_fins.setEnabled(true);
-				pan_fins.setVisible(true);
+				btn_next.setLabel("Finish");
 			}
+			else
+				throw new IllegalAccessError("PanelFinDone should be the last panel displayed!");
 		}
 	}
-	
-	private final Panel pan_overlay, pan_next, pan_inst, pan_fins;
+	private static final String lbl_Next="Next", lbl_Previous="Previous", lbl_Install="Install", lbl_Finish="Finish";
+	private final Panel pan_overlay;
 	private final PanelWelcome pan_Welcome;
 	private final PanelSeleDir pan_SeleDir;
 	private final PanelDispPro pan_DispPro;
 	private final PanelFinDone pan_FinDone;
 	private volatile boolean installing = false;
 	private volatile int sc = 0;
-	private final Button btn_next, btn_prev, btn_fins, btn_inst;
+	private final Button btn_next, btn_prev;
 	
 	/**
 	 * 
@@ -153,41 +144,19 @@ public class Installer extends JFrame implements ActionListener
 		Panel bttns = new Panel(new GridLayout(1, 2));
 		
 		Panel pan_prev = new Panel(new FlowLayout(FlowLayout.LEFT));
-		btn_prev = new Button("Previous");
+		btn_prev = new Button(lbl_Previous);
 		pan_prev.add(btn_prev);
 		btn_prev.setEnabled(false);
 		btn_prev.addActionListener(this);
 		
-		pan_next = new Panel(new FlowLayout(FlowLayout.RIGHT));
-		btn_next = new Button("Next");
+		Panel pan_next = new Panel(new FlowLayout(FlowLayout.RIGHT));
+		btn_next = new Button(lbl_Next);
 		pan_next.add(btn_next);
 		btn_next.addActionListener(this);
 		
-		pan_inst = new Panel(new FlowLayout(FlowLayout.RIGHT));
-		btn_inst = new Button("Install");
-		btn_inst.setEnabled(false);
-		pan_inst.add(btn_inst);
-		btn_inst.addActionListener(this);
-		
-		pan_fins = new Panel(new FlowLayout(FlowLayout.RIGHT));
-		btn_fins = new Button("Finish");
-		btn_fins.setEnabled(false);
-		pan_fins.add(btn_fins);
-		btn_fins.addActionListener(this);
-		
 		bttns.add(pan_prev);
+		bttns.add(pan_next);
 		
-		Panel bttns_r = new Panel();
-		OverlayLayout overlayout = new OverlayLayout(bttns_r);
-		bttns_r.setLayout(overlayout);
-		
-		bttns_r.add(pan_next);
-		bttns_r.add(pan_inst);
-		bttns_r.add(pan_fins);
-		// bttns_r.getComponent(0).setVisible(false);
-		bttns_r.getComponent(1).setVisible(false);
-		bttns_r.getComponent(2).setVisible(false);
-		bttns.add(bttns_r);
 		this.add(bttns, BorderLayout.SOUTH);
 		
 		pan_overlay = new Panel();
@@ -209,35 +178,36 @@ public class Installer extends JFrame implements ActionListener
 	{
 		try
 		{
-			if(e.getSource() == btn_next)
-			{
-				pan_overlay.getComponent(sc).setVisible(false);
-				pan_overlay.getComponent(sc += 1).setVisible(true);
-			}
 			if(e.getSource() == btn_prev)
 			{
 				pan_overlay.getComponent(sc).setVisible(false);
 				pan_overlay.getComponent(sc -= 1).setVisible(true);
 			}
-			if(e.getSource() == btn_inst)
+			if(e.getSource() == btn_next)
 			{
-				// this doesn't disable the button for some reason
-				btn_prev.setEnabled(false);
-				btn_prev.setVisible(false);
-				installing = true;
-				
-				install();
-				
-				btn_inst.setEnabled(false);
-				pan_inst.setVisible(false);
-				btn_next.setEnabled(true);
-				pan_next.setVisible(true);
-			}
-			if(e.getSource() == btn_fins)
-			{
-				// TODO finish
-				
-				System.exit(0);
+				final String lbl = btn_next.getLabel();
+				if(lbl.equals(lbl_Next))
+				{
+					pan_overlay.getComponent(sc).setVisible(false);
+					pan_overlay.getComponent(sc += 1).setVisible(true);
+				}
+				if(lbl.equals(lbl_Install))
+				{
+					// this doesn't disable the button for some reason
+					btn_prev.setEnabled(false);
+					btn_prev.setVisible(false);
+					installing = true;
+					
+					install();
+					
+					btn_next.setLabel(lbl_Next);
+				}
+				if(lbl.equals(lbl_Finish))
+				{
+					// TODO finish
+					
+					System.exit(0);
+				}
 			}
 		}
 		catch(Exception ex)
@@ -259,7 +229,9 @@ public class Installer extends JFrame implements ActionListener
 	}
 	private void install()
 	{
-		// TODO Auto-generated method stub
+		if(!selected_dir.exists())
+			selected_dir.mkdirs();
+		// TODO
 		
 	}
 }
