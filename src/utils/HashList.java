@@ -1,12 +1,14 @@
 package utils;
 
+import java.util.AbstractList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class HashList<E> implements List<E>
+//TODO document this class
+public class HashList<E> extends AbstractList<E>
 {
 	private HashMap<Integer, E> map;
 	public int size()
@@ -23,18 +25,30 @@ public class HashList<E> implements List<E>
 	}
 	public Iterator<E> iterator()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return super.iterator();
 	}
 	public Object[] toArray()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		int size = size();
+		Object[] r = new Object[size];
+		for(int i=0;i<size;++i)
+		{
+			r[i]=get(i);
+		}
+		return r;
 	}
+	@SuppressWarnings("unchecked")
 	public <T> T[] toArray(T[] a)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		// Estimate size of array; be prepared to see more or fewer elements
+		int size = size();
+		T[] r = a.length >= size ? a :
+			(T[])java.lang.reflect.Array
+			.newInstance(a.getClass().getComponentType(), size);
+		for(int i=0;i<size;++i){
+			r[i] = (T) get(i);
+		}
+		return r;
 	}
 	public boolean add(E e)
 	{
@@ -43,36 +57,27 @@ public class HashList<E> implements List<E>
 	}
 	public boolean remove(Object o)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return super.remove(o);
 	}
 	public boolean containsAll(Collection<?> c)
 	{
-		for(Object o:c)
-			if(!this.contains(o))
-				return false;
-		return true;
+		return super.containsAll(c);
 	}
 	public boolean addAll(Collection<? extends E> c)
 	{
-		for(E e:c)
-			this.add(e);
-		return false;
+		return super.addAll(c);
 	}
 	public boolean addAll(int index, Collection<? extends E> c)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return super.addAll(index, c);
 	}
 	public boolean removeAll(Collection<?> c)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return super.removeAll(c);
 	}
 	public boolean retainAll(Collection<?> c)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return super.retainAll(c);
 	}
 	public void clear()
 	{
@@ -80,45 +85,83 @@ public class HashList<E> implements List<E>
 	}
 	public E get(int index)
 	{
+		rangeCheck(index);
 		return map.get(index);
 	}
 	public E set(int index, E element)
 	{
+		rangeCheck(index);
 		return map.put(index, element);
 	}
 	public void add(int index, E element)
 	{
-		// TODO Auto-generated method stub
-		
+		rangeCheckForAdd(index);
+		int size = size();
+		for(int i=size;i>=index;--i)
+		{
+			//move the item at i to the right
+			set(i+1, get(i));
+			remove(i);
+		}
+		set(index, element);
 	}
 	public E remove(int index)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		rangeCheck(index);
+		E item = get(index);
+		int size = size();
+		for(int i=index+1;i<size;++i)
+		{
+			//move the item at i to the left
+			set(i-1, get(i));
+			remove(i);
+		}
+		remove(size-1);
+		return item;
 	}
 	public int indexOf(Object o)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return super.indexOf(o);
 	}
 	public int lastIndexOf(Object o)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return super.lastIndexOf(o);
 	}
 	public ListIterator<E> listIterator()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return listIterator(0);
 	}
 	public ListIterator<E> listIterator(int index)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return super.listIterator(index);
 	}
 	public List<E> subList(int fromIndex, int toIndex)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return super.subList(fromIndex, toIndex);
+	}
+	/**
+	 * Checks if the given index is in range.  If not, throws an appropriate
+	 * runtime exception.  This method does *not* check if the index is
+	 * negative: It is always used immediately prior to an array access,
+	 * which throws an ArrayIndexOutOfBoundsException if index is negative.
+	 */
+	private void rangeCheck(int index) {
+		if (index >= size())
+			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+	}
+	/**
+	 * A version of rangeCheck used by add and addAll.
+	 */
+	private void rangeCheckForAdd(int index) {
+		if (index > size() || index < 0)
+			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+	}
+	/**
+	 * Constructs an IndexOutOfBoundsException detail message.
+	 * Of the many possible refactorings of the error handling code,
+	 * this "outlining" performs best with both server and client VMs.
+	 */
+	private String outOfBoundsMsg(int index) {
+		return "Index: "+index+", Size: "+size();
 	}
 }

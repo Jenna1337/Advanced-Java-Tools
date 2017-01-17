@@ -51,7 +51,7 @@ public class FileUtils
 	 * @param ext The extension of the output files.
 	 * @param chunk_start The {@code String} that denotes the start of a chunk.
 	 * @param chunk_end The {@code String} that denotes the end of the chunk.
-	 * @param adat_pre <i>Unused</i>.
+	 * @param adat_pre Number of characters before {@code chunk_end}.
 	 * @param adat_post Number of characters after {@code chunk_end}.
 	 * @param overwrite Whether or not to overwrite any existing files.
 	 * @return The files written.

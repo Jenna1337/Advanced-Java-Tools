@@ -69,7 +69,6 @@ public class DrawingPanel extends FileFilter implements ActionListener, MouseMot
 				Scanner input = new Scanner(settingsFile);
 				String animationSaveFileName = input.nextLine();
 				input.close();
-				// *** TODO: delete the file
 				System.out.println("***");
 				System.out.println("*** DrawingPanel saving animated GIF: " + 
 						new File(animationSaveFileName).getName());
@@ -368,8 +367,6 @@ public class DrawingPanel extends FileFilter implements ActionListener, MouseMot
 				exit();
 			}
 		}
-		
-		//TODO add new button commands here
 		
 		else if (e.getActionCommand().equals("Exit")) {
 			exit();
@@ -734,7 +731,6 @@ public class DrawingPanel extends FileFilter implements ActionListener, MouseMot
 	// constructs and initializes JFileChooser object if necessary
 	private void checkChooser() {
 		if (chooser == null) {
-			// TODO: fix security on applet mode
 			chooser = new JFileChooser(System.getProperty("user.dir"));
 			chooser.setMultiSelectionEnabled(false);
 			chooser.addChoosableFileFilter(this);
@@ -896,8 +892,6 @@ public class DrawingPanel extends FileFilter implements ActionListener, MouseMot
 		// abort compare if we're running as an applet or in a secure environment
 		boolean secure = (System.getSecurityManager() != null);
 		
-		//TODO add more button definitions
-		
 		JMenuItem clear = new JMenuItem("New", 'N');
 		clear.addActionListener(this);
 		clear.setAccelerator(KeyStroke.getKeyStroke("ctrl N"));
@@ -925,7 +919,6 @@ public class DrawingPanel extends FileFilter implements ActionListener, MouseMot
 		
 		JMenu file = new JMenu("File");
 		file.setMnemonic('F');
-		//TODO add more buttons
 		//TODO add open button
 		file.add(clear);
 		file.add(saveAs);
