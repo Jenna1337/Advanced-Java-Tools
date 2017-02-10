@@ -1,52 +1,59 @@
 package sys.math.numbertypes;
 
-public class BitNumber
+import java.math.BigDecimal;
+
+public class BitNumber extends BasicNumber
 {
-	private boolean[] bits;
-	public BitNumber(boolean... bitArray)
+	public BitNumber(Number n)
 	{
-		bits = bitArray;
+		this(n.toString());
 	}
-	public BitNumber(String str)
+	public BitNumber(String val)
 	{
-		this(toBinaryArray(str));
+		//TODO
 	}
-	/**
-	 * @param str A {@link java.lang.String String} of 1's and 0's
-	 * @see #BitNumber(boolean...)
-	 * @see #toBinaryArray(String)
-	 */
-	public static boolean[] toBinaryArray(String str)
+	public static SuperNumber parse(String val)
 	{
-		boolean[] bools = new boolean[str.length()];
-		for(int i=0; i<str.length(); ++i)
-			bools[i] = str.charAt(i)=='1';
-		return bools;
+		return new SuperNumber(val);
 	}
-	public String toString()
+	public static SuperNumber parse(Number n)
 	{
-		String out = "";
-		for(boolean b : bits)
-			out += b?'1':'0';
-		return out;
+		return new SuperNumber(n.toString());
 	}
-	public byte[] toByteArray()
+	public BigDecimal toBigDecimal()
 	{
-		byte[] bytes=new byte[bits.length/8+1];
-		String bitString = this.toString();
-		while(bytes.length*8>bitString.length())
-			bitString+='0';
-		for(int i=0; i<bytes.length; ++i)
-		{
-			String con = bitString.substring(8*i, 8+8*i);
-			if(con.charAt(0)=='1')
-				con = '-'+con.substring(1);
-			bytes[i] = Byte.parseByte(con, 2);
-		}
-		return bytes;
+		// TODO Auto-generated method stub
+		return null;
 	}
-	public String toCharString()
+	public BasicNumber add(Number n)
 	{
-		return new String(this.toByteArray());
+		// TODO Auto-generated method stub
+		return null;
 	}
+	public BasicNumber subtract(Number n)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public BasicNumber multiply(Number n)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public BasicNumber divide(Number n)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public BasicNumber remainder(Number n)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public BasicNumber mod(Number n)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }

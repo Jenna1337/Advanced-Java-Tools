@@ -21,7 +21,6 @@ public class Main
 {
 	public static void main(String[] args) throws Exception
 	{
-		
 		CharacterUtils.writeUnicodeData(null, 0xff);
 		System.exit(0);
 		SuperNumber E = new SuperNumber(SuperNumber.E);
