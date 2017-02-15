@@ -50,10 +50,4 @@ public class BitNumber extends BasicNumber
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public BasicNumber mod(Number n)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 }

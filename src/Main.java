@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import javax.swing.JFrame;
+import sys.DataBuffer;
 import sys.System;
 import sys.math.Math11;
 import sys.math.numbertypes.SuperNumber;
@@ -21,7 +22,7 @@ public class Main
 {
 	public static void main(String[] args) throws Exception
 	{
-		CharacterUtils.writeUnicodeData(null, 0xff);
+		new DataBuffer().toArray(new Integer[0]);
 		System.exit(0);
 		SuperNumber E = new SuperNumber(SuperNumber.E);
 		SuperNumber Pi = new SuperNumber(SuperNumber.Pi);

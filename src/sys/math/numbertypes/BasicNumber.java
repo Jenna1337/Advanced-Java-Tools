@@ -58,7 +58,13 @@ public abstract class BasicNumber extends Number implements SimpleMathFunctions<
 	public abstract BasicNumber multiply(Number n);
 	public abstract BasicNumber divide(Number n);
 	public abstract BasicNumber remainder(Number n);
-	public abstract BasicNumber mod(Number n);
+	public BasicNumber mod(Number n)
+	{
+		BasicNumber b = remainder(n);
+		if(b.lessThan(0))
+			b.add(n);
+		return b;
+	}
 	public BasicNumber max(Number n)
 	{
 		return this.greaterThanEquals(n) ? this : this.subtract(this).add(n);
