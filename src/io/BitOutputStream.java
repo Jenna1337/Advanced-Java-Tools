@@ -23,7 +23,7 @@ public class BitOutputStream extends FilterOutputStream
 	private byte toByte(boolean b){
 		return (byte) (b?1:0);
 	}
-	private byte getNextByte()
+	private byte getNextByte() throws IOException
 	{
 		if(buffer.size()<8)
 			throw new IOException("Buffer size too small.");
@@ -31,14 +31,6 @@ public class BitOutputStream extends FilterOutputStream
 		for(int i=0;i<8;++i)
 			bits[i]=buffer.poll();
 		return getByte(bits);
-	}
-	private byte getByte(boolean[] bits)
-	{
-		if(bits.length!=8)
-			throw new IllegalArgumentException("Invalid number of bits ("+bits.length+"), expected 8");
-		byte b = bits[0];
-		for(int i=1;i<8;++i)
-			b = (byte) ((b<<1) & toByte(bits[i]));
 	}
 	@Override
 	public void write(int b) throws IOException
