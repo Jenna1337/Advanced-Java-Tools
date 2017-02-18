@@ -1,151 +1,138 @@
 package sys;
 
+import java.nio.ByteOrder;
 import java.util.Queue;
 
 public class DataBuffer
 {
+	// TODO endianness
 	private static final byte TRUE = 1, FALSE = 0;
-	Queue<Boolean> bits;
+	private final ByteOrder order;
+	private Queue<Boolean> bits;
+	
+	public DataBuffer()
+	{
+		order = ByteOrder.nativeOrder();
+	}
+	public DataBuffer(ByteOrder order)
+	{
+		this.order = order;
+	}
+	
 	public int size()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return bits.size();
 	}
 	public boolean isEmpty()
 	{
 		return bits.size()==0;
 	}
-	public boolean getNextBoolean()
+	public void clear()
+	{
+		bits.clear();
+	}
+	
+	private long getBits(int length)
+	{
+		if(length>size())
+		{
+			//TODO
+		}
+		long val = 0b0000000000000000000000000000000000000000000000000000000000000000L;
+		//TODO -- Make sure to include endianness!!!
+		for(int i=0;i<length;++i)
+		{
+			val |= getBit();
+		}
+		return val;
+	}
+	private void putBits(long val, int length)
+	{
+		//TODO -- Make sure to include endianness!!!
+		long mask = 1;
+		for(int i=0;i<length;++i)
+		{
+			//TODO
+		}
+		putBoolean((val & mask) ==TRUE);
+	}
+	
+	/**
+	 * Gets the next bit and returns it as a boolean. 
+	 * @return The truth value of the bit, {@code true} for 1 and {@code false} for 0.
+	 * @see #getBit()
+	 */
+	public boolean getBoolean()
 	{
 		return bits.poll();
 	}
-	public byte getNextByte()
-	{
-		byte val = getNextBoolean()?TRUE:~TRUE;
-		val <<= 8;
-		val |= getNextByte();
-		return val;
-	}
-	public char getNextChar()
-	{
-		return (char) getNextShort();
-	}
-	public short getNextShort()
-	{
-		short val = getNextByte();
-		val <<= 8;
-		val |= getNextByte();
-		return val;
-	}
-	public int getNextInt()
-	{
-		int val = getNextShort();
-		val <<= 16;
-		val |= getNextShort();
-		return val;
-	}
-	public long getNextLong()
-	{
-		long val = getNextInt();
-		val <<= 32;
-		val |= getNextInt();
-		return val;
-	}
-	public float getNextFloat()
-	{
-		return Float.intBitsToFloat(getNextInt());
-	}
-	public double getNextDouble()
-	{
-		return Double.longBitsToDouble(getNextLong());
-	}
-	public <T> T[] toArray(T[] a)
-	{
-		String t = a.getClass().getName();
-		switch(t)
-		{
-			/*
-			Element Type     Encoding 
-			boolean          Z
-			byte             B
-			char             C
-			class/interface  Lclassname;  
-			double           D
-			float            F
-			int              I
-			long             J
-			short            S
-*/
-			default:
-				System.out.println(t);
-		}
-		return a;
-	}
-	/*
-	Element Type     Encoding 
-	boolean          Z
-	byte             B
-	char             C
-	short            S
-	int              I
-	long             J
-	float            F
-	double           D
-	class/interface  Lclassname;  
+	/**
+	 * Gets the next bit and returns it as a number. 
+	 * @return The value of the bit, either 0 or 1.
+	 * @see #getBoolean()
 	 */
-	public boolean[] toArray(boolean[] a)
+	public byte getBit()
 	{
-		// TODO Auto-generated method stub
-		return a;
+		return getBoolean()?TRUE:FALSE;
 	}
-	public byte[] toArray(byte[] a)
+	public byte getByte()
 	{
-		// TODO Auto-generated method stub
-		return a;
+		return (byte)getBits(Byte.SIZE);
 	}
-	public char[] toArray(char[] a)
+	public char getChar()
 	{
-		// TODO Auto-generated method stub
-		return a;
+		return (char)getBits(Character.SIZE);
 	}
-	public short[] toArray(short[] a)
+	public short getShort()
 	{
-		// TODO Auto-generated method stub
-		return a;
+		return (short)getBits(Short.SIZE);
 	}
-	public int[] toArray(int[] a)
+	public int getInt()
 	{
-		// TODO Auto-generated method stub
-		return a;
+		return (int)getBits(Integer.SIZE);
 	}
-	public long[] toArray(long[] a)
+	public long getLong()
 	{
-		// TODO Auto-generated method stub
-		return a;
+		return (long)getBits(Long.SIZE);
 	}
-	public float[] toArray(float[] a)
+	public float getFloat()
 	{
-		// TODO Auto-generated method stub
-		return a;
+		return Float.intBitsToFloat(getInt());
 	}
-	public double[] toArray(double[] a)
+	public double getDouble()
 	{
-		// TODO Auto-generated method stub
-		return a;
+		return Double.longBitsToDouble(getLong());
 	}
-	public void clear()
+	public void putBoolean(boolean val)
 	{
-		bits.clear();toArray(new Boolean[0]);
+		bits.add(val);
 	}
-
-	public <T> boolean add(T e)
+	public void putByte(byte val)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		putBits(val, Byte.SIZE);
 	}
-	public <T> T remove()
+	public void putChar(char val)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		putBits(val, Character.SIZE);
+	}
+	public void putShort(short val)
+	{
+		putBits(val, Short.SIZE);
+	}
+	public void putInt(int val)
+	{
+		putBits(val, Integer.SIZE);
+	}
+	public void putLong(long val)
+	{
+		putBits(val, Long.SIZE);
+	}
+	public void putFloat(float val)
+	{
+		putInt(Float.floatToRawIntBits(val));
+	}
+	public void putDouble(double val)
+	{
+		putLong(Double.doubleToRawLongBits(val));
 	}
 }

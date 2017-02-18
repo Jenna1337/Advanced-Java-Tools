@@ -22,7 +22,7 @@ public class Main
 {
 	public static void main(String[] args) throws Exception
 	{
-		new DataBuffer().toArray(new Integer[0]);
+		new DataBuffer();
 		System.exit(0);
 		SuperNumber E = new SuperNumber(SuperNumber.E);
 		SuperNumber Pi = new SuperNumber(SuperNumber.Pi);

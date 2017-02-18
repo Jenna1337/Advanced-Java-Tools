@@ -1,37 +1,21 @@
 package io;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.DataOutput;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.BufferUnderflowException;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import sys.DataBuffer;
 
-public class BitOutputStream extends FilterOutputStream
+public class BitOutputStream extends FilterOutputStream implements DataOutput
 {
+	DataBuffer buffer;
+	
 	public BitOutputStream(OutputStream out)
 	{
 		super(out);
 		// TODO Auto-generated constructor stub
 	}
 	
-	ConcurrentLinkedQueue<Boolean> buffer;
-	
-	private byte toByte(boolean b){
-		return (byte) (b?1:0);
-	}
-	private byte getNextByte() throws IOException
-	{
-		if(buffer.size()<8)
-			throw new IOException("Buffer size too small.");
-		boolean[] bits = new boolean[8];
-		for(int i=0;i<8;++i)
-			bits[i]=buffer.poll();
-		return getByte(bits);
-	}
 	@Override
 	public void write(int b) throws IOException
 	{
