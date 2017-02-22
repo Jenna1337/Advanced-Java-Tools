@@ -12,7 +12,7 @@ public class SpecConstant implements MathSymbol<Object>
 		
 		private SpecConstEnum(String original, String replacement, boolean isleft)
 		{
-			new SpecConstant(original, replacement, isleft);
+			new SpecConstant(original, replacement, isleft).registerSymbol();
 		}
 	}
 	static volatile char privuse = '\uE011';
@@ -31,7 +31,6 @@ public class SpecConstant implements MathSymbol<Object>
 		orig=original;
 		repl=replacement;
 		sd = left;
-		registerSymbol();
 	}
 	public Object[] getArgs()
 	{

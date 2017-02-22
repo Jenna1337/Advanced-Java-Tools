@@ -948,7 +948,6 @@ public static&nbsp;void&nbsp;runFinalizersOnExit(boolean&nbsp;value)</pre>
 <a href="../../java/lang/Runtime.html#gc()"><code>Runtime.gc()</code></a>, 
 <a href="../../java/lang/SecurityManager.html#checkExit(int)"><code>SecurityManager.checkExit(int)</code></a></dd></dl>
 	 */
-	@SuppressWarnings("deprecation")
 	@Deprecated
 	public static void runFinalizersOnExit(boolean value)
 	{

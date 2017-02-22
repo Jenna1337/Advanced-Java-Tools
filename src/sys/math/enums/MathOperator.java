@@ -97,7 +97,7 @@ public enum MathOperator implements MathSymbol<Character>
 	{
 		fn=funcname;
 		opc=SpecConstant.privuse++;
-		new SpecConstant(op, ""+opc, sidearg);
+		new SpecConstant(op, ""+opc, sidearg).registerSymbol();
 		prio=priority;
 		numargs=(char)args;
 		sarg=0;
@@ -107,7 +107,7 @@ public enum MathOperator implements MathSymbol<Character>
 	{
 		fn=funcname;
 		opc=SpecConstant.privuse++;
-		new SpecConstant(op, ""+opc, true);
+		new SpecConstant(op, ""+opc, true).registerSymbol();
 		prio=priority;
 		numargs=(char)args;
 		sarg=sidearg;
