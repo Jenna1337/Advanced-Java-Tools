@@ -25,25 +25,6 @@ import sys.math.Math11;
  **************************/
 public class System
 {
-	public static int binarySearch(Integer[] a, Integer key)
-	{
-		int min=0, max=a.length, premin, premax;
-		while(true)
-		{
-			premin=min; premax=max;
-			System.out.println("min="+min+" max="+max);
-			//TODO fix
-			Integer mid=(max+min)/2;
-			if(a[mid]==key)
-				return mid;
-			else if(a[mid]>key)
-				max=mid;
-			else if(a[mid]<key)
-				min=mid;
-			if(premin==min && premax==max)
-				return -1;
-		}
-	}
 	protected static boolean logging=false;
 	public static void logStart()
 	{
@@ -67,7 +48,7 @@ public class System
 		while(s>=c-(l/0.000000001))
 			c = System.nanoTime();
 	}
-	private static java.io.PrintStream log;
+	private static PrintStream log;
 	/**Writes <code>text</code> to the log file.<br>
 	 * <b>The method <code>logStart()</code> must be run before this method is run!</b>
 	 * @throws Exception **/
@@ -81,11 +62,11 @@ public class System
 	{
 		return "";//new java.text.SimpleDateFormat("yyyyMMdd_HHmm-ss_SSS").format(System.currentTimeMillis());
 	}
-	private static java.io.PrintStream CreateLogPrintStream()
+	private static PrintStream CreateLogPrintStream()
 	{
 		try
 		{
-			java.io.PrintStream logc = new java.io.PrintStream(new File("System_"+getDateTime()+".log"),"UTF-16");
+			PrintStream logc = new PrintStream(new File("System_"+getDateTime()+".log"),"UTF-16");
 			return logc;
 		}
 		catch (Exception e)
@@ -118,20 +99,20 @@ public class System
 	public static void printStackTrace(PrintWriter s)
 	{
 		StackTraceElement[] stack = new Throwable().getStackTrace();
-		String out = "Current location:";
+		String str = "Current location:";
 		for(int i=1; i<stack.length; ++i)
-			out += System.lineSeparator() + "at " + stack[i].toString();
-		s.println(out);
+			str += System.lineSeparator() + "at " + stack[i].toString();
+		s.println(str);
 	}
 	
 	/**Prints the current stack.**/
 	public static void printStackTrace(PrintStream s)
 	{
 		StackTraceElement[] stack = new Throwable().getStackTrace();
-		String out = "Current location:";
+		String str = "Current location:";
 		for(int i=1; i<stack.length; ++i)
-			out += System.lineSeparator() + "at " + stack[i].toString();
-		s.println(out);
+			str += System.lineSeparator() + "at " + stack[i].toString();
+		s.println(str);
 	}
 	
 	/**Evaluates an equation.**/

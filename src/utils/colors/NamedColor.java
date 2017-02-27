@@ -15,7 +15,7 @@ public class NamedColor extends Color
 	 */
 	private static ArrayList<NamedColor> getColors()
 	{
-		Field[] fields = NamedColorConstants.class.getDeclaredFields(); //TODO
+		Field[] fields = NamedColorConstants.class.getDeclaredFields();
 		ArrayList<NamedColor> arr = new java.util.ArrayList<NamedColor>();
 		for(Field f : fields)
 		{

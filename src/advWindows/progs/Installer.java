@@ -26,7 +26,6 @@ public class Installer extends JFrame implements ActionListener
 		{
 			this.add(new Label("Welcome!"));
 			this.add(new Label("Click next to begin intalling "+scname+"."));
-			// TODO Auto-generated constructor stub
 		}
 	}
 	private class PanelSeleDir extends Panel
