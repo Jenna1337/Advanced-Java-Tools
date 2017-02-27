@@ -179,11 +179,66 @@ public class BitInputStream extends FilterInputStream implements DataInput
 	{
 		return buffer.getDouble();
 	}
-	
+	/**
+	 * Reads the next line of text from the input stream. It reads successive
+	 * characters, until it encounters a line terminator or end of file; the
+	 * characters read are then returned as a {@code String}. 
+	 * <p>
+	 * If end of file is encountered before even one character can be read,
+	 * then {@code null} is returned. If the character {@code '\n'} is
+	 * encountered, it is discarded and reading ceases. If the character
+	 * {@code '\r'} is encountered, it is discarded and, if the following
+	 * character is {@code '\n'}, then that is discarded also; reading then
+	 * ceases. If end of file is encountered before either of the characters
+	 * {@code '\n'} and {@code '\r'} is encountered, reading ceases. Once
+	 * reading has ceased, a {@code String} is returned that contains all the
+	 * characters read and not discarded, taken in order.
+	 *
+	 * @return the next line of text from the input stream,
+	 *         or {@code null} if the end of file is
+	 *         encountered before a character can be read.
+	 * @exception  IOException  if an I/O error occurs.
+	 */
+	public String readLineChars()
+	{
+		String str = "";
+		char c = '0';
+		while(!buffer.isEmpty()){
+			c = buffer.getChar();
+			if(c != '\n' && c != '\r')
+				str += c;
+			else if(c == '\n')
+				break;
+			else if(c == '\r'){
+				if(!buffer.isEmpty() && buffer.peekChar()=='\n')
+					buffer.getChar();
+				break;
+			}
+		}
+		return str;
+	}
+	/**
+	 * {@inheritDoc}
+     * @deprecated This method does not properly convert bytes to characters.
+	 */
+	@Deprecated
 	public String readLine() throws IOException
 	{
-		// TODO Auto-generated method stub
-		return null;
+		String str = "";
+		char c = '0';
+		while(!buffer.isEmpty()){
+			c = (char) buffer.getByte();
+			if(c != '\n' && c != '\r')
+				str += c;
+			else if(c == '\n')
+				break;
+			else if(c == '\r'){
+				if(!buffer.isEmpty() && ((char)buffer.peekByte())=='\n')
+					buffer.getByte();
+				break;
+			}
+		}
+		return str;
 	}
 	
 	public String readUTF() throws IOException
