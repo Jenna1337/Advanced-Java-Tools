@@ -1,4 +1,4 @@
-package utils;
+package utils.colors;
 
 import java.awt.Color;
 import java.util.ArrayList;

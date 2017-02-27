@@ -1,7 +1,9 @@
-package utils;
+package utils.primitives;
 
 import java.lang.reflect.Field;
 import java.util.Map;
+import utils.ClassUtils;
+import utils.StringUtils;
 
 public class CharacterUtils
 {

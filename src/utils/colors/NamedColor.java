@@ -1,4 +1,4 @@
-package tools.colors;
+package utils.colors;
 
 import java.awt.Color;
 import java.lang.reflect.Field;

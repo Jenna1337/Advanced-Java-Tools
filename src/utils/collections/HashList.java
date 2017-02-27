@@ -1,4 +1,4 @@
-package utils;
+package utils.collections;
 
 import java.util.AbstractList;
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package tools;
+package utils.collections;
 
 /**<pre>
 Structure             | Order   | Unique | Associative | Bounded | Null   | Thread-safe | Blocking | Type
@@ -45,9 +45,9 @@ WeakHashMap           | no      | no     | yes         | no      | yes    | no  
 ----------------------+---------+--------+-------------+---------+--------+-------------+----------+---------------
 Structure             | Ordered | Unique | Associative | Bounded | Null   | Thread-safe | Blocking | Type
 </pre>*/
-public class CollectionTools
+public class CollectionUtils
 {
-	private CollectionTools()
+	private CollectionUtils()
 	{
 	}
 }

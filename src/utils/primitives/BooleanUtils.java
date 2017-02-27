@@ -1,4 +1,4 @@
-package utils;
+package utils.primitives;
 
 public class BooleanUtils
 {
