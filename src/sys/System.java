@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import sys.math.Math11;
+import sys.math.MathEval;
 
 /***************************
  * <div class="block">The <code>System</code> class contains several useful class fields
@@ -118,7 +118,7 @@ public class System
 	/**Evaluates an equation.**/
 	public static Object eval(String quest)
 	{
-		return Math11.eval(quest.trim()).toString();
+		return MathEval.eval(quest.trim()).toString();
 	}
 	
 	

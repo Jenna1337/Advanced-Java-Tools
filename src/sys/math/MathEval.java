@@ -6,7 +6,14 @@ import sys.math.enums.MathOperator;
 import sys.math.enums.MathSymbols;
 import sys.math.numbertypes.SuperNumber;
 
-public class Math11
+/**
+ * A class containing an {@link #eval(String)} that evaluates a mathematical
+ * expression. 
+ * @author jonah.sloan
+ * @version 14
+ * @see #eval(String)
+ */
+public class MathEval
 {
 	/**
 	 * @see MathBrackets

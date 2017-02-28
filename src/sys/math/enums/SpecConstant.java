@@ -1,14 +1,14 @@
 package sys.math.enums;
 
-import sys.math.Math11;
+import sys.math.MathEval;
 
 public class SpecConstant implements MathSymbol<Object>
 {
 	private static enum SpecConstEnum
 	{
-		SquareRootSymbol (Math11.NID+"^(1/2)", "\u221A", true),
-		CubeRootSymbol   (Math11.NID+"^(1/3)", "\u221B", true),
-		FourthRootSymbol (Math11.NID+"^(1/4)", "\u221C", true);
+		SquareRootSymbol (MathEval.NID+"^(1/2)", "\u221A", true),
+		CubeRootSymbol   (MathEval.NID+"^(1/3)", "\u221B", true),
+		FourthRootSymbol (MathEval.NID+"^(1/4)", "\u221C", true);
 		
 		private SpecConstEnum(String original, String replacement, boolean isleft)
 		{
