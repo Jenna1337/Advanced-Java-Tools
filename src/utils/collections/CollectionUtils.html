@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Collections</title>
+		<meta charset="UTF-8"/>
+		<style>
+			table {
+				border-collapse: collapse;
+			}
+			td + td { border-left: 1px solid; }
+			tr + tr { border-top: 1px solid; }
+			th {
+				text-align: left;
+			}
+			td, th {
+				padding-bottom: 2px;
+				padding-top: 2px;
+				padding-left: 5px;
+				padding-right: 5px;
+			}
+		</style>
+		<script type="text/javascript">
+			function doinit(){
+				ColorEnum = {
+					""                : "black",
+					"0"               : "tomato",
+					"1 &lt;&lt; 29"   : "coral",
+					"&lt;Delayed&gt;" : "lightgrey",
+					"&lt;E&gt;"       : "khaki",
+					"&lt;Enum&gt;"    : "peru",
+					"&lt;Enum,V&gt;"  : "peru",
+					"&lt;K,V&gt;"     : "darkkhaki",
+					"boolean"         : "sandybrown",
+					"Declaration"     : "peru",
+					"delay"           : "lightgrey",
+					"depends"         : "lightyellow",
+					"deque"           : "DarkSeaGreen",
+					"end"             : "cornflowerblue",
+					"FIFO"            : "lightskyblue",
+					"fixed"           : "salmon",
+					"Insertion"       : "palevioletred",
+					"Key"             : "wheat",
+					"Key =="          : "orange",
+					"LIFO"            : "deepskyblue",
+					"N/A"             : "tan",
+					"Natural"         : "orchid",
+					"no"              : "lightpink",
+					"Priority"        : "lightblue",
+					"proper sequence" : "plum",
+					"sequential"      : "violet",
+					"String,String"   : "gold",
+					"varies"          : "lightyellow",
+					"wherever"        : "lightgreen",
+					"yes"             : "lightgreen",
+				}
+				var cells = document.getElementsByTagName("td");
+				for(var i=0;i<cells.length;++i){
+					if(cells[i].previousSibling == null)
+						continue;
+					/*if(cells[i].nextSibling == null)
+						continue;/**/
+					
+					var txt=cells[i].innerHTML.trim();
+					var bg = ColorEnum[txt];
+					if(typeof(bg)!="undefined")
+						cells[i].style.backgroundColor = bg;
+					else
+						console.log("No color found for \""+txt+"\"");
+				}
+			}
+		</script>
+	</head>
+	<body onload="doinit()">
+		<table>
+			<tr><th>Structure              </th><th> I/O Order </th><th> Iteration Order </th><th> Unique </th><th> Associative </th><th> Bounded       </th><th> Null Allowed </th><th> Thread-safe </th><th> Blocking </th><th> Type</th></tr>
+			<tr><td>AbstractCollection     </td><td> varies    </td><td> varies          </td><td> varies </td><td> varies      </td><td> varies        </td><td> varies       </td><td> varies      </td><td> varies   </td><td> &lt;E&gt;</td></tr>
+			<tr><td>AbstractList           </td><td> wherever  </td><td> proper sequence </td><td> varies </td><td> no          </td><td> varies        </td><td> varies       </td><td> varies      </td><td> varies   </td><td> &lt;E&gt;</td></tr>
+			<tr><td>AbstractMap            </td><td> wherever  </td><td> no              </td><td> Key    </td><td> yes         </td><td> varies        </td><td> varies       </td><td> varies      </td><td> varies   </td><td> &lt;K,V&gt;</td></tr>
+			<tr><td>AbstractQueue          </td><td> end       </td><td> yes             </td><td> varies </td><td> no          </td><td> varies        </td><td> varies       </td><td> varies      </td><td> varies   </td><td> &lt;E&gt;</td></tr>
+			<tr><td>AbstractSequentialList </td><td> wherever  </td><td> sequential      </td><td> varies </td><td> no          </td><td> varies        </td><td> varies       </td><td> varies      </td><td> varies   </td><td> &lt;E&gt;</td></tr>
+			<tr><td>AbstractSet            </td><td> wherever  </td><td> varies          </td><td> yes    </td><td> no          </td><td> varies        </td><td> varies       </td><td> varies      </td><td> varies   </td><td> &lt;E&gt;</td></tr>
+			<tr><td>ArrayBlockingQueue     </td><td> FIFO      </td><td> FIFO            </td><td> no     </td><td> no          </td><td> yes           </td><td> no           </td><td> yes         </td><td> yes      </td><td> &lt;E&gt;</td></tr>
+			<tr><td>ArrayDeque             </td><td> deque     </td><td> deque           </td><td> no     </td><td> no          </td><td> no            </td><td> no           </td><td> no          </td><td> no       </td><td> &lt;E&gt;</td></tr>
+			<tr><td>ArrayList              </td><td> wherever  </td><td> proper sequence </td><td> no     </td><td> no          </td><td> no            </td><td> yes          </td><td> no          </td><td> no       </td><td> &lt;E&gt;</td></tr>
+			<tr><td>BitSet                 </td><td> wherever  </td><td> no              </td><td> no     </td><td> no          </td><td> no            </td><td> no           </td><td> no          </td><td> no       </td><td> boolean</td></tr>
+			<tr><td>ConcurrentHashMap      </td><td> wherever  </td><td> no              </td><td> Key    </td><td> yes         </td><td> no            </td><td> no           </td><td> yes         </td><td> no       </td><td> &lt;K,V&gt;</td></tr>
+			<tr><td>ConcurrentLinkedDeque  </td><td> deque     </td><td> deque           </td><td> no     </td><td> no          </td><td> no            </td><td> no           </td><td> yes         </td><td> no       </td><td> &lt;E&gt;</td></tr>
+			<tr><td>ConcurrentLinkedQueue  </td><td> FIFO      </td><td> FIFO            </td><td> no     </td><td> no          </td><td> no            </td><td> no           </td><td> yes         </td><td> no       </td><td> &lt;E&gt;</td></tr>
+			<tr><td>ConcurrentSkipListMap  </td><td> wherever  </td><td> Natural         </td><td> Key    </td><td> yes         </td><td> no            </td><td> no           </td><td> yes         </td><td> no       </td><td> &lt;K,V&gt;</td></tr>
+			<tr><td>ConcurrentSkipListSet  </td><td> wherever  </td><td> Natural         </td><td> yes    </td><td> no          </td><td> no            </td><td> no           </td><td> yes         </td><td> no       </td><td> &lt;E&gt;</td></tr>
+			<tr><td>CopyOnWriteArrayList   </td><td> wherever  </td><td> proper sequence </td><td> no     </td><td> no          </td><td> no            </td><td> yes          </td><td> yes         </td><td> N/A      </td><td> &lt;E&gt;</td></tr>
+			<tr><td>CopyOnWriteArraySet    </td><td> wherever  </td><td> Insertion       </td><td> yes    </td><td> no          </td><td> no            </td><td> yes          </td><td> yes         </td><td> N/A      </td><td> &lt;E&gt;</td></tr>
+			<tr><td>DelayQueue             </td><td> delay     </td><td> delay           </td><td> no     </td><td> no          </td><td> no            </td><td> no           </td><td> yes         </td><td> yes      </td><td> &lt;Delayed&gt;</td></tr>
+			<tr><td>EnumMap                </td><td> N/A       </td><td> Declaration     </td><td> Key    </td><td> yes         </td><td> fixed         </td><td> no           </td><td> no          </td><td> no       </td><td> &lt;Enum,V&gt;</td></tr>
+			<tr><td>EnumSet                </td><td> N/A       </td><td> Declaration     </td><td> yes    </td><td> no          </td><td> fixed         </td><td> no           </td><td> no          </td><td> no       </td><td> &lt;Enum&gt;</td></tr>
+			<tr><td>HashMap                </td><td> wherever  </td><td> no              </td><td> Key    </td><td> yes         </td><td> no            </td><td> yes          </td><td> no          </td><td> no       </td><td> &lt;K,V&gt;</td></tr>
+			<tr><td>HashSet                </td><td> wherever  </td><td> no              </td><td> yes    </td><td> no          </td><td> no            </td><td> yes          </td><td> no          </td><td> no       </td><td> &lt;E&gt;</td></tr>
+			<tr><td>Hashtable              </td><td> wherever  </td><td> no              </td><td> Key    </td><td> yes         </td><td> no            </td><td> no           </td><td> no          </td><td> no       </td><td> &lt;K,V&gt;</td></tr>
+			<tr><td>IdentityHashMap        </td><td> wherever  </td><td> no              </td><td> Key == </td><td> yes         </td><td> 1 &lt;&lt; 29 </td><td> yes          </td><td> no          </td><td> no       </td><td> &lt;K,V&gt;</td></tr>
+			<tr><td>LinkedBlockingDeque    </td><td> deque     </td><td> deque           </td><td> no     </td><td> no          </td><td> depends       </td><td> no           </td><td> yes         </td><td> yes      </td><td> &lt;E&gt;</td></tr>
+			<tr><td>LinkedBlockingQueue    </td><td> FIFO      </td><td> FIFO            </td><td> no     </td><td> no          </td><td> depends       </td><td> no           </td><td> yes         </td><td> yes      </td><td> &lt;E&gt;</td></tr>
+			<tr><td>LinkedHashMap          </td><td> wherever  </td><td> Insertion       </td><td> yes    </td><td> yes         </td><td> no            </td><td> yes          </td><td> no          </td><td> no       </td><td> &lt;K,V&gt;</td></tr>
+			<tr><td>LinkedHashSet          </td><td> wherever  </td><td> Insertion       </td><td>        </td><td> no          </td><td> no            </td><td> yes          </td><td> no          </td><td> no       </td><td> &lt;E&gt;</td></tr>
+			<tr><td>LinkedList             </td><td> deque     </td><td> deque           </td><td> no     </td><td> no          </td><td> no            </td><td> yes          </td><td> no          </td><td> no       </td><td> &lt;E&gt;</td></tr>
+			<tr><td>LinkedTransferQueue    </td><td> FIFO      </td><td> FIFO            </td><td> no     </td><td> no          </td><td> no            </td><td> no           </td><td> no          </td><td> no       </td><td> &lt;E&gt;</td></tr>
+			<tr><td>PriorityBlockingQueue  </td><td> Priority  </td><td> no              </td><td> no     </td><td> no          </td><td> no            </td><td> no           </td><td> yes         </td><td> yes      </td><td> &lt;E&gt;</td></tr>
+			<tr><td>PriorityQueue          </td><td> Priority  </td><td> Natural         </td><td> no     </td><td> no          </td><td> no            </td><td> no           </td><td> no          </td><td> no       </td><td> &lt;E&gt;</td></tr>
+			<tr><td>Properties             </td><td> N/A       </td><td> N/A             </td><td> Key    </td><td> yes         </td><td> fixed         </td><td> no           </td><td> yes         </td><td> no       </td><td> String,String</td></tr>
+			<tr><td>Stack                  </td><td> LIFO      </td><td> proper sequence </td><td> no     </td><td> no          </td><td> no            </td><td> yes          </td><td> no          </td><td> no       </td><td> &lt;E&gt;</td></tr>
+			<tr><td>SynchronousQueue       </td><td> N/A       </td><td> N/A             </td><td> N/A    </td><td> N/A         </td><td> 0             </td><td> no           </td><td> yes         </td><td> yes      </td><td> &lt;E&gt;</td></tr>
+			<tr><td>TreeMap                </td><td> wherever  </td><td> Natural         </td><td> Key    </td><td> yes         </td><td> no            </td><td> no           </td><td> no          </td><td> no       </td><td> &lt;K,V&gt;</td></tr>
+			<tr><td>TreeSet                </td><td> wherever  </td><td> Natural         </td><td> yes    </td><td> no          </td><td> no            </td><td> no           </td><td> no          </td><td> no       </td><td> &lt;E&gt;</td></tr>
+			<tr><td>Vector                 </td><td> wherever  </td><td> proper sequence </td><td> no     </td><td> no          </td><td> no            </td><td> yes          </td><td> yes         </td><td>          </td><td> &lt;E&gt;</td></tr>
+			<tr><td>WeakHashMap            </td><td> wherever  </td><td> no              </td><td> Key    </td><td> yes         </td><td> no            </td><td> yes          </td><td> no          </td><td> no       </td><td> &lt;K,V&gt;</td></tr>
+			<tr><th>Structure              </th><th> I/O Order </th><th> Iteration Order </th><th> Unique </th><th> Associative </th><th> Bounded       </th><th> Null Allowed </th><th> Thread-safe </th><th> Blocking </th><th> Type</th></tr>
+		</table>
+	</body>
+</html>
