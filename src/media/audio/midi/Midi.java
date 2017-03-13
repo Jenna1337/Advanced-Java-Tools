@@ -1,6 +1,9 @@
 package media.audio.midi;
 
-public class Midi
+import media.InvalidDataException;
+import media.audio.Audio;
+
+public class MIDI extends Audio
 {
 	//  https://www.csie.ntu.edu.tw/~r92092/ref/midi/
 	
@@ -8,9 +11,15 @@ public class Midi
 	MTrk[] tracks;
 	
 	/**
-	 * @param bytes The bytes of the midi file 
+	 * @param bytes The bytes of the file 
+	 * @throws InvalidDataException 
 	 */
-	public Midi(byte[] bytes) throws InvalidMidiException
+	public MIDI(byte[] bytes) throws InvalidDataException
+	{
+		this.loadBytes(bytes);
+	}
+
+	public void loadBytes(byte[] bytes) throws InvalidDataException
 	{
 		try
 		{
@@ -18,7 +27,7 @@ public class Midi
 		}
 		catch(ArrayIndexOutOfBoundsException e)
 		{
-			throw new InvalidMidiException(e);
+			throw new InvalidDataException(e);
 		}
 	}
 }

@@ -1,33 +1,33 @@
-package media.audio.midi;
+package media;
 
-public class InvalidMidiException extends Exception
+public class InvalidDataException extends Exception
 {
     /**
-     * Constructs a new InvalidMidiException with {@code null} as its detail message.
+     * Constructs a new InvalidDataException with {@code null} as its detail message.
      * The cause is not initialized, and may subsequently be initialized by a
      * call to {@link #initCause}.
      */
-    public InvalidMidiException() {
+    public InvalidDataException() {
         super();
     }
 
     /**
-     * Constructs a new InvalidMidiException with the specified detail message.  The
+     * Constructs a new InvalidDataException with the specified detail message.  The
      * cause is not initialized, and may subsequently be initialized by
      * a call to {@link #initCause}.
      *
      * @param   message   the detail message. The detail message is saved for
      *          later retrieval by the {@link #getMessage()} method.
      */
-    public InvalidMidiException(String message) {
+    public InvalidDataException(String message) {
         super(message);
     }
 
     /**
-     * Constructs a new InvalidMidiException with the specified detail message and
+     * Constructs a new InvalidDataException with the specified detail message and
      * cause.  <p>Note that the detail message associated with
      * {@code cause} is <i>not</i> automatically incorporated in
-     * this InvalidMidiException's detail message.
+     * this InvalidDataException's detail message.
      *
      * @param  message the detail message (which is saved for later retrieval
      *         by the {@link #getMessage()} method).
@@ -37,15 +37,15 @@ public class InvalidMidiException extends Exception
      *         unknown.)
      * @since  1.4
      */
-    public InvalidMidiException(String message, Throwable cause) {
+    public InvalidDataException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * Constructs a new InvalidMidiException with the specified cause and a detail
+     * Constructs a new InvalidDataException with the specified cause and a detail
      * message of <tt>(cause==null ? null : cause.toString())</tt> (which
      * typically contains the class and detail message of <tt>cause</tt>).
-     * This constructor is useful for InvalidMidiExceptions that are little more than
+     * This constructor is useful for InvalidDataExceptions that are little more than
      * wrappers for other throwables (for example, {@link
      * java.security.PrivilegedActionException}).
      *
@@ -55,12 +55,12 @@ public class InvalidMidiException extends Exception
      *         unknown.)
      * @since  1.4
      */
-    public InvalidMidiException(Throwable cause) {
+    public InvalidDataException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructs a new InvalidMidiException with the specified detail message,
+     * Constructs a new InvalidDataException with the specified detail message,
      * cause, suppression enabled or disabled, and writable stack
      * trace enabled or disabled.
      *
@@ -73,7 +73,7 @@ public class InvalidMidiException extends Exception
      *                           be writable
      * @since 1.7
      */
-    protected InvalidMidiException(String message, Throwable cause,
+    protected InvalidDataException(String message, Throwable cause,
                         boolean enableSuppression,
                         boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
