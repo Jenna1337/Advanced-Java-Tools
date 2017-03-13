@@ -1,4 +1,4 @@
-package utils;
+package utils.filesystem;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -9,6 +9,7 @@ import java.io.StringReader;
 import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
+import utils.StringUtils;
 
 public class FileUtils
 {
