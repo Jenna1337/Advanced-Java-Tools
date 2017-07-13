@@ -3,7 +3,7 @@ package media.audio.midi;
 import media.InvalidDataException;
 import media.audio.Audio;
 
-public class MIDI extends Audio
+public class Midi extends Audio
 {
 	//  https://www.csie.ntu.edu.tw/~r92092/ref/midi/
 	
@@ -14,7 +14,7 @@ public class MIDI extends Audio
 	 * @param bytes The bytes of the file 
 	 * @throws InvalidDataException 
 	 */
-	public MIDI(byte[] bytes) throws InvalidDataException
+	public Midi(byte[] bytes) throws InvalidDataException
 	{
 		this.loadBytes(bytes);
 	}
