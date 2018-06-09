@@ -1,7 +1,7 @@
 package sys.math;
 
 import java.math.BigInteger;
-import utils.StringUtils;
+import java.math.BigDecimal;
 
 public class NumberBuilder2
 {
@@ -196,13 +196,16 @@ public class NumberBuilder2
 		ostr=ostr.toLowerCase().replaceAll("unmillia", "millia");
 		if(!ostr.toLowerCase().endsWith("dec"))
 			ostr+="t";
-		return StringUtils.titleCase(ostr+"illion");
+		return (ostr+"illion");
 	}
-	public static String getName(java.math.BigDecimal val)
+	public static String getName(BigDecimal val)
 	{
+		boolean isNegative;
+		if(isNegative = (val.compareTo(BigDecimal.ZERO)<0))
+			val=val.negate();
 		String pln=val.toPlainString();
 		if(!pln.contains("."))
-			return getName(new BigInteger(pln));
+			return (isNegative?"negative ":"")+getName(new BigInteger(pln)).toLowerCase();
 		
 		String[] vals = pln.split("\\.");
 		
@@ -212,16 +215,19 @@ public class NumberBuilder2
 		/*for(int i=0; i<vals[1].length(); ++i)
 			zval+="0";*/
 		if(zval.equals("1"))
-			return getName(ival);
+			return (isNegative?"negative ":"")+getName(ival).toLowerCase();
 		String zres = getName(new BigInteger(zval)).replaceAll(" ", "-").trim()+"th";
 		if(!dval.equals(ONE))
 			zres+="s";
-		return StringUtils.titleCase(getName(ival)+" and "+getName(dval)+" "+zres);
+		return (isNegative?"negative ":"")+(getName(ival)+" and "+getName(dval)+" "+zres).toLowerCase();
 	}
 	public static String getName(BigInteger val)
 	{
+		boolean isNegative;
+		if(isNegative = (val.compareTo(ZERO)<0))
+			val=val.negate();
 		if(val.equals(ZERO))
-			return "Zero";
+			return "zero";
 		String text=""+val.toString();
 		String ostr="";
 		BigInteger z=ZERO;
@@ -266,10 +272,14 @@ public class NumberBuilder2
 				}
 			}
 		}
-		return StringUtils.titleCase(ostr.trim());
+		return (isNegative?"negative ":"")+(ostr.trim()).toLowerCase();
 	}
 	public static String getName(Number val)
 	{
-		return getName(new java.math.BigDecimal(val.toString()));
+		return getName(new BigDecimal(val.toString())).toLowerCase();
+	}
+	public static String getName(String val)
+	{
+		return getName(new BigDecimal(val)).toLowerCase();
 	}
 }
