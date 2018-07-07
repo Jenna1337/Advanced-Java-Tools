@@ -81,7 +81,7 @@ public class NumberBuilder2
 		Noni;
 		public String toString()
 		{
-			return this.equals(ZERO) ? "" : this.name();
+			return this.equals(Error) ? "" : this.name();
 		}
 	}
 	private static enum MilOnes{
@@ -97,7 +97,7 @@ public class NumberBuilder2
 		Novem;
 		public String toString()
 		{
-			return this.equals(ZERO) ? "" : this.name();
+			return this.equals(Error) ? "" : this.name();
 		}
 	}
 	private static enum MilTens{
@@ -113,7 +113,7 @@ public class NumberBuilder2
 		Nonagin;
 		public String toString()
 		{
-			return this.equals(ZERO) ? "" : this.name();
+			return this.equals(Error) ? "" : this.name();
 		}
 	}
 	private static enum MilHundreds{
@@ -129,7 +129,7 @@ public class NumberBuilder2
 		Nongen;
 		public String toString()
 		{
-			return this.equals(ZERO) ? "" : this.name();
+			return this.equals(Error) ? "" : this.name();
 		}
 	}
 	private static String getSet3(String str3)
