@@ -1,7 +1,7 @@
 package sys.math;
 
-import java.math.BigInteger;
-import java.math.BigDecimal;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NumberBuilder2
 {
@@ -145,7 +145,7 @@ public class NumberBuilder2
 		String out="";
 		try{
 			if(hundred!=0)
-				out+=Ones.values()[hundred]+" "+getSetMil(NEGONE)+" ";
+				out+=Ones.values()[hundred]+" "+getSetMil(-1)+" ";
 		}
 		catch(ArrayIndexOutOfBoundsException aioobe){
 			
@@ -158,80 +158,60 @@ public class NumberBuilder2
 		}
 		return out.trim();
 	}
-	public static final BigInteger ONE = BigInteger.ONE,
-			ZERO = BigInteger.ZERO,
-			NEGONE = ONE.negate(),
-			TEN = BigInteger.TEN,
-			HUNDRED = TEN.pow(2),
-			THOUSAND = TEN.pow(3);
-	private static String getSetMil(BigInteger zero3)
-	{
+	private static String getSetMil(int z){
 		try{
-			if(zero3.compareTo(NEGONE)<0)
-				throw new IllegalArgumentException(""+zero3);
-			if(zero3.compareTo(ONE)<0)
-				return MilSpec.values()[zero3.intValueExact()+1].toString();
-			if(zero3.compareTo(TEN)<0)
-				return MilFirst.values()[zero3.intValueExact()].toString()+"llion";
+			if(z<-1)
+				throw new IllegalArgumentException(""+z);
+			if(z<1)
+				return MilSpec.values()[z+1].toString();
+			if(z<10)
+				return MilFirst.values()[z].toString()+"llion";
 		}
 		catch(ArithmeticException ae){}
 		String ostr="";
 		do
 		{
-			int o=zero3.remainder(TEN).intValue();
-			int t=zero3.divide(TEN).remainder(TEN).intValue();
-			int h=zero3.divide(HUNDRED).remainder(TEN).intValue();
-			//System.out.println(h+""+t+""+o);
-			//hot
+			int o=z%10;
+			int t=z/10%10;
+			int h=z/100%10;
 			String word = MilHundreds.values()[h].toString()+
 					MilOnes.values()[o].toString()+
 					MilTens.values()[t].toString();
 			ostr=word+ostr;
-			if(zero3.compareTo(THOUSAND)>=0)
+			if(z>=1000)
 				ostr=MilSpec.values()[2]+ostr;
-			zero3=zero3.divide(THOUSAND);
+			z=z/1000;
 		}
-		while(zero3.compareTo(BigInteger.ZERO)>0);
+		while(z>0);
 		
 		ostr=ostr.toLowerCase().replaceAll("unmillia", "millia");
 		if(!ostr.toLowerCase().endsWith("dec"))
 			ostr+="t";
 		return (ostr+"illion");
 	}
-	public static String getName(BigDecimal val)
-	{
-		boolean isNegative;
-		if(isNegative = (val.compareTo(BigDecimal.ZERO)<0))
-			val=val.negate();
-		String pln=val.toPlainString();
-		if(!pln.contains("."))
-			return (isNegative?"negative ":"")+getName(new BigInteger(pln)).toLowerCase();
-		
-		String[] vals = pln.split("\\.");
-		
-		BigInteger ival = new BigInteger(vals[0]);
-		BigInteger dval = new BigInteger(vals[1]);
-		String zval = "1"+vals[1].replaceAll("\\d", "0");
-		/*for(int i=0; i<vals[1].length(); ++i)
-			zval+="0";*/
-		if(zval.equals("1"))
-			return (isNegative?"negative ":"")+getName(ival).toLowerCase();
-		String zres = getName(new BigInteger(zval)).replaceAll(" ", "-").trim()+"th";
-		if(!dval.equals(ONE))
-			zres+="s";
-		return (isNegative?"negative ":"")+(getName(ival)+" and "+getName(dval)+" "+zres).toLowerCase();
+	private static Matcher REGEX_ZERO = Pattern.compile("0*").matcher(""),
+		REGEX_ZEROS_ONE = Pattern.compile("0*1").matcher(""),
+		REGEX_NUMBER = Pattern.compile("-?\\d*\\.?\\d*").matcher("");
+	private static boolean matchesRegex(String text, Matcher regx) {
+		return regx.reset(text).matches();
 	}
-	public static String getName(BigInteger val)
+	private static String wordify(String val)
 	{
+		if(!matchesRegex(val, REGEX_NUMBER))
+			throw new NumberFormatException("\""+val+"\" is not a valid number.");
 		boolean isNegative;
-		if(isNegative = (val.compareTo(ZERO)<0))
-			val=val.negate();
-		if(val.equals(ZERO))
+		if(isNegative = (val.charAt(0)=='-'))
+			val=val.substring(1);
+		String[] parts = val.split("\\.");
+		return (isNegative?"negative ":"")+getNamePart(parts[0])+(parts.length>1?getNamePartDecimal(parts[1]):"");
+	}
+	private static String getNamePart(String pln)
+	{
+		if(matchesRegex(pln,REGEX_ZERO))
 			return "zero";
-		String text=""+val.toString();
+		String text=""+pln.toString();
 		String ostr="";
-		BigInteger z=ZERO;
-		for(int i=text.length();; i-=3, z=z.add(ONE))
+		for(int i=text.length(), z=0;; i-=3, ++z)
 		{
 			try{
 				ostr=getSet3(text.substring(i-3, i))+ostr;
@@ -272,14 +252,36 @@ public class NumberBuilder2
 				}
 			}
 		}
-		return (isNegative?"negative ":"")+(ostr.trim()).toLowerCase();
+		return ostr.trim().toLowerCase();
+	}
+	private static String getNamePartDecimal(String val) {
+		if(val.length()<=0)
+			return "";
+		String zval;
+		{
+			char[]  chrs = new char[val.length()+1];
+			chrs[0] = '1';
+			for (int i = 1, len = chrs.length; i < len; i++)
+				chrs[i] = '0';
+			zval = new String(chrs);
+		}
+		String zres = getName(zval).replaceFirst("^one ", "").replaceAll(" ", "-").trim()+"th";
+		if(!matchesRegex(val, REGEX_ZEROS_ONE))
+			zres+="s";
+		return " and "+getName(val)+" "+zres;
+	}
+	public static String getName(java.math.BigDecimal val){
+		return wordify(val.toPlainString());
+	}
+	public static String getName(java.math.BigInteger val){
+		return wordify(val.toString());
 	}
 	public static String getName(Number val)
 	{
-		return getName(new BigDecimal(val.toString())).toLowerCase();
+		return wordify(val.toString());
 	}
 	public static String getName(String val)
 	{
-		return getName(new BigDecimal(val)).toLowerCase();
+		return wordify(val);
 	}
 }
