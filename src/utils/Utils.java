@@ -253,7 +253,7 @@ public class Utils
 			System.err.println("Partial: " + match);
 			System.err.println("While looking for \"" + parname + "\"");
 			System.err.println("Full text: %%STX%%" + rawjson + "%%ETX%%\n");
-			e.printStackTrace();
+			throw(e);
 		}
 		return match;
 	}
