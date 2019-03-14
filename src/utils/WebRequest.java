@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.GZIPInputStream;
 
@@ -46,22 +47,25 @@ public class WebRequest
 	
 	
 	
-	public static synchronized String GET(String url, String[]... optionalheaders) throws MalformedURLException, IOException
-	{
+	public static synchronized String GET(String url, String[]... optionalheaders) throws MalformedURLException, IOException{
 		return GET(new URL(url), optionalheaders);
 	}
-	public static synchronized String GET(URL url, String[]... optionalheaders) throws IOException
-	{
-		HttpURLConnection connection = request("GET", url, optionalheaders);
+	public static synchronized String GET(URL url, String[]... optionalheaders) throws IOException{
+		HttpURLConnection connection = request0("GET", url, optionalheaders);
 		return read(connection);
 	}
+	
+	public static synchronized WebResponse getResponse(String reqMethod, URL url, String[]... optionalheaders){
+		return new WebResponse(request0(reqMethod, url, optionalheaders));
+	}
+	
 	public static synchronized String POST(String url, String data, String[]... optionalheaders) throws MalformedURLException, IOException
 	{
 		return POST(new URL(url), data, optionalheaders);
 	}
 	public static synchronized String POST(URL url, String data, String[]... optionalheaders) throws IOException
 	{
-		HttpURLConnection connection = request("POST", url, optionalheaders);
+		HttpURLConnection connection = request0("POST", url, optionalheaders);
 		connection.setDoOutput(true);
 		send(connection, data);
 		if(connection.getResponseCode()==409)
@@ -73,13 +77,14 @@ public class WebRequest
 			return null;
 		}
 	}
+	
 	public static synchronized Map<String, List<String>> HEAD(String url, String[]... optionalheaders) throws MalformedURLException, IOException
 	{
 		return HEAD(new URL(url), optionalheaders);
 	}
 	public static synchronized Map<String, List<String>> HEAD(URL url, String[]... optionalheaders) throws IOException
 	{
-		HttpURLConnection connection = request("HEAD", url, optionalheaders);
+		HttpURLConnection connection = request0("HEAD", url, optionalheaders);
 		return connection.getHeaderFields();
 	}
 	public static void setDefaultHeaders(String[][] headers)
@@ -98,7 +103,7 @@ public class WebRequest
 		}
 		return connection;
 	}
-	public static HttpURLConnection request(String method, URL url, String[]... optionalheaders)
+	private static HttpURLConnection request0(String method, URL url, String[]... optionalheaders)
 	{
 		try{
 			HttpURLConnection connection = setHeaders((HttpURLConnection) url.openConnection(), defaultHeaders, optionalheaders);
@@ -114,7 +119,7 @@ public class WebRequest
 	 * @return The content read from the server.
 	 * @throws IOException if an IOException occurs.
 	 */
-	public static synchronized byte[] getRawBytes(HttpURLConnection connection) throws IOException
+	private static synchronized byte[] getRawBytes(HttpURLConnection connection) throws IOException
 	{
 		connection.connect();
 		String encoding = (connection.getContentEncoding()!=null) ? connection.getContentEncoding().toLowerCase() : "";
@@ -142,28 +147,8 @@ public class WebRequest
 	 * @return The content read from the server.
 	 * @throws IOException if an IOException occurs.
 	 */
-	private static synchronized String read(HttpURLConnection connection) throws IOException
-	{
+	private static synchronized String read(HttpURLConnection connection) throws IOException{
 		return Utils.rawBytesToString(getRawBytes(connection));
-		/*connection.connect();
-		String encoding = (connection.getContentEncoding()!=null) ? connection.getContentEncoding().toLowerCase() : "";
-		InputStream is = connection.getInputStream();
-		switch(encoding){
-			case "gzip":
-				is=new GZIPInputStream(is);
-				break;
-			case "deflate":
-				is=new DeflaterInputStream(is);
-				break;
-			default:
-				break;
-		}
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		String response_text="", line;
-		while((line=reader.readLine()) != null)
-			response_text+=line+System.lineSeparator();
-		reader.close();
-		return response_text;*/
 	}
 	/**
 	 * Sends the data to the server via the {@code connection}.
