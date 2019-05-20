@@ -1,7 +1,6 @@
 import advWindows.components.EasyButton;
 import advWindows.components.Position;
 import advWindows.panels.EasyPanel;
-import sys.System;
 
 
 

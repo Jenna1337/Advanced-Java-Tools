@@ -28,5 +28,6 @@ public class ActionMenuItem extends JMenuItem implements ActionListener
 		}
 		catch(Exception e){}
 	}
+	@SuppressWarnings("unused")
 	public void actionPerformed(ActionEvent arg0){}
 }

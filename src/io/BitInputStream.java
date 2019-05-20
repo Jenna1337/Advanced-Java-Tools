@@ -82,6 +82,7 @@ public class BitInputStream extends FilterInputStream implements DataInput
 		in.close();
 	}
 	
+	@SuppressWarnings("unused")
 	@Override
 	public synchronized void mark(int readlimit) {}
 	

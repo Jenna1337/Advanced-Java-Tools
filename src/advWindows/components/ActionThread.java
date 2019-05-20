@@ -30,6 +30,8 @@ public class ActionThread extends AbstractAction implements KeyListener
 			this.thread.run();
 		}
 	}
+	@SuppressWarnings("unused")
 	public void keyReleased(KeyEvent e){}
+	@SuppressWarnings("unused")
 	public void keyTyped(KeyEvent e){}
 }

@@ -7,7 +7,7 @@ import java.awt.event.WindowListener;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial","unused"})
 public class ColorChooserPopUp extends JFrame implements WindowListener
 {
 	protected Color color;

@@ -10,8 +10,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import advWindows.panels.DrawingPanel;
-import sys.System;
 
+@SuppressWarnings("unused")
 public class KeyButton extends JToggleButton implements KeyListener, MouseListener
 {
 	private static final long serialVersionUID = 1L;

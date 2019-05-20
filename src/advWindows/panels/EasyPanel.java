@@ -38,10 +38,10 @@ import advWindows.AWTEventListenerInterface;
 import advWindows.components.ActionThread;
 import advWindows.components.EasyButton;
 import advWindows.components.Position;
-import sys.System;
 
 
 
+@SuppressWarnings("unused")
 public class EasyPanel implements AWTEventListenerInterface, Runnable
 {
 	private static Thread shutdownThread = null;

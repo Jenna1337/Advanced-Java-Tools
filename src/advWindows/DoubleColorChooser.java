@@ -12,10 +12,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import advWindows.AdvCaret;
 
-import sys.System;
-
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial","unused"})
 public class DoubleColorChooser extends JFrame implements WindowListener, ChangeListener
 {
 	protected Color fgColor;

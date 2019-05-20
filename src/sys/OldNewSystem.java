@@ -23,7 +23,9 @@ import sys.math.MathEval;
  <dl><dt><span class="strong">Since:</span></dt>
   <dd>JDK1.0</dd></dl>
  **************************/
-public class System
+@Deprecated
+@SuppressWarnings("all")
+public class OldNewSystem
 {
 	protected static boolean logging=false;
 	public static void logStart()

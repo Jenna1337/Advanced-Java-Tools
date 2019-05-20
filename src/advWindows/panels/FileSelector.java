@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 import advWindows.components.ActionButton;
 import advWindows.components.DefaultIcons;
 
+@SuppressWarnings("unused")
 public class FileSelector extends JPanel
 {
 	public static final String SELECTION_CHANGED = "SelectionChanged";

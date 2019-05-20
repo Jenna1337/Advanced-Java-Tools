@@ -11,7 +11,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial","unused"})
 public class SliderTextFieldPane extends JPanel
 {
 	private final JTextField text = new JTextField(5);

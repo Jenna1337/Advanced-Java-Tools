@@ -56,5 +56,6 @@ public class EasyButton implements ActionListener
 	{
 		button.setLocation(x, y);
 	}
+	@SuppressWarnings("unused")
 	public void actionPerformed(ActionEvent arg0){}
 }

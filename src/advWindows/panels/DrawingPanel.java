@@ -15,7 +15,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.MouseInputListener;
 import javax.swing.filechooser.FileFilter;
 
-import sys.System;
 
 /**
 The DrawingPanel class provides a simple interface for drawing persistent
@@ -28,6 +27,7 @@ the Graphics object, setting the background color if they so choose.
 To ensure that the image is always displayed, a timer calls repaint at
 regular intervals.
  */
+@SuppressWarnings("all")
 public class DrawingPanel extends FileFilter implements ActionListener, MouseMotionListener, Runnable, WindowListener
 {
 	// inner class to represent one frame of an animated GIF

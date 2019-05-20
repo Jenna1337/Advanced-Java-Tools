@@ -1,6 +1,5 @@
 package utils.primitives;
 
-import sys.System;
 
 /**Contains several useful methods for converting bytes to other data types**/
 public class ByteUtils

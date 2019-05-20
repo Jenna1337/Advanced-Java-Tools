@@ -68,8 +68,11 @@ public class Paint extends Component implements MouseListener, MouseMotionListen
 		if(this.mousedown)
 			this.draw(e);
 	}
+	@SuppressWarnings("unused")
 	public void mouseClicked(MouseEvent e){}
+	@SuppressWarnings("unused")
 	public void mouseEntered(MouseEvent e){}
+	@SuppressWarnings("unused")
 	public void mouseExited(MouseEvent e){}
 	
 	int x2,y2;

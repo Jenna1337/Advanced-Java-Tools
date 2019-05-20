@@ -2,7 +2,6 @@ package advWindows.progs;
 
 import advWindows.components.EasyButton;
 import advWindows.panels.EasyPanel;
-import sys.System;
 
 
 

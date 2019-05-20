@@ -1,7 +1,6 @@
 package sys.math.numbertypes;
 
 import sys.BitStorage;
-import sys.System;
 
 public class NumberString extends BitStorage
 {

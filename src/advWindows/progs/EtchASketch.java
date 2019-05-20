@@ -13,7 +13,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import advWindows.components.KeyButton;
 import advWindows.panels.DrawingPanel;
-import sys.System;
 
 @SuppressWarnings("unused")
 public class EtchASketch extends Component implements KeyListener
