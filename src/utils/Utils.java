@@ -57,6 +57,7 @@ public class Utils
 							+ "&debuggingdata=false" + "&format=image,plaintext"
 							+ "&formattimeout=16" + "&input=" + input
 							+ "&output=JSON" + "&parsetimeout=10"
+							+ "&podinfosasync=false"
 							+ "&proxycode=" + proxycode + "&scantimeout=1"
 							+ "&sponsorcategories=false"
 							+ "&statemethod=deploybutton"
@@ -93,78 +94,101 @@ public class Utils
 		}
 	}
 	
-	private static final SimpleBindings bindings = new SimpleBindings();
+	private static final SimpleBindings eval_bindings = new SimpleBindings();
+	private static final String eval_msg_err = "The server returned an error while processing your request.";
+	private static final String eval_msg_futuretopic = "This topic is still being researched.";
+	private static final String eval_msg_unsuccessful = "The server was not able to process your request.";
 	static{
 		
 	}
-	
-	private static String parseResponse(String response)
+	@Deprecated
+	private static String parseResponse(String response) throws NullPointerException, ScriptException{
+		return parseResponse(response, false);
+	}
+	private static String parseResponse(String response, boolean forceImage)
 			throws ScriptException, NullPointerException{
 		if(response.matches("\\s*"))
 			return "";
-		if(containsRegex("\"error\"\\s*:\\s*true", response))
-			// if(response.contains("\"error\" : true"))
-			return "I encountered an error while processing your request.";
-		if(containsRegex("\"success\"\\s*:\\s*false", response))
-			// if(response.contains("\"success\" : false"))
-			return "I do not understand.";
-		String jscmd = "var regex = /.*=image\\/([^&]*).*/g;\n"
-				+ "var httpsregex = /[^\\/]+\\/\\/.*/g;\n"
-				+ "var htsec = \"https:\";\n"
-				+ "var subst = \"&=.$1\";\n"
-				+ "var results=" + response + ".queryresult;\n"
-				+ "var pods=results.pods;\n"
-				+ "var output = '';\n"
-				+ "if(results.numpods!=0 && !!pods){"
-				+ "	for(var i=0;i<pods.length;++i){\n"
-				+ "		if(!(/^.*\\b[Ii]nput\\b.*$/gim).test(pods[i].title)){\n"
-				+ "			var sbpd=pods[i].subpods[0];\n"
-				+ "			var src = sbpd.img.src;\n"
-				+ "			if(sbpd.plaintext!=\"\"){\n"
-				+ "				output = sbpd.plaintext;\n"
-				+ "			}else{\n"
-				+ "				var msg = (src.match(regex) ? src.replace(regex, src+subst) : src);\n"
-				+ "				output = (msg.match(httpsregex) ? msg : htsec+msg);\n"
-				+ "			}\n"
-				+ "			break;\n"
-				+ "		}\n"
-				+ "	}\n"
-				+ "}\n"
-				+ "output";
-		String jscmd2 = "var assum = results.assumptions;\n"
-				+ "var output = '';\n"
-				+ "if(assum){\n"
-				+ "	var f = (function(assum,frst){\n"
-				+ "		output='Assuming '+((frst&&assum.word)?('\"'+assum.word+'\" is a '+assum.values[0].desc):assum.values[0].desc)+'. Can also be ';\n"
-				+ "		var last=assum.values[assum.values.length-1];\n"
-				+ "		if(assum.values.length==2){\n"
-				+ "			output+=last.desc;\n" + "	}else{\n"
-				+ "			for(var i=1;i<assum.values.length-1;++i){\n"
-				+ "				var v = assum.values[i];\n"
-				+ "				output+=v.desc+', ';\n"
-				+ "			}\n"
-				+ "			output+='or '+last.desc;\n"
-				+ "		}\n"
-				+ "		return output;\n"
-				+ "	});\n"
-				+ "	var outputmain;\n"
-				+ "	if(assum[0]){\n"
-				+ "		outputmain='';\n"
-				+ "		outputmain+=f(assum[0],true)+'\\n';\n"
-				+ "		for(var i=1;i<assum.length;++i)\n"
-				+ "			outputmain+=f(assum[i],false)+'\\n';\n"
-				+ "	}else\n"
-				+ "	outputmain=f(assum)+'\\n';\n"
-				+ "	outputmain=outputmain.substring(0,outputmain.length-1);\n"
-				+ "	output=outputmain\n"
-				+ "}\n"
-				+ "output";
+		String jscmd_eval_get_results = "var regex = /.*=image\\/([^&]*).*/g;\n"
+				 + "var httpsregex = /[^\\/]+\\/\\/.*/g;\n"
+				 + "var htsec = \"https:\";\n"
+				 + "var subst = \"&=.$1\";\n"
+				 + "var results=(" + response + ").queryresult;\n"
+				 + "var output = '';\n"
+				 + "if(results.error){\n"
+				 + "	output='"+eval_msg_err+"';\n"
+				 + "}\n"
+				 + "else if(results.datatypes=='FutureTopic' || results.futuretopic){\n"
+				 + "	output='"+eval_msg_futuretopic+"';\n"
+				 + "}\n"
+				 + "else if(!results.success){\n"
+				 + "	output='"+eval_msg_unsuccessful+"';\n"
+				 + "}\n"
+				 + "else{\n"
+				 + "	var pods=results.pods;\n"
+				 + "	if(results.numpods!=0 && !!pods){\n"
+				 + "		for(var i=0;i<pods.length;++i){\n"
+				 + "			if(!(/^.*\\b[Ii]nput\\b.*$/gim).test(pods[i].title)){\n"
+				 + "				var sbpd=pods[i].subpods[0];\n"
+				 + "				var src = sbpd.img.src;\n"
+				 + "				if(!"+forceImage+" && sbpd.plaintext!=\"\"){\n"
+				 + "					output = sbpd.plaintext;\n"
+				// + "				}else{\n"
+				// + "					var msg = (src.match(regex) ? src.replace(regex, src+subst) : src);\n"
+				// + "					output = (msg.match(httpsregex) ? msg : htsec+msg);\n"
+				 + "				}\n"
+				 + "				break;\n"
+				 + "			}\n"
+				 + "		}\n"
+				 + "	}\n"
+				 + "}\n"
+				 + "output";
+		String jscmd_eval_get_didyoumeans = "var didyoumeans = results.didyoumeans;\n"
+				 + "var output = '';\n"
+				 + "if(didyoumeans){\n"
+				 + "	output=didyoumeans;\n"
+				 + "}\n"
+				 + "Java.to(output.map(JSON.stringify),\"java.lang.String[]\")";
+		String jscmd_eval_get_assum = "var assum = results.assumptions;\n"
+				 + "var output = '';\n"
+				 + "if(assum){\n"
+				 + "	var f = (function(assum,frst){\n"
+				 + "		output='Assuming '+((frst&&assum.word)?('\"'+assum.word+'\" is a '+assum.values[0].desc):assum.values[0].desc)+'. Can also be ';\n"
+				 + "		var last=assum.values[assum.values.length-1];\n"
+				 + "		if(assum.values.length==2){\n"
+				 + "			output+=last.desc;\n" + "	}else{\n"
+				 + "			for(var i=1;i<assum.values.length-1;++i){\n"
+				 + "				var v = assum.values[i];\n"
+				 + "				output+=v.desc+', ';\n"
+				 + "			}\n"
+				 + "			output+='or '+last.desc;\n"
+				 + "		}\n"
+				 + "		return output;\n"
+				 + "	});\n"
+				 + "	var outputmain;\n"
+				 + "	if(assum[0]){\n"
+				 + "		outputmain='';\n"
+				 + "		outputmain+=f(assum[0],true)+'\\n';\n"
+				 + "		for(var i=1;i<assum.length;++i)\n"
+				 + "			outputmain+=f(assum[i],false)+'\\n';\n"
+				 + "	}else\n"
+				 + "	outputmain=f(assum)+'\\n';\n"
+				 + "	outputmain=outputmain.substring(0,outputmain.length-1);\n"
+				 + "	output=outputmain\n"
+				 + "}\n"
+				 + "output";
 		javax.script.ScriptEngine engine = new javax.script.ScriptEngineManager()
 				.getEngineByName("js");
-		engine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-		Object r = engine.eval(jscmd);
+		engine.setBindings(eval_bindings, ScriptContext.ENGINE_SCOPE);
+		Object r = engine.eval(jscmd_eval_get_results);
 		String result = (r == null ? "" : r.toString());
-		Object a = engine.eval(jscmd2);
+		Object dym = engine.eval(jscmd_eval_get_didyoumeans);
+		String[] didyoumeans = (dym == null ? null : (String[])dym);
+		if(result.equals(eval_msg_unsuccessful) && didyoumeans!=null && didyoumeans.length>0){
+			//TODO do something more useful with the didyoumeans
+			//result += " Did you mean \"" + engine.eval("("+didyoumeans[0]+").val") + "\"?";
+		}
+		Object a = engine.eval(jscmd_eval_get_assum);
 		String assumptions = (a == null ? "" : a.toString());
 		System.out.println(assumptions);
 		//TODO: maybe actually do something with the assumptions?
