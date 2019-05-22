@@ -885,7 +885,7 @@ public class Utils
 		switch(ch){
 			//@formatter:off
 			case '\r': return "\\r";
-			case '\f': return "\\r";
+			case '\f': return "\\f";
 			case '\"': return "\\\"";
 			case '\'': return "\\\'";
 			case '\\': return "\\\\";
