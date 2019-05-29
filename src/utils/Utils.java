@@ -143,12 +143,12 @@ public class Utils
 				 + "	}\n"
 				 + "}\n"
 				 + "output";
-		String jscmd_eval_get_didyoumeans = "var didyoumeans = results.didyoumeans;\n"
-				 + "var output = '';\n"
-				 + "if(didyoumeans){\n"
-				 + "	output=didyoumeans;\n"
-				 + "}\n"
-				 + "Java.to(output.map(JSON.stringify),\"java.lang.String[]\")";
+//		String jscmd_eval_get_didyoumeans = "var didyoumeans = results.didyoumeans;\n"
+//				 + "var output = '';\n"
+//				 + "if(didyoumeans){\n"
+//				 + "	output=didyoumeans;\n"
+//				 + "}\n"
+//				 + "Java.to(output.map(JSON.stringify),\"java.lang.String[]\")";//FIXME output.map is not a function
 		String jscmd_eval_get_assum = "var assum = results.assumptions;\n"
 				 + "var output = '';\n"
 				 + "if(assum){\n"
@@ -182,12 +182,13 @@ public class Utils
 		engine.setBindings(eval_bindings, ScriptContext.ENGINE_SCOPE);
 		Object r = engine.eval(jscmd_eval_get_results);
 		String result = (r == null ? "" : r.toString());
-		Object dym = engine.eval(jscmd_eval_get_didyoumeans);
-		String[] didyoumeans = (dym == null ? null : (String[])dym);
-		if(result.equals(eval_msg_unsuccessful) && didyoumeans!=null && didyoumeans.length>0){
-			//TODO do something more useful with the didyoumeans
-			//result += " Did you mean \"" + engine.eval("("+didyoumeans[0]+").val") + "\"?";
-		}
+		//FIXME output.map is not a function in <jscmd_eval_get_didyoumeans> at line number 6
+//		Object dym = engine.eval(jscmd_eval_get_didyoumeans);
+//		String[] didyoumeans = (dym == null ? null : (String[])dym);
+//		if(result.equals(eval_msg_unsuccessful) && didyoumeans!=null && didyoumeans.length>0){
+//			//TODO do something more useful with the didyoumeans
+//			//result += " Did you mean \"" + engine.eval("("+didyoumeans[0]+").val") + "\"?";
+//		}
 		Object a = engine.eval(jscmd_eval_get_assum);
 		String assumptions = (a == null ? "" : a.toString());
 		System.out.println(assumptions);
