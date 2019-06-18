@@ -193,6 +193,7 @@ public class Utils
 		String assumptions = (a == null ? "" : a.toString());
 		System.out.println(assumptions);
 		//TODO: maybe actually do something with the assumptions?
+		//TODO put the results, assumptions, and didyoumeans into an Object. 
 		return result;
 	}
 	
