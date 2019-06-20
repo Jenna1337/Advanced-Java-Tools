@@ -46,7 +46,7 @@ public class EvalResult{
 	public String getAssumptions(){
 		return assumptions;
 	}
-	public String getResultAsTextOrImage(){
-		return resultText.isEmpty() ? resultImage : resultText;
+	public String getResultDefault(){
+		return resultStatus.equals(EvalResultStatus.SUCCESSFUL) ? (resultText.isEmpty() ? resultImage : resultText) : resultStatus.getMsg();
 	}
 }

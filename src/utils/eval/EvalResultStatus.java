@@ -10,6 +10,9 @@ public enum EvalResultStatus{
 		this.msg = msg;
 	}
 	public String toString(){
+		return name();
+	}
+	public String getMsg(){
 		return msg;
 	}
 }

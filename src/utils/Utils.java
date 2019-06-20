@@ -219,7 +219,7 @@ public class Utils
 		}
 		
 		
-		return forceImage ? result.getResultImage() : result.getResultAsTextOrImage();//TODO
+		return forceImage ? result.getResultImage() : result.getResultDefault();//TODO
 	}
 	private static String nullCheckStringCast(Object str){
 		return (str == null ? null : (String)str);
