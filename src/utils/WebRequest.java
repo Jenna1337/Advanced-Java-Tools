@@ -36,8 +36,9 @@ public class WebRequest
 				{"Accept-Language", "en-US,en;q=0.5"},
 				{"DNT", "1"},
 				{"Cache-Control", "no-cache"},
+				{"Pragma", "no-cache"},
 				//{"Connection", "keep-alive"},
-				{"Content-Type", "application/x-www-form-urlencoded"},
+				{"Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"},
 				{"Upgrade-Insecure-Requests", "1"},
 				{"User-Agent", "Mozilla/5.0 (X11; Linux i686; rv:17.0) Gecko/20100101 Firefox/17.0"},
 		};
