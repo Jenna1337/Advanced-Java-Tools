@@ -1,5 +1,6 @@
 package utils;
 
+@javax.annotation.Generated(value = {}, date = "2019-07-18T10:26:36.207Z")
 public final class HTMLCharacterEntities {
 	public static String[][] htmlCharacterEntityReferences = {
 		//@formatter:off
