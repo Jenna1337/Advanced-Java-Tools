@@ -4,8 +4,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
-import java.net.ConnectException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.ParseException;
@@ -17,9 +15,6 @@ import java.util.Random;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.script.ScriptContext;
-import javax.script.ScriptException;
-import javax.script.SimpleBindings;
 import utils.eval.*;
 import static utils.WebRequest.GET;
 
