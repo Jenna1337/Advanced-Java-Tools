@@ -312,10 +312,10 @@ public class Utils
 					+ wotdMatcher.group("description") + "\"";
 			return output;
 		}
-		catch(IOException e){
+		catch(Exception e){
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
+			return "Could not get word of the day.";
 		}
 	}
 	
