@@ -22,7 +22,7 @@ document.body.textContent=(
 		document.getElementsByClassName("wikitable sortable")[0].tBodies.map(b=>
 		b.rows.map(r=>
 			[
-				r.cells[0].textContent.trim().split(",").map(s=>s.trim()),
+				r.cells[0].textContent.trim().split(",").map(s=>("&"+s.trim()+";")),
 				String.fromCodePoint(Number.parseInt(r.cells[2].textContent.match(/U\+([0-9A-F]+)/i)[1], 16)).split("").map(ch=>{
 						switch(ch){
 							case '"': 
