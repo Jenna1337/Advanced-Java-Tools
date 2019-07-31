@@ -297,7 +297,7 @@ public class Utils
 	 * https://feeds.feedburner.com/TodaysComputerWordOfTheDay?format=xml
 	 * https://www.computerhope.com/rss/wotd.rss
 	 */
-	private static final String wotdFeedUrl = "http://www.oed.com/rss/wordoftheday";
+	private static final String wotdFeedUrl = "https://www.oed.com/rss/wordoftheday";
 	private static final Matcher wotdMatcher = Pattern.compile(
 			"(?is)<item>.*?<title>(?<title>.*?)<\\/title>(?:.*?(?:<link>(?<link>.*?)<\\/link>|<description>(?<description>.*?)<\\/description>)){2}.*?<\\/item>",
 			Pattern.DOTALL | Pattern.CASE_INSENSITIVE).matcher("");
