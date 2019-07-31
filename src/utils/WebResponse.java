@@ -21,8 +21,8 @@ public class WebResponse
 	private final byte[] body;
 	
 	WebResponse(HttpURLConnection connection){
-		this.responseHeaders = connection.getHeaderFields();
 		this.requestHeaders = connection.getRequestProperties();
+		this.responseHeaders = connection.getHeaderFields();
 		this.requestMethod = connection.getRequestMethod();
 		try{
 		this.responseCode = connection.getResponseCode();
