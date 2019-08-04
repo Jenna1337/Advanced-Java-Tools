@@ -15,13 +15,13 @@ import java.util.zip.GZIPInputStream;
 
 public class WebResponse
 {
-	private final Map<String, List<String>> responseHeaders, requestHeaders;
+	private final Map<String, List<String>> responseHeaders;//, requestHeaders;
 	private final String requestMethod;
 	private final int responseCode;
 	private final byte[] body;
 	
 	WebResponse(HttpURLConnection connection){
-		this.requestHeaders = connection.getRequestProperties();
+//		this.requestHeaders = connection.getRequestProperties();
 		this.responseHeaders = connection.getHeaderFields();
 		this.requestMethod = connection.getRequestMethod();
 		try{
@@ -84,10 +84,10 @@ public class WebResponse
 	 * represents the corresponding field values.
 	 * 
 	 * @return a Map of the general request properties for this connection.
-	 */
+	 *
 	public Map<String, List<String>> getRequestHeaders(){
 		return requestHeaders;
-	}
+	}*/
 	public byte[] getBodyAsBytes(){
 		return Arrays.copyOf(body, body.length);
 	}

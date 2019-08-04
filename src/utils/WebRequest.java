@@ -149,7 +149,7 @@ public class WebRequest
 				currentProtocolRedirects--;
 			}
 			else{
-				throw new IOException("Server response code was "+rcode+" for "+reqMethod+" request of "+url+" with headers "+response.getRequestHeaders().toString()+", but provided no Location header!");
+				throw new IOException("Server response code was "+rcode+" for "+reqMethod+" request of "+url+" with headers "+optionalheaders.toString()+", but provided no Location header!");
 			}
 		}
 		return response;
