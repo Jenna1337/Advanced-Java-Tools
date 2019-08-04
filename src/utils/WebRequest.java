@@ -1,21 +1,16 @@
 package utils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.DeflaterInputStream;
-import java.util.zip.GZIPInputStream;
 
 public class WebRequest
 {
@@ -29,6 +24,78 @@ public class WebRequest
 	}
 	private static String[][] defaultHeaders = new String[0][0];
 	
+	private static boolean allowUpgradeRedirects = true;
+	
+	/**
+	 * Sets whether HTTP redirects (requests with response code 3xx) that change
+	 * the protocol from HTTP to HTTPS should be automatically followed by this
+	 * class. True by default.
+	 * 
+	 * @param set a boolean indicating whether or not to follow HTTP redirects.
+	 * @see #getAllowUpgradeRedirects()
+	 * @see #setAllowUnsafeRedirects(boolean)
+	 * @see #getAllowUnsafeRedirects()
+	 * @see HttpURLConnection#setFollowRedirects(boolean)
+	 * @see HttpURLConnection#getFollowRedirects()
+	 */
+	public static void setAllowUpgradeRedirects(boolean set){
+		allowUpgradeRedirects = set;
+	}
+	/**
+	 * Returns a {@code boolean} indicating whether or not HTTP redirects (3xx)
+	 * that change the protocol from HTTP to HTTPS should be automatically
+	 * followed.
+	 *
+	 * @return {@code true} if redirects that change the protocol from HTTP to
+	 * HTTPS should be automatically followed, {@code false} if not.
+	 * @see #setAllowUpgradeRedirect(boolean)
+	 * @see #setAllowUnsafeRedirects(boolean)
+	 * @see #getAllowUnsafeRedirects()
+	 * @see HttpURLConnection#setFollowRedirects(boolean)
+	 * @see HttpURLConnection#getFollowRedirects()
+	 */
+	public static boolean getAllowUpgradeRedirects(){
+		return allowUpgradeRedirects;
+	}
+	
+	private static boolean allowUnsafeRedirects = false;
+	/**
+	 * Sets whether HTTP redirects (requests with response code 3xx) that change
+	 * the protocol and host or path should be automatically followed by this
+	 * class. False by default.<br>
+	 * <br>
+	 * <b>Note: Enabling this will bypass {@link #setAllowUpgradeRedirects(boolean)}
+
+	 * 
+	 * @param set a boolean indicating whether or not to follow HTTP redirects.
+	 * @see #getAllowUnsafeRedirects()
+	 * @see #setAllowUpgradeRedirects(boolean)
+	 * @see #getAllowUpgradeRedirects()
+	 * @see HttpURLConnection#setFollowRedirects(boolean)
+	 * @see HttpURLConnection#getFollowRedirects()
+	 */
+	public static void setAllowUnsafeRedirects(boolean set){
+		allowUnsafeRedirects = set;
+	}
+	/**
+	 * Returns a {@code boolean} indicating whether or not HTTP redirects (3xx)
+	 * that change the protocol and host or path should be automatically
+	 * followed.<br>
+	 * <br>
+	 * <b>Note: Enabling this will bypass {@link #setAllowUpgradeRedirects(boolean)}
+	 *
+	 * @return {@code true} if redirects that change the protocol and host or
+	 * path should be automatically followed, {@code false} if not.
+	 * @see #setAllowUnsafeRedirects(boolean)
+	 * @see #setAllowUpgradeRedirects(boolean)
+	 * @see #getAllowUpgradeRedirects()
+	 * @see HttpURLConnection#setFollowRedirects(boolean)
+	 * @see HttpURLConnection#getFollowRedirects()
+	 */
+	public static boolean getAllowUnsafeRedirects(){
+		return allowUnsafeRedirects;
+	}
+	
 	static{
 		String[][] headers = {
 				{"Accept", "*/*"},
@@ -40,24 +107,85 @@ public class WebRequest
 				//{"Connection", "keep-alive"},
 				{"Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"},
 				{"Upgrade-Insecure-Requests", "1"},
-				{"User-Agent", "Mozilla/5.0 (X11; Linux i686; rv:17.0) Gecko/20100101 Firefox/17.0"},
+				{"User-Agent", "Mozilla/5.0 (X11; Linux i686; rv:70.0) Gecko/20100101 Firefox/70.0"},
 		};
 		WebRequest.setDefaultHeaders(headers);
 	}
 	
 	
+	private static int maxProtocolRedirects = 2;
+	private static int currentProtocolRedirects = 0;
 	
+	public static synchronized WebResponse getResponse(String reqMethod, String url, String[]... optionalheaders) throws IOException{
+		return getResponse(reqMethod, new URL(url), optionalheaders);
+	}
+	public static synchronized WebResponse getResponse(String reqMethod, URL url, String[]... optionalheaders) throws IOException{
+		WebResponse response = new WebResponse(request0(reqMethod, url, optionalheaders));
+		final int rcode = response.getResponseCode();
+		if(rcode>=300 && rcode<400){
+			List<String> ll = response.getResponseHeaders().get("Location");
+			String loc = null;
+			if(ll!=null && ll.size()>0)
+				loc = ll.get(0);
+			if(loc != null && !loc.isEmpty()){
+				if(currentProtocolRedirects>=maxProtocolRedirects){
+					throw new ProtocolRedirectException("Maximum protocol redirects exceeded");
+				}
+				currentProtocolRedirects++;
+				try{
+					URL uloc = new URL(loc);
+					if(getAllowUnsafeRedirects()){
+						return getResponse(reqMethod, uloc, optionalheaders);
+					}
+					else if(getAllowUpgradeRedirects()
+							&& isProtocolUpgradeOnly(url, uloc)){
+						return getResponse(reqMethod, uloc, optionalheaders);
+					}
+				}
+				catch(Exception e){
+					e.printStackTrace();
+					//TODO
+				}
+				currentProtocolRedirects--;
+			}
+			else{
+				throw new IOException("Server response code was "+rcode+" for "+reqMethod+" request of "+url+" with headers "+response.getRequestHeaders().toString()+", but provided no Location header!");
+			}
+		}
+		return response;
+	}
+	private static boolean isProtocolUpgradeOnly(URL url, URL uloc){
+		try{
+			return (new InetHost(url).equals(new InetHost(uloc)))
+					&& getSecureProtocolForm(url.getProtocol()
+							).equals(uloc.getProtocol());
+		}
+		catch(ProtocolException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	private static String getSecureProtocolForm(String protocol) throws ProtocolException{
+		switch(protocol){
+			case "http":
+				return "https";
+			case "ftp":
+				//note: Java 1.8 does not support sftp by default
+				return "sftp";
+			case "ws":
+				return "wss";
+			default:
+				throw new ProtocolException("Unknown protocol: "+protocol);
+		}
+	}
 	public static synchronized String GET(String url, String[]... optionalheaders) throws MalformedURLException, IOException{
-		return GET(new URL(url), optionalheaders);
+		return getResponse("GET", url, optionalheaders).getBodyAsString();
 	}
 	public static synchronized String GET(URL url, String[]... optionalheaders) throws IOException{
-		HttpURLConnection connection = request0("GET", url, optionalheaders);
-		return read(connection);
+		return getResponse("GET", url, optionalheaders).getBodyAsString();
 	}
 	
-	public static synchronized WebResponse getResponse(String reqMethod, URL url, String[]... optionalheaders){
-		return new WebResponse(request0(reqMethod, url, optionalheaders));
-	}
 	
 	public static synchronized String POST(String url, String data, String[]... optionalheaders) throws MalformedURLException, IOException
 	{
@@ -71,22 +199,20 @@ public class WebRequest
 		if(connection.getResponseCode()==409)
 			return null;
 		try{
-			return read(connection);
+			return new WebResponse(connection).getBodyAsString();
 		}catch(NullPointerException npe){
 			npe.printStackTrace();
 			return null;
 		}
 	}
 	
-	public static synchronized Map<String, List<String>> HEAD(String url, String[]... optionalheaders) throws MalformedURLException, IOException
-	{
-		return HEAD(new URL(url), optionalheaders);
+	public static synchronized Map<String, List<String>> HEAD(String url, String[]... optionalheaders) throws MalformedURLException, IOException{
+		return getResponse("HEAD", url, optionalheaders).getResponseHeaders();
 	}
-	public static synchronized Map<String, List<String>> HEAD(URL url, String[]... optionalheaders) throws IOException
-	{
-		HttpURLConnection connection = request0("HEAD", url, optionalheaders);
-		return connection.getHeaderFields();
+	public static synchronized Map<String, List<String>> HEAD(URL url, String[]... optionalheaders) throws IOException{
+		return getResponse("HEAD", url, optionalheaders).getResponseHeaders();
 	}
+	
 	public static void setDefaultHeaders(String[][] headers)
 	{
 		WebRequest.defaultHeaders = headers;
@@ -114,43 +240,6 @@ public class WebRequest
 		}
 	}
 	/**
-	 * Reads raw bytes from a server.
-	 * @param connection the HttpURLConnection to read data from.
-	 * @return The content read from the server.
-	 * @throws IOException if an IOException occurs.
-	 */
-	private static synchronized byte[] getRawBytes(HttpURLConnection connection) throws IOException
-	{
-		connection.connect();
-		String encoding = (connection.getContentEncoding()!=null) ? connection.getContentEncoding().toLowerCase() : "";
-		InputStream is = connection.getInputStream();
-		switch(encoding){
-			case "gzip":
-				is=new GZIPInputStream(is);
-				break;
-			case "deflate":
-				is=new DeflaterInputStream(is);
-				break;
-			default:
-				break;
-		}
-		Path tempfilepath = Files.createTempFile(null, null);
-		Files.copy(is, tempfilepath, StandardCopyOption.REPLACE_EXISTING);
-		is.close();
-		byte[] output = Files.readAllBytes(tempfilepath);
-		Files.delete(tempfilepath);
-		return output;
-	}
-	/**
-	 * Reads the content from a server.
-	 * @param connection the HttpURLConnection to read data from.
-	 * @return The content read from the server.
-	 * @throws IOException if an IOException occurs.
-	 */
-	private static synchronized String read(HttpURLConnection connection) throws IOException{
-		return Utils.rawBytesToString(getRawBytes(connection));
-	}
-	/**
 	 * Sends the data to the server via the {@code connection}.
 	 * @param connection the connection to the server to send data to.
 	 * @param data the data to send.
@@ -173,5 +262,10 @@ public class WebRequest
 					System.err.println("Connection timed out to "+connection.getURL());
 			}
 		}
+	}
+}
+class ProtocolRedirectException extends IOException{
+	public ProtocolRedirectException(String string){
+		super(string);
 	}
 }
