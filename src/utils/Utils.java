@@ -31,9 +31,12 @@ public class Utils
 	public static boolean isdebuggerrunning(){
 		return debuggerRunning;
 	}
-	
+	@Deprecated
 	public static String eval(String query){
 		return Eval.eval(query);
+	}
+	public static EvalResult eval2(String query){
+		return Eval.eval2(query);
 	}
 	
 	public static Properties loadProperties(String filename) throws IOException{
@@ -346,7 +349,6 @@ public class Utils
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i < chs.length; ++i)
 			builder.append(escapeNonAscii(chs[i]));
-		// TODO Auto-generated method stub
 		return builder.toString();
 	}
 	public static String escapeNonAscii(char ch){
@@ -494,7 +496,6 @@ public class Utils
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i < chs.length; ++i)
 			builder.append(escapeChar(chs[i]));
-		// TODO Auto-generated method stub
 		return builder.toString();
 	}
 	

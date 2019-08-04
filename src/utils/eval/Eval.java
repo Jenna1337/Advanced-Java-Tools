@@ -14,13 +14,19 @@ public class Eval
 {
 	private static volatile int evalRecalcCount = 0;
 	private static final int evalRecalcCountMax = 1;
+	@Deprecated
 	public static synchronized String eval(String query){
 		return eval(query, false);
 	}
+	@Deprecated
 	public static synchronized String eval(String query, boolean forceImage){
+		EvalResult result = eval2(query);
+		return forceImage ? result.getResultImage() : result.getResultDefault();
+	}
+	public static synchronized EvalResult eval2(String query){
 		query = query.trim();
 		if(query.equalsIgnoreCase("alive"))
-			return "Cogito ergo sum";
+			return new BasicTextResult("Cogito ergo sum");
 		String response = null;
 		try{
 			final String input = urlencode(query);
@@ -44,23 +50,23 @@ public class Eval
 							+ "&storesubpodexprs=true"),
 					new String[][]{{"Host", "https://www.wolframalpha.com"},
 						{"Origin", "https://www.wolframalpha.com"},
-						{"Referer", inputurl}}), forceImage);
+						{"Referer", inputurl}}));
 		}
 		catch(ConnectException e){
 			e.printStackTrace();
-			return "Failed to connect to server";
+			return new BasicTextResult("Failed to connect to server");
 		}
 		catch(IOException e){
 			e.printStackTrace();
-			return "I do not understand.";
+			return new BasicTextResult("I do not understand.");
 		}
 		catch(ScriptException | NullPointerException e){
-			String respo = null;
+			EvalResult respo = null;
 			if(response != null && evalRecalcCount <= evalRecalcCountMax){
 				evalRecalcCount++;
 				try{
 					respo = parseResponse(response = GET(
-							getStringValueJSON("recalculate", response)), forceImage);
+							getStringValueJSON("recalculate", response)));
 				}
 				catch(Exception e2){
 					System.err.println("Failed to parse JSON:\n" + response);
@@ -68,19 +74,20 @@ public class Eval
 				evalRecalcCount--;
 			}
 			e.printStackTrace();
-			return (respo != null && respo.length() > 0)
+			String rr = respo!=null ? respo.getResultDefault() : "";
+			return (rr != null && rr.length() > 0)
 					? respo
-							: "Failed to parse response";
+							: new BasicTextResult("Failed to parse response");
 		}
 	}
 	
 	private static final SimpleBindings eval_bindings = new SimpleBindings();
 	private static volatile int evalReinterpretationCount = 0;
 	private static final    int evalReinterpretationCountMax = 1;
-	private static String parseResponse(String response, boolean forceImage)
+	private static EvalResult parseResponse(String response)
 			throws ScriptException, NullPointerException{
 		if(response.matches("\\s*"))
-			return "";
+			return new EvalResult(EvalResultStatus.INVALIDDATA, "", "", "", "", "");
 		String jscmd_eval_get_results_status = ""
 				+ "var results=(" + response + ").queryresult;\n"
 				+ "var output = '';\n"
@@ -185,7 +192,7 @@ public class Eval
 			System.out.println("Interpreting as: "+didyoumeans);
 			evalReinterpretationCount++;
 			try{
-				return eval(didyoumeans);
+				return eval2(didyoumeans);
 			}
 			catch(Exception e){
 				System.err.println(response);
@@ -195,10 +202,10 @@ public class Eval
 		}
 		
 		
-		return forceImage ? result.getResultImage() : result.getResultDefault();//TODO
+		return result;
 	}
 	private static String nullCheckStringCast(Object str){
 		return (str == null ? null : (String)str);
 	}
-
+	
 }
