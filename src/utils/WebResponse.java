@@ -1,6 +1,5 @@
 package utils;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -20,21 +19,13 @@ public class WebResponse
 	private final int responseCode;
 	private final byte[] body;
 	
-	WebResponse(HttpURLConnection connection){
+	WebResponse(HttpURLConnection connection) throws IOException{
 //		this.requestHeaders = connection.getRequestProperties();
 		this.responseHeaders = connection.getHeaderFields();
 		this.requestMethod = connection.getRequestMethod();
-		try{
 		this.responseCode = connection.getResponseCode();
-		}catch(Exception e){
-			throw new IOError(e);
-		}
 		byte[] b = null;
-		try{
-			b = getRawBytes(connection);
-		}catch(Exception e){
-			throw new IOError(e);
-		}
+		b = getRawBytes(connection);
 		this.body = b;
 	}
 	
