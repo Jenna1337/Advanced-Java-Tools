@@ -46,6 +46,31 @@ public class Utils
 		reader.close();
 		return props;
 	}
+	@Deprecated
+	public static void forceKillThread(Thread thread) throws InterruptedException{
+			Thread.State s = thread.getState();
+			switch(s)
+			{
+				case NEW:
+					throw new InternalError("Thread not started.");
+				case BLOCKED:
+				case RUNNABLE:
+				case TIMED_WAITING:
+				case WAITING:
+					//Interrupt the thread
+					thread.interrupt();
+					Thread.sleep(1000);
+					if(thread.isAlive()){
+						//Kill thread
+						thread.stop();
+					}
+					break;
+				case TERMINATED:
+					break;
+				default:
+					throw new InternalError("Unknown thread state: " + s.name());
+			}
+	}
 	
 	public static boolean containsRegex(String regex, String in){
 		return Pattern.compile(regex).matcher(in).find();
