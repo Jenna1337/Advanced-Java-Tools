@@ -1,6 +1,7 @@
 package utils.collections;
 
 import java.util.Arrays;
+import utils.Utils;
 
 /**
  * 
@@ -29,9 +30,7 @@ public class GenericList extends java.util.ArrayList<Object>
 	 * @return the element at the specified position in this list
 	 * @throws IndexOutOfBoundsException {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
 	public <T> T getCasted(int index){
-		Object obj = super.get(index);
-		return obj == null ? null : (T)obj.getClass().cast(obj);
+		return Utils.castToOriginalType(super.get(index));
 	}
 }

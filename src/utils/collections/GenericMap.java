@@ -2,6 +2,7 @@ package utils.collections;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import utils.Utils;
 import utils.tuples.Pair;
 
 /**
@@ -32,9 +33,7 @@ public class GenericMap extends HashMap<Object, Object>
 	 * @return the element at the specified position in this map
 	 * @throws IndexOutOfBoundsException {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
 	public <T,K> T getCasted(K key){
-		Object obj = super.get(key);
-		return obj == null ? null : (T)obj.getClass().cast(obj);
+		return Utils.castToOriginalType(super.get(key));
 	}
 }
