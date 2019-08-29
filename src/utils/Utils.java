@@ -31,12 +31,8 @@ public class Utils
 	public static boolean isdebuggerrunning(){
 		return debuggerRunning;
 	}
-	@Deprecated
-	public static String eval(String query){
+	public static EvalResult eval(String query){
 		return Eval.eval(query);
-	}
-	public static EvalResult eval2(String query){
-		return Eval.eval2(query);
 	}
 	
 	public static Properties loadProperties(String filename) throws IOException{

@@ -14,16 +14,7 @@ public class Eval
 {
 	private static volatile int evalRecalcCount = 0;
 	private static final int evalRecalcCountMax = 1;
-	@Deprecated
-	public static synchronized String eval(String query){
-		return eval(query, false);
-	}
-	@Deprecated
-	public static synchronized String eval(String query, boolean forceImage){
-		EvalResult result = eval2(query);
-		return forceImage ? result.getResultImage() : result.getResultDefault();
-	}
-	public static synchronized EvalResult eval2(String query){
+	public static synchronized EvalResult eval(String query){
 		query = query.trim();
 		if(query.equalsIgnoreCase("alive"))
 			return new BasicTextResult("Cogito ergo sum");
@@ -177,13 +168,11 @@ public class Eval
 		
 		String warnings = nullCheckStringCast(engine.eval(jscmd_eval_get_warnings));
 		System.out.println(warnings);
-		//TODO: maybe actually do something with the warnings?
 		
 		String didyoumeans = nullCheckStringCast(engine.eval(jscmd_eval_get_didyoumeans));
 		
 		String assumptions = nullCheckStringCast(engine.eval(jscmd_eval_get_assum));
 		System.out.println(assumptions);
-		//TODO: maybe actually do something with the assumptions?
 		
 		EvalResult result = new EvalResult(r_status, r_img, r_txt, warnings, didyoumeans, assumptions);
 		
@@ -192,7 +181,7 @@ public class Eval
 			System.out.println("Interpreting as: "+didyoumeans);
 			evalReinterpretationCount++;
 			try{
-				return eval2(didyoumeans);
+				return eval(didyoumeans);
 			}
 			catch(Exception e){
 				System.err.println(response);
