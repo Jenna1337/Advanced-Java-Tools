@@ -1,9 +1,13 @@
 package io;
 
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class BufferedFileReader extends java.io.BufferedReader
 {
+	private static FileReader r;
+	
 	/**
 	 * Creates a new BufferedFileReader, given the name of the file to read from, with a buffered character-input stream that uses a default-sized input buffer.
 	 * @param fileName - the name of the file to read from
@@ -11,6 +15,11 @@ public class BufferedFileReader extends java.io.BufferedReader
 	 */
 	public BufferedFileReader(String fileName) throws FileNotFoundException
 	{
-		super(new java.io.FileReader(fileName));
+		super(r = new FileReader(fileName));
+	}
+	@Override
+	public void close() throws IOException{
+		super.close();
+		r.close();
 	}
 }
