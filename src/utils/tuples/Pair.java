@@ -1,6 +1,6 @@
 package utils.tuples;
 
-import utils.GenericList;
+import utils.collections.GenericList;
 
 public class Pair<A,B>
 {

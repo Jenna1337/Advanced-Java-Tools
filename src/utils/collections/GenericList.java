@@ -1,4 +1,4 @@
-package utils;
+package utils.collections;
 
 import java.util.ArrayList;
 import java.util.Arrays;
