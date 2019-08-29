@@ -585,4 +585,8 @@ public class Utils
 			throw new IllegalArgumentException(e);
 		}
 	}
+	@SuppressWarnings("unchecked")
+	public static <T> T castToOriginalType(Object obj){
+		return obj == null ? null : (T)obj.getClass().cast(obj);
+	}
 }
