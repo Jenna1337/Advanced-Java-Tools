@@ -79,6 +79,7 @@ public class Eval
 			throws ScriptException, NullPointerException{
 		if(response.matches("\\s*"))
 			return new EvalResult(EvalResultStatus.INVALIDDATA, "", "", "", "", "");
+		//TODO store ALL of the results
 		String jscmd_eval_get_results_status = ""
 				+ "var results=(" + response + ").queryresult;\n"
 				+ "var output = '';\n"
