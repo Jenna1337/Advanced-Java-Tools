@@ -16,4 +16,7 @@ public class Pair<A,B>
 	public B getSecond(){
 		return list.getCasted(1);
 	}
+	public String toString(){
+		return list.toString();
+	}
 }

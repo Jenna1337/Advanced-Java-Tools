@@ -1,11 +1,11 @@
 package utils.collections;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import utils.Utils;
 
 /**
- * 
- * See {@link #getCasted(int)}
+ * Basically an {@linkplain ArrayList}, but with an added convenience method: {@link #getCasted(int)}
  * 
  * @author Jenna
  *
@@ -32,5 +32,10 @@ public class GenericList extends java.util.ArrayList<Object>
 	 */
 	public <T> T getCasted(int index){
 		return Utils.castToOriginalType(super.get(index));
+	}
+	@Override
+	public void add(int index, Object element){
+		// TODO Auto-generated method stub
+		super.add(index, element);
 	}
 }
