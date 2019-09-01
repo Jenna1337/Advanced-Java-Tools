@@ -6,7 +6,7 @@ public class Main
 {
 	public static void main(String[] args) throws Exception
 	{
-		//Object data = JSON.parse("[\"\",]");
+		//Object data = JSON.parse("\"\u007f\"");
 		//System.out.println(data);
 		
 		JSON.testParser();

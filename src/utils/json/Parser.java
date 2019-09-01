@@ -1,15 +1,20 @@
 package utils.json;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
+import utils.MalformedEscapedStringException;
 import utils.Utils;
 import utils.collections.GenericList;
 import utils.tuples.Pair;
 
 /**
  * 
+ * Fully compliant ECMA-404 Parser<br>
+ * <br>
+ * For more info see {@linkplain JSON#parse(String)}
+ * 
  * @author Jenna
- *
+ * 
+ * @see JSON#parse(String)
  */
 class Parser
 {
@@ -27,6 +32,11 @@ class Parser
 	
 	/* @formatter:off */
 	
+	/*
+	 * TODO: Fix the StackOverflowError that can occur as a result of very
+	 * deeply nested arrays and/or objects (basically anything listed in
+	 * ParentDataType that's not TOP).
+	 */
 	public static <T> T parse(String jsonstring) throws MalformedJSONException{
 		if(jsonstring.isEmpty())
 			throw new MalformedJSONException(0, "Unexpected end of data");
@@ -39,8 +49,11 @@ class Parser
 	 * @return A {@link Pair} containing the new value of {@code i} and the parsed value.
 	 * @throws MalformedJSONException 
 	 */
-	private static Pair<Integer, ?> parseValue(int i, char[] json, ParentDataType parentType) throws MalformedJSONException{
-		int ch=json[i=skipWhitespace(i, json, parentType)];
+	private static Pair<Integer, ?> parseValue(int ii, char[] json, ParentDataType parentType) throws MalformedJSONException{
+		int i=skipWhitespace(ii, json, parentType);
+		if(i>=json.length)
+			throw new MalformedJSONException(i,"Unexpected end of data");
+		int ch=json[i];
 		
 		Pair<Integer,?> valpair = null;
 		switch(ch){
@@ -86,8 +99,8 @@ class Parser
 					throw new MalformedJSONException(i, "Expected property name or '}'");
 				break;
 			case ARRAY:
-				if(ch!=',' && ch!=']')
-					throw new MalformedJSONException(i, "Expected property name or '}'");
+				if(ch!=',' && ch!=']') 
+					throw new MalformedJSONException(i, "Expected ',' or ']' after array element ");
 				break;
 			case TOP:
 				if(ch!=-1)
@@ -102,7 +115,7 @@ class Parser
 		JavaScriptObject obj = new JavaScriptObject();
 		
 		String currentkey = null;
-		int i,ch;
+		int i,ch = -1;
 		forloop: for(i=start+1; i<json.length; ++i){
 			ch=json[i=skipWhitespace(i, json, ParentDataType.OBJECT)];
 			if(ch=='}')
@@ -143,6 +156,8 @@ class Parser
 				continue;
 			throw new MalformedJSONException(i, "Expected ',' or '}' after property value in object");
 		}
+		if(JavaScriptObject.keys(obj).size()==0 && ch=='}')
+			return new Pair<>(i+1, obj);
 		throw new MalformedJSONException(i, "End of data while reading object contents");
 	}
 	private static Pair<Integer, ?> parseLiteral(int start, char[] json) throws MalformedJSONException{
@@ -152,18 +167,17 @@ class Parser
 		do{
 			++i;
 			if(i>=json.length){
-				i+=1;
 				break;
 			}
 			ch=json[i];
 		}
 		while(ch>='a' && ch <='z');
-		String key = extractData(json, start, i-1, String::new, 0).getSecond();
+		String key = extractData(json, start, i, String::new, 1).getSecond();
 		
 		if(!literals.containsKey(key))
 			throw new MalformedJSONException(start, "Unexpected keyword");
 		Object literal = literals.get(key);
-		return new Pair<Integer, Object>(i-1, literal);
+		return new Pair<Integer, Object>(i, literal);
 	}
 	private static Pair<Integer, Double> parseNumber(int start, char[] json) throws MalformedJSONException{
 		int i=start, ch;
@@ -234,7 +248,7 @@ class Parser
 				throw new MalformedJSONException(i, "Exponent part is missing a number");
 		}
 		
-		return extractData(json, start, ch==-1 ? i-1 : i, chars -> new Double(new String(chars)), 0);
+		return extractData(json, start, i, chars -> new Double(new String(chars)), 0);
 	}
 	private static Pair<Integer, Object[]> parseArray(int start, char[] json) throws MalformedJSONException{
 		GenericList list = new GenericList();
@@ -274,12 +288,23 @@ class Parser
 		
 		for(end=start;end<json.length;++end){
 			char ch=json[end];
+			if(Character.isISOControl(ch))
+				throw new MalformedJSONException(end,"Bad control character in string literal");
 			if(escaped)
 				escaped = false;
 			else if(ch=='\\' && !escaped)
 				escaped=true;
-			else if(ch=='\"' && !escaped)
-				return extractData(json, start, end, String::new, 1);
+			else if(ch=='\"' && !escaped){
+				try{
+					int length = end-start;
+					char[] chardata = new char[length];
+					System.arraycopy(json, start, chardata, 0, length);
+					return new Pair<Integer, String>(end+1, Utils.unescapeString(new String(chardata)));
+				}
+				catch(MalformedEscapedStringException e){
+					throw new MalformedJSONException(e.getBadCharIndex(), e.getMessage());
+				}
+			}
 		}
 		throw new MalformedJSONException(end,"Unterminated string");
 	}
@@ -296,7 +321,7 @@ class Parser
 		while(ch=='\t' || ch=='\n' || ch=='\r' || ch==' '){
 			++i;
 			if(i>=json.length){
-				if(parentType.equals(ParentDataType.TOP))
+				if(!parentType.equals(ParentDataType.TOP))
 					throw new MalformedJSONException(i,"Unexpected end of data");
 				return i;
 			}
