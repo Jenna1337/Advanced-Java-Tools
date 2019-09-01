@@ -519,6 +519,64 @@ public class Utils
 			builder.append(escapeChar(chs[i]));
 		return builder.toString();
 	}
+	public static String unescapeString(String string) throws MalformedEscapedStringException{
+		char[] chs = string.toCharArray();
+		StringBuilder builder = new StringBuilder();
+		for(int i = 0; i < chs.length; ++i){
+			int ch=chs[i];
+			if(ch=='\"' || Character.isISOControl(ch))
+				;//TODO
+			if(ch=='\\'){
+				if(chs.length <= i+1)
+					throw new MalformedEscapedStringException(i, "Unterminated string");
+					
+				++i;
+				char ch0 = chs[i];
+				switch(ch0){
+					case '\"':
+					case '\\':
+					case '/':
+						builder.append(ch0);
+						break;
+					case 'b':
+						builder.append('\b');
+						break;
+					case 'f':
+						builder.append('\f');
+						break;
+					case 'n':
+						builder.append('\n');
+						break;
+					case 'r':
+						builder.append('\r');
+						break;
+					case 't':
+						builder.append('\t');
+						break;
+					case 'u':{
+						if(chs.length <= i+4)
+							throw new MalformedEscapedStringException(i, "Bad Unicode escape");
+						char[] chardata = new char[6];
+						System.arraycopy(chs, i-1, chardata, 0, 6);
+						try{
+							String nch = unescapeNonAscii(string);
+							builder.append(nch);
+						}catch(NumberFormatException nfe){
+							throw new MalformedEscapedStringException(i, "Bad Unicode escape");
+						}
+						break;
+					}
+					default:
+						throw new MalformedEscapedStringException(i, "Bad escaped character");
+				}
+				i+=1;
+			}
+			
+			
+			//unescapeNonAscii(ustr);
+		}
+		return builder.toString();
+	}
 	
 	public static boolean getBooleanValueJSON(String parname, String rawjson){
 		try{
