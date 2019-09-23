@@ -6,7 +6,6 @@ import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import sys.math.numbertypes.SuperNumber;
 
 public class ClassUtils
@@ -43,8 +42,8 @@ public class ClassUtils
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <C, X extends Throwable> Object invokeMethod(C obj,
-			String name, Object... refpairs) throws X{
+	public static <C, X extends Throwable> Object invokeMethod(Class<? extends C> clazz,
+			C obj, String name, Object... refpairs) throws X{
 		ArrayList<Class<?>> clss = new ArrayList<>();
 		ArrayList<Object> args = new ArrayList<>();
 		for(int i = 0; i < refpairs.length; ++i){
@@ -56,7 +55,7 @@ public class ClassUtils
 		Class<?>[] aclss = clss.toArray(new Class<?>[clss.size()]);
 		Object[] aargs = args.toArray(new Object[args.size()]);
 		try{
-			Object result = obj.getClass().getMethod(name, aclss).invoke(obj,
+			Object result = clazz.getMethod(name, aclss).invoke(obj,
 					aargs);
 			return result;
 		}
@@ -70,12 +69,40 @@ public class ClassUtils
 		}
 	}
 	
-	public static <C, X extends Throwable, T> Object invokeMethod(
-			Function<Object, T> conversionFunction, C obj, String name,
-			Object... refpairs) throws X{
-		return conversionFunction != null
-				? conversionFunction.apply(invokeMethod(obj, name, refpairs))
-				: invokeMethod(obj, name, refpairs);
+	public static <C, X extends Throwable> Object invokeMethod(C obj,
+			String name, Object... refpairs) throws X{
+		return invokeMethod(obj.getClass(), obj, name, refpairs);
+	}
+	
+	public static <C, X extends Throwable> Object invokeStaticMethod(Class<? extends C> clazz,
+			String name, Object... refpairs) throws X{
+		return invokeMethod(clazz, null, name, refpairs);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <C, X extends Throwable> C invokeConstructor(Class<C> clazz, Object... refpairs) throws X{
+		ArrayList<Class<?>> clss = new ArrayList<>();
+		ArrayList<Object> args = new ArrayList<>();
+		for(int i = 0; i < refpairs.length; ++i){
+			if(i % 2 == 0)
+				clss.add((Class<?>)refpairs[i]);
+			else
+				args.add(refpairs[i]);
+		}
+		Class<?>[] aclss = clss.toArray(new Class<?>[clss.size()]);
+		Object[] aargs = args.toArray(new Object[args.size()]);
+		try{
+			return clazz.getConstructor(aclss).newInstance(aargs);
+		}
+		catch(java.lang.reflect.InvocationTargetException e){
+			Throwable t = e.getCause();
+			throw (X)t;
+		}
+		catch(IllegalAccessException | IllegalArgumentException
+				| NoSuchMethodException | SecurityException
+				| InstantiationException e){
+			throw new InternalError(e);
+		}
 	}
 	
 	/**
