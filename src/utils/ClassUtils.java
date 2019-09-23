@@ -69,9 +69,10 @@ public class ClassUtils
 		}
 	}
 	
-	public static <C, X extends Throwable> Object invokeMethod(C obj,
+	@SuppressWarnings("unchecked")
+	public static <T, C, X extends Throwable> T invokeMethod(C obj,
 			String name, Object... refpairs) throws X{
-		return invokeMethod(obj.getClass(), obj, name, refpairs);
+		return (T)invokeMethod(obj.getClass(), obj, name, refpairs);
 	}
 	
 	public static <C, X extends Throwable> Object invokeStaticMethod(Class<? extends C> clazz,
