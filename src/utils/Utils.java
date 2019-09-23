@@ -67,12 +67,16 @@ public class Utils
 					throw new InternalError("Unknown thread state: " + s.name());
 			}
 	}
-	
+	/**
+	 * Moved to {@linkplain StringUtils#containsRegex(String, String)}.
+	 */
+	@Deprecated
 	public static boolean containsRegex(String regex, String in){
 		return Pattern.compile(regex).matcher(in).find();
 	}
 	
 	/**
+	 * Moved to {@linkplain StringUtils#search(String, String)}.
 	 * 
 	 * @param regex
 	 * @param in
@@ -81,20 +85,26 @@ public class Utils
 	 * @throws IllegalArgumentException If no match was found or if there is no
 	 * capturing group in the regex
 	 */
+	@Deprecated
 	public static String search(String regex, String in){
-		try{
-			Pattern p = Pattern.compile(regex);
-			Matcher m = p.matcher(in);
-			m.find();
-			return m.group(1);
-		}
-		catch(Exception e){
-			System.err.println("Warning: Failed to find \""
-					+ regex.replaceAll("[\"\\\\]", "\\\\$0") + "\" in \""
-					+ in.replaceAll("[\"\\\\]", "\\\\$0") + "\"");
-			throw new IllegalArgumentException(e);
-		}
+		return StringUtils.search(regex, in, true);
 	}
+	/**
+	 * Moved to {@linkplain StringUtils#search(String, String, boolean)}.
+	 * 
+	 * @param regex
+	 * @param in
+	 * @param showWarnings
+	 * @return The match in <code>in</code> for the first group in
+	 * <code>regex</code>.
+	 * @throws IllegalArgumentException If no match was found or if there is no
+	 * capturing group in the regex
+	 */
+	@Deprecated
+	public static String search(String regex, String in, boolean showWarnings){
+		return StringUtils.search(regex, in, showWarnings);
+	}
+
 	private static HashMap<String, Matcher> jsonmatchers = new HashMap<>();
 	private static String searchJSON(String regex, String input){
 		Matcher m;
@@ -234,6 +244,10 @@ public class Utils
 		Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 		return text;
 	}
+	/**
+	 * Moved to {@link StringUtils#replaceAllAll(String, String[][])}
+	 */
+	@Deprecated
 	public static String replaceAllAll(String target, String[][] rr){
 		for(String[] r : rr)
 			target = target.replaceAll(r[0], r[1]);
@@ -383,6 +397,11 @@ public class Utils
 		}
 		return Character.toString(ch);
 	}
+	/**
+	 * Unescapes all <code>&bsol;u</code> characters.
+	 * @param string
+	 * @return The resulting String.
+	 */
 	public static String unescapeNonAscii(String string){
 		Pattern p = Pattern.compile("\\\\u[A-Za-z0-9]{4}");
 		Matcher m = p.matcher(string);
@@ -394,12 +413,22 @@ public class Utils
 		}
 		return string;
 	}
+	/**
+	 * Unescapes all <code>&bsol;u</code> characters from all {@code strings}.
+	 * @param strings The strings to unescape.
+	 * @return The resulting array.
+	 */
 	public static String[] unescapeNonAscii(String[] strings){
 		String[] newstrings = new String[strings.length];
 		for(int i = 0; i < strings.length; ++i)
 			newstrings[i] = unescapeNonAscii(strings[i]);
 		return newstrings;
 	}
+	/**
+	 * Unescapes all <code>&bsol;u</code> characters from all {@code strings}.
+	 * @param strings The strings to unescape.
+	 * @return The resulting array.
+	 */
 	public static String[][] unescapeNonAscii(String[][] strings){
 		String[][] newstrings = new String[strings.length][];
 		for(int i = 0; i < strings.length; ++i)
@@ -578,6 +607,10 @@ public class Utils
 		return builder.toString();
 	}
 	
+	/**
+	 * Use {@link utils.json.JSON} instead.
+	 */
+	@Deprecated
 	public static boolean getBooleanValueJSON(String parname, String rawjson){
 		try{
 			return Boolean.parseBoolean(searchJSON(
@@ -595,6 +628,10 @@ public class Utils
 		}
 	}
 	
+	/**
+	 * Use {@link utils.json.JSON} instead.
+	 */
+	@Deprecated
 	public static long getNumValueJSON(String parname, String rawjson){
 		try{
 			return Long.parseLong(
@@ -628,21 +665,6 @@ public class Utils
 		return arr[rand.nextInt(arr.length)];
 	}
 	
-	public static String search(String regex, String in, boolean showWarnings){
-		try{
-			Pattern p = Pattern.compile(regex);
-			Matcher m = p.matcher(in);
-			m.find();
-			return m.group(1);
-		}
-		catch(Exception e){
-			if(showWarnings)
-				System.err.println("Warning: Failed to find \""
-						+ regex.replaceAll("[\"\\\\]", "\\\\$0") + "\" in \""
-						+ in.replaceAll("[\"\\\\]", "\\\\$0") + "\"");
-			throw new IllegalArgumentException(e);
-		}
-	}
 	@SuppressWarnings("unchecked")
 	public static <T> T castToOriginalType(Object obj){
 		return obj == null ? null : (T)obj.getClass().cast(obj);

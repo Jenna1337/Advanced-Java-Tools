@@ -1,6 +1,8 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringUtils
 {
@@ -52,5 +54,54 @@ public class StringUtils
 		{
 			return false;
 		}
+	}
+
+	public static boolean containsRegex(String regex, String in){
+		return Pattern.compile(regex).matcher(in).find();
+	}
+
+	/**
+	 * 
+	 * @param regex
+	 * @param in
+	 * @return The match in <code>in</code> for the first group in
+	 * <code>regex</code>.
+	 * @throws IllegalArgumentException If no match was found or if there is no
+	 * capturing group in the regex
+	 */
+	public static String search(String regex, String in){
+		return search(regex, in, true);
+	}
+
+	/**
+	 * 
+	 * @param regex
+	 * @param in
+	 * @param showWarnings
+	 * @return The match in <code>in</code> for the first group in
+	 * <code>regex</code>.
+	 * @throws IllegalArgumentException If no match was found or if there is no
+	 * capturing group in the regex
+	 */
+	public static String search(String regex, String in, boolean showWarnings){
+		try{
+			Pattern p = Pattern.compile(regex);
+			Matcher m = p.matcher(in);
+			m.find();
+			return m.group(1);
+		}
+		catch(Exception e){
+			if(showWarnings)
+				System.err.println("Warning: Failed to find \""
+						+ regex.replaceAll("[\"\\\\]", "\\\\$0") + "\" in \""
+						+ in.replaceAll("[\"\\\\]", "\\\\$0") + "\"");
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	public static String replaceAllAll(String target, String[][] rr){
+		for(String[] r : rr)
+			target = target.replaceAll(r[0], r[1]);
+		return target;
 	}
 }
