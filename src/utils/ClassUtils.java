@@ -6,6 +6,7 @@ import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import sys.math.numbertypes.SuperNumber;
 
 public class ClassUtils
@@ -39,6 +40,42 @@ public class ClassUtils
 	public static void printFieldsAndValue(Field[] fields) throws IllegalArgumentException, IllegalAccessException, InstantiationException
 	{
 		printFieldsAndValue(null, fields, System.out);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <C, X extends Throwable> Object invokeMethod(C obj,
+			String name, Object... refpairs) throws X{
+		ArrayList<Class<?>> clss = new ArrayList<>();
+		ArrayList<Object> args = new ArrayList<>();
+		for(int i = 0; i < refpairs.length; ++i){
+			if(i % 2 == 0)
+				clss.add((Class<?>)refpairs[i]);
+			else
+				args.add(refpairs[i]);
+		}
+		Class<?>[] aclss = clss.toArray(new Class<?>[clss.size()]);
+		Object[] aargs = args.toArray(new Object[args.size()]);
+		try{
+			Object result = obj.getClass().getMethod(name, aclss).invoke(obj,
+					aargs);
+			return result;
+		}
+		catch(java.lang.reflect.InvocationTargetException e){
+			Throwable t = e.getCause();
+			throw (X)t;
+		}
+		catch(IllegalAccessException | IllegalArgumentException
+				| NoSuchMethodException | SecurityException e){
+			throw new InternalError(e);
+		}
+	}
+	
+	public static <C, X extends Throwable, T> Object invokeMethod(
+			Function<Object, T> conversionFunction, C obj, String name,
+			Object... refpairs) throws X{
+		return conversionFunction != null
+				? conversionFunction.apply(invokeMethod(obj, name, refpairs))
+				: invokeMethod(obj, name, refpairs);
 	}
 	
 	/**
