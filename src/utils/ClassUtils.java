@@ -2,11 +2,7 @@ package utils;
 
 import java.io.PrintStream;
 import java.lang.reflect.*;
-import java.math.MathContext;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import sys.math.numbertypes.SuperNumber;
 
 public class ClassUtils
 {
@@ -107,81 +103,23 @@ public class ClassUtils
 	}
 	
 	/**
-	 * Tests the methods in the class.
+	 * Returns the value of the field in {@code rcls} that has the same name as the {@code enumVal} name.
 	 * 
-	 * @param clazz The {@link Class}
-	 * @return {@code true} if all the methods completed successfully.
-	 * @deprecated This method may call class methods with values that are
-	 *             illegal for that method.
+	 * @return The resulting enum value in the specified enum type.
+	 * @param enumVal The initial enum value.
+	 * @param rcls The resulting enum type class.
+	 * @param <R> The resulting enum type. 
+	 * @throws InternalError If an exception occurred. 
 	 */
-	@Deprecated
-	public static boolean TestClass(Class<?> clazz)
-	{
-		boolean result = true;
-		List<Method> methods = Arrays.asList(clazz.getMethods());
-		methods.removeAll(Arrays.asList(clazz.getConstructors()));
-		for(Method method : methods)
-		{
-			System.out
-					.println(method.toString().replaceAll("[A-Za-z\\.]+\\.", "")
-							.replaceAll(" throws [\\w ,]+", "")
-							.replace("public ", "").replace("static ", "")
-							.replace("final ", "").replace("native ", ""));
-			result &= testMethod(method, clazz);
+	@SuppressWarnings("unchecked")
+	public static <R> R castEnumConstant(Object enumVal, Class<R> rcls){
+		try{
+			return (R)rcls.getDeclaredField(Enum.class.cast(enumVal).name()).get(null);
 		}
-		return result;
-	}
-	/**
-	 * Tests the method in the class.
-	 * 
-	 * @param method The {@link Method} to test
-	 * @param clazz The {@link Class} that contains {@code method}
-	 * @return {@code true} if the method completed successfully.
-	 * @deprecated This method may call the class method it is given with values
-	 *             that are illegal for that method.
-	 */
-	@Deprecated
-	public static boolean testMethod(Method method, Class<?> clazz)
-	{
-		// System.out.println(method.getDeclaringClass().getName());
-		// assume these work properly
-		if(method.toString().contains("wait")
-				|| method.toString().contains("notify"))
-			return true;
-		try
-		{
-			Class<?>[] types = method.getParameterTypes();
-			Object[] pars = new Object[types.length];
-			System.out.println(Arrays.toString(types));
-			for(int i = 0; i < pars.length; ++i)
-			{
-				try
-				{
-					pars[i] = types[i].newInstance();
-				}
-				catch(InstantiationException ie)
-				{
-					pars[i] = 3;
-				}
-				if(types[i].equals(String.class))
-					pars[i] = "2";
-				else if(types[i].equals(SuperNumber.class))
-					pars[i] = new SuperNumber("2");
-				else if(types[i].equals(Number.class))
-					pars[i] = (Number) Integer.parseInt("2");
-				else if(types[i].equals(MathContext.class))
-					pars[i] = SuperNumber.ROUND_HALF_UP;
-				else if(types[i].equals(Object.class))
-					pars[i] = (Object) clazz.newInstance();
-			}
-			method.invoke(clazz.newInstance(), pars);
-			return true;
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			System.exit(1);
-			return false;
+		catch(IllegalArgumentException | IllegalAccessException
+				| NoSuchFieldException | SecurityException e){
+			// TODO Auto-generated catch block
+			throw new InternalError(e);
 		}
 	}
 }
