@@ -1,0 +1,4 @@
+USER=FtpUser
+PASS=Password123
+DEST=example.com
+BASE=www/example.com
