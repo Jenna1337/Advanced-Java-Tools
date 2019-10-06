@@ -8,6 +8,8 @@ import javax.script.ScriptContext;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 import utils.WebRequest;
+import utils.json.JSON;
+import utils.json.MalformedJSONException;
 import static utils.Utils.*;
 
 public class Eval
@@ -51,7 +53,7 @@ public class Eval
 			e.printStackTrace();
 			return new BasicTextResult("I do not understand.");
 		}
-		catch(ScriptException | NullPointerException e){
+		catch(ScriptException | NullPointerException | MalformedJSONException e){
 			EvalResult respo = null;
 			if(response != null && evalRecalcCount <= evalRecalcCountMax){
 				evalRecalcCount++;
@@ -76,10 +78,13 @@ public class Eval
 	private static volatile int evalReinterpretationCount = 0;
 	private static final    int evalReinterpretationCountMax = 1;
 	private static EvalResult parseResponse(String response)
-			throws ScriptException, NullPointerException{
+			throws ScriptException, NullPointerException, MalformedJSONException{
 		if(response.matches("\\s*"))
 			return new EvalResult(EvalResultStatus.INVALIDDATA, "", "", "", "", "");
 		//TODO store ALL of the results
+		/*
+		Object data = JSON.parse(response);
+		/* */
 		String jscmd_eval_get_results_status = ""
 				+ "var results=(" + response + ").queryresult;\n"
 				+ "var output = '';\n"
