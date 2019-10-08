@@ -3,9 +3,9 @@ package utils.colors;
 import java.awt.Color;
 import java.util.ArrayList;
 
-public class Blender
+public class ColorUtils
 {
-	private Blender(){}
+	private ColorUtils(){}
 	/**
 	 * Blends the colors to produce their average color.
 	 *  Assumes {@code bitmask} is {@code true}.
