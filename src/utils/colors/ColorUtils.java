@@ -75,4 +75,16 @@ public class ColorUtils
 			colorlist[i]=colors.get(i);
 		return blend(bitmask, colorlist);
 	}
+	
+	
+	
+	public static Color makeWebSafe(int color){
+		return makeWebSafe(new Color(color));
+	}
+	public static Color makeWebSafe(Color color){
+		return new Color(
+				Math.round(color.getRed()/51.0f)*51.0f,
+				Math.round(color.getBlue()/51.0f)*51.0f,
+				Math.round(color.getGreen()/51.0f)*51.0f);
+	}
 }
