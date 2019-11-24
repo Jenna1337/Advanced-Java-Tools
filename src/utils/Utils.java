@@ -552,7 +552,7 @@ public class Utils
 		char[] chs = string.toCharArray();
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i < chs.length; ++i){
-			int ch=chs[i];
+			char ch=chs[i];
 			if(ch=='\"' || Character.isISOControl(ch))
 				;//TODO
 			if(ch=='\\'){
@@ -588,21 +588,21 @@ public class Utils
 						char[] chardata = new char[6];
 						System.arraycopy(chs, i-1, chardata, 0, 6);
 						try{
-							String nch = unescapeNonAscii(string);
+							String nch = unescapeNonAscii(new String(chardata));
 							builder.append(nch);
 						}catch(NumberFormatException nfe){
 							throw new MalformedEscapedStringException(i, "Bad Unicode escape");
 						}
+						i+=4;
 						break;
 					}
 					default:
 						throw new MalformedEscapedStringException(i, "Bad escaped character");
 				}
-				i+=1;
+				
 			}
-			
-			
-			//unescapeNonAscii(ustr);
+			else
+				builder.append(ch);
 		}
 		return builder.toString();
 	}

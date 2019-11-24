@@ -8,7 +8,7 @@ import utils.tuples.Pair;
 
 /**
  * 
- * Fully compliant ECMA-404 Parser<br>
+ * Fully compliant JSON Parser<br>
  * <br>
  * For more info see {@linkplain JSON#parse(String)}
  * 
@@ -67,7 +67,7 @@ class Parser
 				break;
 			case '\"':
 				//string
-				valpair = stringParse(i, json);
+				valpair = parseString(i, json);
 				break;
 			default:
 				if(ch=='-' || (ch>='0' && ch<='9'))
@@ -123,7 +123,7 @@ class Parser
 			if(ch!='\"')
 				throw new MalformedJSONException(i, "Expected property name or '}'");
 			{
-				Pair<Integer,String> keypair = stringParse(i,json);
+				Pair<Integer,String> keypair = parseString(i,json);
 				i=keypair.getFirst();
 				if(i>=json.length)
 					throw new MalformedJSONException(i, "End of data after property name when ':' was expected");
@@ -278,7 +278,7 @@ class Parser
 		}
 		throw new MalformedJSONException(i,"Unexpected end of data");
 	}
-	private static Pair<Integer, String> stringParse(int start, char[] json) throws MalformedJSONException{
+	private static Pair<Integer, String> parseString(int start, char[] json) throws MalformedJSONException{
 		int end=-1;
 		boolean escaped = false;
 		start+=1;
@@ -288,7 +288,7 @@ class Parser
 		
 		for(end=start;end<json.length;++end){
 			char ch=json[end];
-			if(Character.isISOControl(ch))
+			if(0x0000<=ch && ch<=0x001F)
 				throw new MalformedJSONException(end,"Bad control character in string literal");
 			if(escaped)
 				escaped = false;
