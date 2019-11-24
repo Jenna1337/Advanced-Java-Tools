@@ -60,21 +60,28 @@ public class JSON
 			final boolean showResults_Failed,
 			final boolean showResults_ImplementationDependent)
 					throws IOException{
+		int totalPassed=0,totalFailed=0,totalImplPassed=0,totalImplFailed=0;
 		forloop: for(Path path : Files.list(Paths.get("json_test_parsing")).toArray(Path[]::new))
 		{
 			String filename = path.getFileName().toString();
 			ExpectedOutcome expected = ExpectedOutcome.Impl;
 			switch(filename.charAt(0)){
 				case 'y':
+					if(!(showResults_Passed || showResults_Failed))
+						continue forloop;
 					expected = ExpectedOutcome.Success;
 					break;
 				case 'n':
+					if(!(showResults_Passed || showResults_Failed))
+						continue forloop;
 					expected = ExpectedOutcome.Fail;
 					break;
 				case 'i':
 				default:
+					if(!showResults_ImplementationDependent)
+						continue forloop;
 					expected = ExpectedOutcome.Impl;
-					continue forloop;
+					break;
 			}
 			boolean valid;
 			String result="";
@@ -88,29 +95,62 @@ public class JSON
 				result = text;
 				e=e2;
 			}catch(StackOverflowError e2){
-				//TODO
 				valid=false;
-				System.err.print("SOE");
+				result="[ERROR]";
 			}
 			System.out.flush();
 			System.err.flush();
-			if(showResults_Passed && ((valid && expected.equals(ExpectedOutcome.Success))
-					|| (!valid && expected.equals(ExpectedOutcome.Fail))))
-				System.out.println("Pass\t\t\t" + filename + "\t\t\t" + result);
-			else if(showResults_Failed && ((!valid && expected.equals(ExpectedOutcome.Success))
-					|| (valid && expected.equals(ExpectedOutcome.Fail))))
-				System.err.println("Fail\t\t\t" + filename + "\t\t\t\"" + Utils.escapeString(text) + "\"\t\t\t\"" + Utils.escapeString(result) + "\"");
-			else if(showResults_ImplementationDependent){
+			String s1 = text,
+					s2 = result;
+			if(s1.length()>50) s1=s1.substring(0, 50)+"...";
+			if(s2.length()>50) s2=s2.substring(0, 50)+"...";
+			boolean j=false,k=false,l=false;
+			if(j=((valid && expected.equals(ExpectedOutcome.Success))
+					|| (!valid && expected.equals(ExpectedOutcome.Fail)))){
+				if(j&=showResults_Passed)
+					System.out.print("Pass");
+				totalPassed++;
+			}
+			else if(k=((!valid && expected.equals(ExpectedOutcome.Success))
+					|| (valid && expected.equals(ExpectedOutcome.Fail)))){
+				if(k&=showResults_Failed)
+					System.err.print("Fail");
+				totalFailed++;
+			}
+			else if(l=expected.equals(ExpectedOutcome.Impl)){
 				System.out.flush();
 				System.err.flush();
-				System.out.println((valid ? "Pass" : "Fail")+"\t\t\t" + filename + "\t\t\t" + result);
+				if(valid){
+					if(l&=showResults_ImplementationDependent)
+						System.out.print("Pass");
+					totalImplPassed++;
+				}
+				else{
+					if(l&=showResults_ImplementationDependent)
+						System.out.print("Fail");
+					totalImplFailed++;
+				}
 			}
+			if(j||k||l)
+				System.out.println(valid + "\t\t\t" + filename + "\t\t\t" + s1 + "\t\t" + s2 + "");
+			
 			System.out.flush();
 			if(e!=null
 					&& ((!valid && expected.equals(ExpectedOutcome.Success))
 							|| (valid && expected.equals(ExpectedOutcome.Fail))))
 				e.printStackTrace();
 			System.err.flush();
-		};
+		}
+		System.out.println();
+		System.out.println("Results:");
+		if(showResults_Passed || showResults_Failed){
+			System.out.println("Passed: "+totalPassed);
+			System.out.println("Failed: "+totalFailed);
+		}
+		if(showResults_ImplementationDependent){
+			System.out.println("Implementation Dependent:");
+			System.out.println("Passed: "+totalImplPassed);
+			System.out.println("Failed: "+totalImplFailed);
+		}
 	}
 }
