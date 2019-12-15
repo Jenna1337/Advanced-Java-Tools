@@ -5,7 +5,7 @@ import utils.WebRequest;
 public class EvalResult{
 	private final EvalResultStatus resultStatus;
 	private final String resultImage, resultText, warnings, didyoumeans, assumptions;
-	public EvalResult(EvalResultStatus r_status, String r_img, String r_txt,
+	EvalResult(EvalResultStatus r_status, String r_img, String r_txt,
 			String warnings, String didyoumeans, String assumptions){
 		this.resultStatus = r_status;
 		this.resultImage = standardizeImage(r_img);

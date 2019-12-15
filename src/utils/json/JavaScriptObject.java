@@ -29,6 +29,9 @@ public class JavaScriptObject
 	public boolean hasOwnProperty(String prop){
 		return data.containsKey(prop);
 	}
+	public boolean containsKey(String key){
+		return data.containsKey(key);
+	}
 	
 	public static Set<String> keys(JavaScriptObject obj){
 		return obj.data.keySet();
