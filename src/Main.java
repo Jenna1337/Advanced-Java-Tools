@@ -4,13 +4,18 @@ import net.ftp.FtpClient;
 import net.ftp.FtpProtocolException;
 import net.ftp.FtpRecusiveFileDirectoryIterator;
 import utils.Utils;
+import utils.eval.Eval;
+import utils.json.JSON;
+import utils.json.JavaScriptObject;
 
 public class Main
 {
 	public static void main(String[] args) throws Exception
 	{
+		System.exit(0);
+		
 		Properties ftpprops = Utils.loadProperties("ftpclient.properties");
-		;
+		
 		FtpClient client = FtpClient.create(ftpprops.getProperty("DEST"));
 		{
 			String user = ftpprops.getProperty("USER");
