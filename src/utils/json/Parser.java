@@ -1,6 +1,7 @@
 package utils.json;
 
 import java.util.HashMap;
+import java.util.function.Function;
 import utils.MalformedEscapedStringException;
 import utils.Utils;
 import utils.collections.GenericList;
@@ -308,7 +309,7 @@ class Parser
 		}
 		throw new MalformedJSONException(end,"Unterminated string");
 	}
-	private static <T> Pair<Integer, T> extractData(char[] json, int start, int end, JSONParsingFunction<char[], T> func, int endoffset) throws MalformedJSONException{
+	private static <T> Pair<Integer, T> extractData(char[] json, int start, int end, Function<char[], T> func, int endoffset) throws MalformedJSONException{
 		int length = end-start;
 		char[] chardata = new char[length];
 		System.arraycopy(json, start, chardata, 0, length);
