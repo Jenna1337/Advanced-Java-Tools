@@ -103,6 +103,7 @@ public class DataBuffer
 	}
 	private void putBits(long val, int length)
 	{
+		//FIXME
 		switch(order){
 			case LSB:
 				int startbit = Long.SIZE-length-1;
