@@ -104,7 +104,7 @@ public class CircularBuffer<T> implements Iterable<T>
 	 */
 	public boolean startsWith(T[] s) {
 		toArray();
-		return s.length<cachedArray.length
+		return s.length<=cachedArray.length
 				&& Arrays.mismatch(s, 0, s.length, cachedArray, 0, s.length)==-1;
 	}
 	/**
@@ -114,7 +114,7 @@ public class CircularBuffer<T> implements Iterable<T>
 	 */
 	public boolean endsWith(T[] s) {
 		toArray();
-		return s.length<cachedArray.length
+		return s.length<=cachedArray.length
 				&& Arrays.mismatch(s, 0, s.length, cachedArray, cachedArray.length-s.length, cachedArray.length)==-1;
 	}
 	

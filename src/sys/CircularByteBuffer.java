@@ -100,7 +100,7 @@ public class CircularByteBuffer implements Iterable<Byte>
 	 */
 	public boolean startsWith(byte[] s) {
 		toArray();
-		return s.length<cachedArray.length
+		return s.length<=cachedArray.length
 				&& Arrays.mismatch(s, 0, s.length, cachedArray, 0, s.length)==-1;
 	}
 	/**
@@ -110,7 +110,7 @@ public class CircularByteBuffer implements Iterable<Byte>
 	 */
 	public boolean endsWith(byte[] s) {
 		toArray();
-		return s.length<cachedArray.length
+		return s.length<=cachedArray.length
 				&& Arrays.mismatch(s, 0, s.length, cachedArray, cachedArray.length-s.length, cachedArray.length)==-1;
 	}
 	

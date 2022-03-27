@@ -100,7 +100,7 @@ public class CircularIntBuffer implements Iterable<Integer>
 	 */
 	public boolean startsWith(int[] s) {
 		toArray();
-		return s.length<cachedArray.length
+		return s.length<=cachedArray.length
 				&& Arrays.mismatch(s, 0, s.length, cachedArray, 0, s.length)==-1;
 	}
 	/**
@@ -110,7 +110,7 @@ public class CircularIntBuffer implements Iterable<Integer>
 	 */
 	public boolean endsWith(int[] s) {
 		toArray();
-		return s.length<cachedArray.length
+		return s.length<=cachedArray.length
 				&& Arrays.mismatch(s, 0, s.length, cachedArray, cachedArray.length-s.length, cachedArray.length)==-1;
 	}
 	
