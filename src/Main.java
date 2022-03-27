@@ -1,17 +1,34 @@
+import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Properties;
 import net.ftp.FtpClient;
 import net.ftp.FtpProtocolException;
 import net.ftp.FtpRecusiveFileDirectoryIterator;
+import sys.CircularByteBuffer;
+import sys.CircularIntBuffer;
 import utils.Utils;
-import utils.eval.Eval;
-import utils.json.JSON;
-import utils.json.JavaScriptObject;
+import utils.filesystem.FileUtils;
 
 public class Main
 {
 	public static void main(String[] args) throws Exception
 	{
+		//CircularByteBuffer c = new CircularByteBuffer(4);
+		//c.put((byte)1);
+		//for(int i : new int[] {4,5,6,7})
+		//	c.put((byte)i);
+		//c.put((byte)2);
+		//System.out.println(Arrays.toString(c.toArray()));
+		//System.out.println(c.startsWith(new byte[] {5,6,7,2}));
+		//System.out.println(c.endsWith(new byte[] {5,6,7,2}));
+		
+		new File("test/").mkdir();
+		FileUtils.copyChunks(new File("C:\\Windows\\explorer.exe"),
+				"test/", ".png",
+				new byte[]{(byte)0x89,'P','N','G'}, "IEND".getBytes(),
+				0, 4, true);
+		
 		System.exit(0);
 		
 		Properties ftpprops = Utils.loadProperties("ftpclient.properties");
@@ -30,13 +47,9 @@ public class Main
 			pass=null;
 		}
 		System.gc();
-				
+		
 		printAllFilesData(client, ftpprops.getProperty("BASE", ""));
 		client.close();
-		
-		
-		//DataBuffer b = new DataBuffer();
-		//System.out.println(b);
 	}
 	
 	public static void printAllFilesData(final FtpClient client, final String dir) throws FtpProtocolException, IOException{
