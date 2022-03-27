@@ -1,6 +1,6 @@
 package utils.colors;
 
-@javax.annotation.Generated(value = {"dashboard.Main"}, date = "Tuesday, June 21, 2016 10:45:55 AM UTC")
+/**@Generated(value = {"dashboard.Main"}, date = "Tuesday, June 21, 2016 10:45:55 AM UTC")**/
 public final class NamedColorConstants
 {
 	private NamedColorConstants(){}
