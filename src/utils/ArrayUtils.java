@@ -20,4 +20,17 @@ public class ArrayUtils
 			lst.add(val);
 		return lst.toArray(arr);
 	}
+	public static <T> boolean startsWith(T[] haystack, T[] needle) {
+		return needle.length<haystack.length
+				&& Arrays.mismatch(needle, 0, needle.length, haystack, 0, needle.length)==-1;
+	}
+	/**
+	 * Checks if this circular buffer ends with the sequence in the array {@code s}
+	 * @param s the array to compare
+	 * @return true if this buffer ends with the sequence specified in array {@code s}
+	 */
+	public static <T> boolean endsWith(T[] haystack, T[] needle) {
+		return needle.length<haystack.length
+				&& Arrays.mismatch(needle, 0, needle.length, haystack, haystack.length-needle.length, haystack.length)==-1;
+	}
 }
